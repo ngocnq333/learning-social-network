@@ -1,16 +1,15 @@
 package com.solution.ntq.controller;
 
+import com.solution.ntq.model.User;
 import com.solution.ntq.service.IGoogleService;
 import lombok.AllArgsConstructor;
 import org.apache.http.client.ClientProtocolException;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,15 +21,15 @@ import java.util.List;
 public class VerifyByGoogle {
     private IGoogleService iGoogleService;
 
-    /**
+    /* *
      * Return status (token + value) of login by google
-     */
-   /* @RequestMapping(value = "/login-google", method = RequestMethod.GET)
-    public ResponseEntity<String> listAllCustomer(@RequestParam("code") String code) {
-        if (iGoogleService.verifyUser(code)) {
+     * */
+    @GetMapping(path = "/login-google")
+    public ResponseEntity<String> listAllCustomer(@RequestParam(value = "code", defaultValue = "") String code){
+        if (iGoogleService.activeLoginToEmail(code)){
+            String tokenAccount = iGoogleService.getAccessTokenFormGoogle(code);
+            return new ResponseEntity<>(tokenAccount,HttpStatus.OK);
+        } else  return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        }
-
-        return new ResponseEntity<String>(, HttpStatus.OK);
-    }*/
+    }
 }

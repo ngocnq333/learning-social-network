@@ -1,3 +1,4 @@
+
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.common.GoogleUtils;
@@ -18,7 +19,32 @@ public class GoogleServiceImpl implements IGoogleService {
     @Autowired
     private GoogleUtils googleUtils;
 
-    /*Get token form Google API*/
+    @Override
+    public boolean activeLoginToEmail(String code) {
+        if (isCode(code)){
+            return false;
+        } else {
+            String accessToken = getAccessTokenFormGoogle(code);
+            User user = getUserFormGoogle(accessToken); // can phai kiem tra su ton tai cua user trong bo nho token va dababase
+            return verifyUserNTQ(user);
+        }
+    }
+
+    /**
+     * Verify email of ntq
+     */
+
+    @Override
+    public boolean verifyUserNTQ(User user) {
+        try {
+            String suffixEmail = user.getHd();
+            return (isNTQMail(suffixEmail));
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
     @Override
     public String getAccessTokenFormGoogle(String code) {
         try {
@@ -31,6 +57,7 @@ public class GoogleServiceImpl implements IGoogleService {
     /**
      * Get user information form google
      */
+
     @Override
     public User getUserFormGoogle(String accessToken) {
         try {
@@ -43,6 +70,7 @@ public class GoogleServiceImpl implements IGoogleService {
     /**
      * Verify mail ntq with mail gmail
      */
+
     public boolean isNTQMail(String userEmail) {
         return (NTQ_EMAIL_FORM.equalsIgnoreCase(userEmail));
     }
@@ -50,22 +78,9 @@ public class GoogleServiceImpl implements IGoogleService {
     /**
      * Check code recovery code form google
      */
+
     public boolean isCode(String code) {
         return (code == null || code.isEmpty());
     }
-
-    /**
-     *
-     */
-    @Override
-    public boolean verifyUser(String code) {
-        if (isCode(code)) {
-            return false;
-        } else {
-            String accessToken = getAccessTokenFormGoogle(code);
-            User user = getUserFormGoogle(accessToken);
-            String suffixEmail = user.getHd();
-            return (isNTQMail(suffixEmail));
-        }
-    }
 }
+

@@ -13,19 +13,20 @@ import java.util.Date;
  * User Class provide all properties and method of entity User in Project
  * @author Ngo Quy Ngoc
  * @version 1.01
- * Created at 18/07/2019
- */
-@Entity
-@Table(name = "user")
-@Setter
+ * Created at 18/07/2019*/
+
+
 @Getter
+@Setter
+@Entity
+@AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String  id; @NonNull
-    private String email; @NonNull
+    private String  id;
+    private String email;
     private boolean verified_email;
     private String name;
     private String given_name;
