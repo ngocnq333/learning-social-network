@@ -4,30 +4,57 @@ package com.solution.ntq.service.impl;
 import com.solution.ntq.common.GoogleUtils;
 import com.solution.ntq.model.User;
 import com.solution.ntq.service.IGoogleService;
+import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Service
 public class GoogleServiceImpl implements IGoogleService {
     private static final String NTQ_EMAIL_FORM = "ntq-solution.com.vn";
+    private User user = new User();
+    private String accessToken = "";
     @Autowired
     private GoogleUtils googleUtils;
 
+
     @Override
     public boolean activeLoginToEmail(String code) {
-        if (isCode(code)){
+        if (isCode(code)) {
             return false;
         } else {
-            String accessToken = getAccessTokenFormGoogle(code);
-            User user = getUserFormGoogle(accessToken); // can phai kiem tra su ton tai cua user trong bo nho token va dababase
-            return verifyUserNTQ(user);
+            String token = getToken(code);
+            accessToken = getAccessTokenFormGoogle(token);
+            if (accessToken != null) {
+                user = getUserFormGoogle(accessToken);
+                return verifyUserNTQ(user);
+            } else {
+                return false;
+            }
         }
+    }
+
+
+    @Override
+    public User getUserActive() {
+        return user;
+    }
+
+    @Override
+    public String getIdUserActive() {
+        return user.getId();
+    }
+
+    @Override
+    public String getAccessTokenActive() {
+        return accessToken;
     }
 
     /**
@@ -46,9 +73,34 @@ public class GoogleServiceImpl implements IGoogleService {
     }
 
     @Override
-    public String getAccessTokenFormGoogle(String code) {
+    public String getToken(String code) {
         try {
             return googleUtils.getToken(code);
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Get Access token form google
+     */
+
+    @Override
+    public String getAccessTokenFormGoogle(String response) {
+        try {
+            return googleUtils.getAccessToken(response);
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Get Refresh token active form google
+     */
+    @Override
+    public String getRefreshTokenFormGoogle(String response) {
+        try {
+            return googleUtils.getRefreshToken(response);
         } catch (IOException ex) {
             return null;
         }
@@ -71,7 +123,7 @@ public class GoogleServiceImpl implements IGoogleService {
      * Verify mail ntq with mail gmail
      */
 
-    public boolean isNTQMail(String userEmail) {
+    private boolean isNTQMail(String userEmail) {
         return (NTQ_EMAIL_FORM.equalsIgnoreCase(userEmail));
     }
 
@@ -79,7 +131,7 @@ public class GoogleServiceImpl implements IGoogleService {
      * Check code recovery code form google
      */
 
-    public boolean isCode(String code) {
+    private boolean isCode(String code) {
         return (code == null || code.isEmpty());
     }
 }
