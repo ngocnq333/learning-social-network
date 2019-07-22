@@ -1,12 +1,8 @@
 package com.solution.ntq.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -21,10 +17,9 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
+
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     private String email;
     private boolean verified_email;
@@ -33,7 +28,6 @@ public class User {
     private String family_name;
     private String link;
     private String picture;
-    private String _hashed_password;
     private String skype;
     private String hd;
     private String locale;
