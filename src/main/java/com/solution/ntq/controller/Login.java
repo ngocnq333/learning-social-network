@@ -1,7 +1,8 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.model.User;
-import com.solution.ntq.repository.IUserRepository;
+import com.solution.ntq.repository.IClassMemberRepository;
+import com.solution.ntq.repository.NtqClassRepository;
+
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
@@ -21,10 +22,12 @@ public class Login {
      * Login to application
      */
     @Autowired
-    IUserRepository repository;
+    NtqClassRepository repository;
+    @Autowired
+    IClassMemberRepository repository1;
     @GetMapping("/API/V1/login")
     public String listAllCustomer() {
-        
+
         return "redirect:" + URL_GOOGLE_API;
     }
 
