@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.model.User;
 import lombok.AllArgsConstructor;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
 import org.springframework.core.env.Environment;
@@ -21,7 +20,7 @@ public class GoogleUtils {
      */
     private Environment env;
 
-    public String getToken(final String code) throws ClientProtocolException, IOException {
+    public String getToken(final String code) throws IOException {
         String link = env.getProperty("google.link.get.token");
         return Request.Post(link)
                 .bodyForm(Form.form()
@@ -31,13 +30,12 @@ public class GoogleUtils {
                         .add("redirect_uri", env.getProperty("google.redirect.uri"))
                         .add("grant_type", "authorization_code").build())
                 .execute().returnContent().asString();
-
     }
 
     /**
      * Get access token for call API service of google
      */
-    public String getAccessToken(String response) throws ClientProtocolException, IOException {
+    public String getAccessToken(String response) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(response).get("access_token");
         return node.textValue();
@@ -46,7 +44,7 @@ public class GoogleUtils {
     /**
      * Get access token for call API service of google
      */
-    public String getRefreshToken(String response) throws ClientProtocolException, IOException {
+    public String getRefreshToken(String response) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(response).get("refresh_token");
         return node.textValue();
@@ -56,18 +54,17 @@ public class GoogleUtils {
      * String getId Access Token form response
      */
 
-    public String getIdToken(String response) throws ClientProtocolException, IOException {
+    public String getIdToken(String response) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(response).get("id_token");
         return node.textValue();
     }
 
-    public User getUserInfo(final String accessToken) throws ClientProtocolException, IOException {
+    public User getUserInfo(final String accessToken) throws IOException {
         String link = env.getProperty("google.link.get.user_info") + accessToken;
         String response = Request.Get(link).execute().returnContent().asString();
         ObjectMapper mapper = new ObjectMapper();
-        User user = mapper.readValue(response, User.class);
-        return user;
+        return mapper.readValue(response, User.class);
     }
 
 

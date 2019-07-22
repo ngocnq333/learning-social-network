@@ -8,7 +8,7 @@ public interface ITokenService {
     boolean isTimeOut(String userId);
     void addToken(String userId, String idToken);
     Token getTokenByUserId(String userId);
-    void clearAllToken();
+    void clearIdToken(String idToken);
     boolean isEmpty();
     String getRefreshToken();
     void saveRefreshToken();

@@ -12,12 +12,9 @@ import com.solution.ntq.common.Token;
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Date;
@@ -29,8 +26,8 @@ import java.util.Map;
 public class TokenServiceImpl implements ITokenService {
     private static final Map<String, Token> tokenList = new HashMap<>();
     private static final int MINUTE_TIMEOUT = 1;
-    private static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-    private static JsonFactory JSON_FACTORY = new JacksonFactory();
+    private static HttpTransport httpTransport = new NetHttpTransport();
+    private static JsonFactory jacksonFactory = new JacksonFactory();
 
     private IGoogleService iGoogleService;
 
@@ -46,7 +43,7 @@ public class TokenServiceImpl implements ITokenService {
     }
 
     public void verifyAccessToken(String idTokenString) throws GeneralSecurityException, IOException {
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(HTTP_TRANSPORT, JSON_FACTORY)
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jacksonFactory)
                 // Specify the CLIENT_ID of the app that accesses the backend:
                 .setAudience(Collections.singletonList("80724656105-fg2ndheoujm7c7dd4ob1i9mq3ebdbjhb.apps.googleusercontent.com"))
                 // Or, if multiple clients access the backend:
@@ -102,11 +99,11 @@ public class TokenServiceImpl implements ITokenService {
     @Override
     public void addToken(String userId, String idToken) {
             try {
-                tokenList.clear();
+                clearIdToken(idToken);
                 Token tokenNew = new Token(new Date(), idToken);
                 tokenList.put(userId, tokenNew);
             } catch (NullPointerException ex) {
-                clearAllToken();
+                clearIdToken(idToken);
             }
     }
 
@@ -114,8 +111,8 @@ public class TokenServiceImpl implements ITokenService {
      * Clear all token have in list
      */
     @Override
-    public void clearAllToken() {
-        tokenList.clear();
+    public void clearIdToken(String idToken) {
+        tokenList.remove(idToken);
     }
 
     /**
@@ -140,7 +137,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public String getRefreshToken() {
-        return null;
+        return iGoogleService.getRefreshTokenActive();
     }
 
     @Override

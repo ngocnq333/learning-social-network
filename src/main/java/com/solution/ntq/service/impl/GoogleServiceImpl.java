@@ -18,10 +18,10 @@ import java.io.IOException;
 @Service
 public class GoogleServiceImpl implements IGoogleService {
     private static final String NTQ_EMAIL_FORM = "ntq-solution.com.vn";
-    private String token = "";
-    private String accessToken = "";
-    private String idToken = "";
-    private User user = new User();
+    private static String token;
+    private static String accessToken;
+    private static String idToken;
+    private static User user = new User();
 
     @Autowired
     private GoogleUtils googleUtils;
@@ -79,6 +79,11 @@ public class GoogleServiceImpl implements IGoogleService {
     }
 
     @Override
+    public String getRefreshTokenActive() {
+        return getRefreshTokenFormGoogle(token);
+    }
+
+    @Override
     public String getIdTokenActive(){
         idToken = getIdTokenFromGoogle(token);
         return idToken;
@@ -101,8 +106,7 @@ public class GoogleServiceImpl implements IGoogleService {
     @Override
     public String getTokenFormGoogle(String code) {
         try {
-            token = googleUtils.getToken(code);
-            return token;
+            return googleUtils.getToken(code);
         } catch (IOException ex) {
             return null;
         }

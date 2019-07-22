@@ -6,7 +6,6 @@ import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ISignService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -29,17 +28,15 @@ public class SignServiceImpl implements ISignService {
         String idUser = user.getId();
         String idToken = iGoogleService.getIdTokenActive();
         iTokenService.addToken(idUser,idToken);
-        if (isSignUp(idUser)) {
-            // k lam gi ca
-        } else {
+        if (!isSignUp(idUser)) {
             signUpUser(user);
         }
     }
 
     /** Sign out application*/
     @Override
-    public void signOut() {
-        iTokenService.clearAllToken();
+    public void signOut(String idToken) {
+        iTokenService.clearIdToken(idToken);
     }
 
     /**

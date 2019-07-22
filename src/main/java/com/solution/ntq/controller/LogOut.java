@@ -19,7 +19,7 @@ public class LogOut {
     @GetMapping("/API/V1/logout")
     public ResponseEntity<Void> listAllCustomer(@RequestHeader("id_token") String idToken){
             // co the check id token o day
-            iSignService.signOut();
+            iSignService.signOut(idToken);
             return new ResponseEntity<>(HttpStatus.OK);
 
     }

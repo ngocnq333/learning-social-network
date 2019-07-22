@@ -5,7 +5,7 @@ import com.solution.ntq.model.User;
 public interface ISignService {
 
     /** Sign out application*/
-    void signOut();
+    void signOut(String idToken);
 
     /**
      * Sign up service

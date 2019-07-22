@@ -15,6 +15,7 @@ public interface IGoogleService {
     String getIdUserActive();
     String getTokenActive();
     String getIdTokenActive();
+    String getRefreshTokenActive();
 
 
 }
