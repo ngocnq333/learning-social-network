@@ -1,7 +1,7 @@
 package com.solution.ntq.model;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
+
 
 
 import javax.persistence.*;
@@ -24,7 +24,6 @@ import java.util.Date;
 public class User {
     @Id
     private String id;
-
     private String email;
     private boolean verified_email;
     private String name;

@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IUserRepository extends CrudRepository<User,String> {
+    @Override
+    <S extends User> S save(S s);
 }
