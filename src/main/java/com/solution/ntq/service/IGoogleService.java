@@ -12,8 +12,10 @@ public interface IGoogleService {
     boolean activeLoginToEmail(String code);
     String getToken(String code);
     String getAccessTokenActive();
+    String getIdTokenFromGoogle(String response);
     User getUserActive();
     String getIdUserActive();
+    String getTokenActive();
 
 
 }

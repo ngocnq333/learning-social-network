@@ -9,9 +9,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.solution.ntq.common.Token;
+import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,10 +28,24 @@ import java.util.Map;
 public class TokenServiceImpl implements ITokenService {
     private static final Map<String, Token> tokenList = new HashMap<>();
     private static final int MINUTE_TIMEOUT = 1;
-    static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-    static JsonFactory JSON_FACTORY = new JacksonFactory();
+    private static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+    private static JsonFactory JSON_FACTORY = new JacksonFactory();
 
-    public void verifyToken(String idTokenString) throws GeneralSecurityException, IOException {
+    @Autowired
+    private IGoogleService iGoogleService;
+
+    public boolean isVerify() {
+        try {
+            String token = iGoogleService.getTokenActive();
+            String idToken = iGoogleService.getIdTokenFromGoogle(token);
+             verifyAccessToken(idToken);
+             return true;
+        }catch (IOException|GeneralSecurityException ex) {
+            return false;
+        }
+    }
+
+    public void verifyAccessToken(String idTokenString) throws GeneralSecurityException, IOException {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(HTTP_TRANSPORT, JSON_FACTORY)
                 // Specify the CLIENT_ID of the app that accesses the backend:
                 .setAudience(Collections.singletonList("80724656105-fg2ndheoujm7c7dd4ob1i9mq3ebdbjhb.apps.googleusercontent.com"))

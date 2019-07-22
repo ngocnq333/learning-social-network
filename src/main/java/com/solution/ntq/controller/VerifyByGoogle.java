@@ -19,5 +19,13 @@ import java.math.BigInteger;
 @Controller
 @AllArgsConstructor
 public class VerifyByGoogle {
+    private ITokenService tokenService;
+    @GetMapping("/home")
+    public String listAllCustomer() {
 
+            boolean ischeck = tokenService.isVerify();
+
+            return "redirect:/home" ;
+
+    }
 }

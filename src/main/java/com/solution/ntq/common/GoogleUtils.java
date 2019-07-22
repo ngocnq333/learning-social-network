@@ -43,6 +43,14 @@ public class GoogleUtils {
         return node.textValue();
     }
 
+    /** String getId Access Token form response */
+
+    public String getIdAccessToken(String response) throws ClientProtocolException,IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(response).get("id_token");
+        return node.textValue();
+    }
+
     public User getUserInfo(final String accessToken) throws ClientProtocolException, IOException {
         String link = env.getProperty("google.link.get.user_info") + accessToken;
         String response = Request.Get(link).execute().returnContent().asString();

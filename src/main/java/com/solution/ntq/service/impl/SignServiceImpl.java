@@ -33,6 +33,7 @@ public class SignServiceImpl implements ISignService {
      */
     @Override
     public void signUpUser(User user) {
-        // call to repo let sigup
+        // call to repository and save customer to store
+        /*Save refresh token to database*/
     }
 }

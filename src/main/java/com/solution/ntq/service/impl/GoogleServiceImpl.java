@@ -19,8 +19,10 @@ import java.math.BigInteger;
 @Service
 public class GoogleServiceImpl implements IGoogleService {
     private static final String NTQ_EMAIL_FORM = "ntq-solution.com.vn";
+    private String token = "";
     private User user = new User();
     private String accessToken = "";
+    private String idToken = "";
     @Autowired
     private GoogleUtils googleUtils;
 
@@ -30,7 +32,7 @@ public class GoogleServiceImpl implements IGoogleService {
         if (isCode(code)) {
             return false;
         } else {
-            String token = getToken(code);
+            token = getToken(code);
             accessToken = getAccessTokenFormGoogle(token);
             if (accessToken != null) {
                 user = getUserFormGoogle(accessToken);
@@ -75,10 +77,16 @@ public class GoogleServiceImpl implements IGoogleService {
     @Override
     public String getToken(String code) {
         try {
-            return googleUtils.getToken(code);
+            token = googleUtils.getToken(code);
+            return token;
         } catch (IOException ex) {
             return null;
         }
+    }
+
+    @Override
+    public String getTokenActive(){
+        return token;
     }
 
     /**
@@ -107,6 +115,19 @@ public class GoogleServiceImpl implements IGoogleService {
     }
 
     /**
+     * Get id_token form google
+     */
+
+    @Override
+    public String getIdTokenFromGoogle(String response) {
+        try {
+            return googleUtils.getIdAccessToken(response);
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    /**
      * Get user information form google
      */
 
@@ -118,6 +139,7 @@ public class GoogleServiceImpl implements IGoogleService {
             return null;
         }
     }
+
 
     /**
      * Verify mail ntq with mail gmail

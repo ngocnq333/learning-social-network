@@ -13,5 +13,6 @@ public interface ITokenService {
     boolean isEmpty();
     String getRefreshToken();
     void saveRefreshToken();
+    boolean isVerify();
 
 }
