@@ -3,6 +3,7 @@ package com.solution.ntq.controller;
 import com.solution.ntq.model.User;
 import com.solution.ntq.repository.IUserRepository;
 import com.solution.ntq.service.IGoogleService;
+import com.solution.ntq.service.ISignService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,16 @@ public class Login {
     private static final String URL_GOOGLE_API = "https://accounts.google.com/o/oauth2/auth?scope=openid%20profile%20email&redirect_uri=http://localhost:8080/login-google&response_type=code&client_id=80724656105-fg2ndheoujm7c7dd4ob1i9mq3ebdbjhb.apps.googleusercontent.com&approval_prompt=force&access_type=offline";
     private IGoogleService iGoogleService;
     private ITokenService iTokenService;
+    private ISignService iSignService;
     /**
      * Login to application
      */
     @Autowired
     IUserRepository repository;
+
     @GetMapping("/API/V1/login")
     public String listAllCustomer() {
-        
+
         return "redirect:" + URL_GOOGLE_API;
     }
 
@@ -35,6 +38,7 @@ public class Login {
     @GetMapping(path = "/login-google")
     public String listAllCustomer(@RequestParam(value = "code", defaultValue = "") String code) {
         if (iGoogleService.activeLoginToEmail(code)) {
+            iSignService.isSignUp(iGoogleService.getUserActive().getId());
             String tokenActive = iGoogleService.getAccessTokenActive();
             return "redirect:" + "http://localhost:4200/callback?token=" + tokenActive;
         } else return "Forbidden";
