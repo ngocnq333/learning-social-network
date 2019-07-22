@@ -1,8 +1,11 @@
 package com.solution.ntq.controller;
 
+import com.solution.ntq.model.User;
+import com.solution.ntq.repository.IUserRepository;
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,8 +20,11 @@ public class Login {
     /**
      * Login to application
      */
+    @Autowired
+    IUserRepository repository;
     @GetMapping("/API/V1/login")
     public String listAllCustomer() {
+        
         return "redirect:" + URL_GOOGLE_API;
     }
 
