@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface IUserRepository extends CrudRepository<User,String> {
     @Override
     <S extends User> S save(S s);
+
+    @Override
+    boolean existsById(String s);
 }
