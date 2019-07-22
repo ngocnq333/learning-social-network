@@ -1,8 +1,12 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.repository.IClassMemberRepository;
-import com.solution.ntq.repository.NtqClassRepository;
+import com.solution.ntq.model.ClassMember;
+import com.solution.ntq.model.Clazz;
 
+
+import com.solution.ntq.model.User;
+import com.solution.ntq.repository.IClassMemberRepository;
+import com.solution.ntq.repository.IClazzRepository;
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
@@ -10,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -22,11 +30,21 @@ public class Login {
      * Login to application
      */
     @Autowired
-    NtqClassRepository repository;
-    @Autowired
-    IClassMemberRepository repository1;
+    IClazzRepository iClazz;
+    IClassMemberRepository iClassMemberRepository;
+
     @GetMapping("/API/V1/login")
     public String listAllCustomer() {
+        User user = new User();
+        user.setId("a");
+        List<ClassMember> classMembers = iClassMemberRepository.findByUser(user);
+
+        List<String> clazzList= classMembers.stream().map(s-> s.getClazz().getName()).collect(Collectors.toList());
+        System.out.println(clazzList);
+
+
+
+
 
         return "redirect:" + URL_GOOGLE_API;
     }

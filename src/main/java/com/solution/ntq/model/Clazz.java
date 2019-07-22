@@ -16,7 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class NtqClass {
+
+public class Clazz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
@@ -26,7 +27,7 @@ public class NtqClass {
     String thumbnail;
     Date startDate;
     Date endDate;
-    @OneToMany(mappedBy = "ntqClass", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
     List<ClassMember>  listMember= new ArrayList<>();
 
 }

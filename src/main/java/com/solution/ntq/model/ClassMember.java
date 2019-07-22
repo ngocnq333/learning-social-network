@@ -20,10 +20,12 @@ public class ClassMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
-    NtqClass ntqClass;
+    Clazz clazz;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     User user;
+
     boolean isCapital;
     String status;
 
