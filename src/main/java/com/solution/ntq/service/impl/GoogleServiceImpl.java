@@ -4,15 +4,14 @@ package com.solution.ntq.service.impl;
 import com.solution.ntq.common.GoogleUtils;
 import com.solution.ntq.model.User;
 import com.solution.ntq.service.IGoogleService;
-import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.apache.http.client.ClientProtocolException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigInteger;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,19 +19,23 @@ import java.math.BigInteger;
 public class GoogleServiceImpl implements IGoogleService {
     private static final String NTQ_EMAIL_FORM = "ntq-solution.com.vn";
     private String token = "";
-    private User user = new User();
     private String accessToken = "";
     private String idToken = "";
+    private User user = new User();
+
     @Autowired
     private GoogleUtils googleUtils;
 
 
+    /**
+     * Verify token
+     */
     @Override
-    public boolean activeLoginToEmail(String code) {
+    public boolean verifyToken(String code) {
         if (isCode(code)) {
             return false;
         } else {
-            token = getToken(code);
+            token = getTokenFormGoogle(code);
             accessToken = getAccessTokenFormGoogle(token);
             if (accessToken != null) {
                 user = getUserFormGoogle(accessToken);
@@ -43,22 +46,43 @@ public class GoogleServiceImpl implements IGoogleService {
         }
     }
 
+    /**
+     * Get token Active
+     */
+    @Override
+    public String getTokenActive() {
+        return token;
+    }
 
+    /**
+     * Get User active
+     */
     @Override
     public User getUserActive() {
         return user;
     }
 
+    /**
+     * Get Id of user
+     */
     @Override
     public String getIdUserActive() {
         return user.getId();
     }
 
+    /**
+     * Get access token active
+     */
     @Override
     public String getAccessTokenActive() {
         return accessToken;
     }
 
+    @Override
+    public String getIdTokenActive(){
+        idToken = getIdTokenFromGoogle(token);
+        return idToken;
+    }
     /**
      * Verify email of ntq
      */
@@ -75,7 +99,7 @@ public class GoogleServiceImpl implements IGoogleService {
     }
 
     @Override
-    public String getToken(String code) {
+    public String getTokenFormGoogle(String code) {
         try {
             token = googleUtils.getToken(code);
             return token;
@@ -84,10 +108,8 @@ public class GoogleServiceImpl implements IGoogleService {
         }
     }
 
-    @Override
-    public String getTokenActive(){
-        return token;
-    }
+
+
 
     /**
      * Get Access token form google
@@ -121,7 +143,7 @@ public class GoogleServiceImpl implements IGoogleService {
     @Override
     public String getIdTokenFromGoogle(String response) {
         try {
-            return googleUtils.getIdAccessToken(response);
+            return googleUtils.getIdToken(response);
         } catch (IOException ex) {
             return null;
         }

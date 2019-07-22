@@ -2,12 +2,11 @@ package com.solution.ntq.service;
 
 import com.solution.ntq.common.Token;
 
-import java.math.BigInteger;
 
 
 public interface ITokenService {
     boolean isTimeOut(String userId);
-    void addToken(String userId, String token);
+    void addToken(String userId, String idToken);
     Token getTokenByUserId(String userId);
     void clearAllToken();
     boolean isEmpty();

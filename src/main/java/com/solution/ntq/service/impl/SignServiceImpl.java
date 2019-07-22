@@ -2,7 +2,9 @@ package com.solution.ntq.service.impl;
 
 import com.solution.ntq.model.User;
 import com.solution.ntq.repository.IUserRepository;
+import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ISignService;
+import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,21 +12,34 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@AllArgsConstructor
 public class SignServiceImpl implements ISignService {
-    @Autowired
+
     private IUserRepository iUserRepository;
+
+    private ITokenService iTokenService;
+
+    private IGoogleService iGoogleService;
 
     /**
      * Sign up user to application
      */
     @Override
-    public void sigUp(User user) {
+    public void sigIn(User user) {
         String idUser = user.getId();
+        String idToken = iGoogleService.getIdTokenActive();
+        iTokenService.addToken(idUser,idToken);
         if (isSignUp(idUser)) {
             // k lam gi ca
         } else {
             signUpUser(user);
         }
+    }
+
+    /** Sign out application*/
+    @Override
+    public void signOut() {
+        iTokenService.clearAllToken();
     }
 
     /**

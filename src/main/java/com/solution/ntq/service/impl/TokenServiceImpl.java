@@ -25,13 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class TokenServiceImpl implements ITokenService {
     private static final Map<String, Token> tokenList = new HashMap<>();
     private static final int MINUTE_TIMEOUT = 1;
     private static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static JsonFactory JSON_FACTORY = new JacksonFactory();
 
-    @Autowired
     private IGoogleService iGoogleService;
 
     public boolean isVerify() {
@@ -97,17 +97,17 @@ public class TokenServiceImpl implements ITokenService {
      * add token to map
      *
      * @param userId
-     * @param token
+     * @param idToken
      */
     @Override
-    public void addToken(String userId, String token) {
-        try {
-            Token tokenNew = new Token(new Date(), token);
-            tokenList.put(userId, tokenNew);
-        } catch (NullPointerException ex) {
-            clearAllToken();
-        }
-
+    public void addToken(String userId, String idToken) {
+            try {
+                tokenList.clear();
+                Token tokenNew = new Token(new Date(), idToken);
+                tokenList.put(userId, tokenNew);
+            } catch (NullPointerException ex) {
+                clearAllToken();
+            }
     }
 
     /**
@@ -146,6 +146,5 @@ public class TokenServiceImpl implements ITokenService {
     @Override
     public void saveRefreshToken() {
         String refreshToken = getRefreshToken();
-
     }
 }

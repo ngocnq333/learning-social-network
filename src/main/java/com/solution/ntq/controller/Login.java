@@ -1,12 +1,10 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.model.User;
-import com.solution.ntq.repository.IUserRepository;
+
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ISignService;
 import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,15 +17,13 @@ public class Login {
     private IGoogleService iGoogleService;
     private ITokenService iTokenService;
     private ISignService iSignService;
+
     /**
      * Login to application
      */
-    @Autowired
-    IUserRepository repository;
 
     @GetMapping("/API/V1/login")
-    public String listAllCustomer() {
-
+    public String signIn() {
         return "redirect:" + URL_GOOGLE_API;
     }
 
@@ -36,11 +32,11 @@ public class Login {
      * Return status (token + value) of login by google
      * */
     @GetMapping(path = "/login-google")
-    public String listAllCustomer(@RequestParam(value = "code", defaultValue = "") String code) {
-        if (iGoogleService.activeLoginToEmail(code)) {
-            iSignService.isSignUp(iGoogleService.getUserActive().getId());
-            String tokenActive = iGoogleService.getAccessTokenActive();
-            return "redirect:" + "http://localhost:4200/callback?token=" + tokenActive;
+    public String signIn(@RequestParam(value = "code", defaultValue = "") String code) {
+        if (iGoogleService.verifyToken(code)) {
+            iSignService.sigIn(iGoogleService.getUserActive());
+            String idTokenActive = iGoogleService.getIdTokenActive();
+            return "redirect:" + "http://localhost:4200/callback?token=" + idTokenActive;
         } else return "Forbidden";
     }
 }

@@ -16,11 +16,14 @@ import java.io.IOException;
 @Component
 @AllArgsConstructor
 public class GoogleUtils {
+    /**
+     * Get token form google with a code
+     */
     private Environment env;
 
     public String getToken(final String code) throws ClientProtocolException, IOException {
         String link = env.getProperty("google.link.get.token");
-        return  Request.Post(link)
+        return Request.Post(link)
                 .bodyForm(Form.form()
                         .add("code", code)
                         .add("client_id", env.getProperty("google.app.id"))
@@ -31,21 +34,29 @@ public class GoogleUtils {
 
     }
 
+    /**
+     * Get access token for call API service of google
+     */
     public String getAccessToken(String response) throws ClientProtocolException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(response).get("access_token");
         return node.textValue();
     }
 
+    /**
+     * Get access token for call API service of google
+     */
     public String getRefreshToken(String response) throws ClientProtocolException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(response).get("refresh_token");
         return node.textValue();
     }
 
-    /** String getId Access Token form response */
+    /**
+     * String getId Access Token form response
+     */
 
-    public String getIdAccessToken(String response) throws ClientProtocolException,IOException {
+    public String getIdToken(String response) throws ClientProtocolException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(response).get("id_token");
         return node.textValue();
