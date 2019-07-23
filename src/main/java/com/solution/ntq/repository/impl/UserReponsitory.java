@@ -3,5 +3,5 @@ package com.solution.ntq.repository.impl;
 
 
 
-public class UserReponsitory  {
+public class UserReponsitory {
 }
