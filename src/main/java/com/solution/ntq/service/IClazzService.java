@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IClazzService {
     void addClazz(Clazz clazz);
-    List<Clazz> getClassByUser(User user);
+    List<Clazz> getClassByUser(String userId);
     User findCapitalByClass(Clazz clazz);
 }

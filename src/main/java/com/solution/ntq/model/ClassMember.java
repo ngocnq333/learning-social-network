@@ -1,11 +1,13 @@
 package com.solution.ntq.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,21 +20,15 @@ public class ClassMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "class_id")
     Clazz clazz;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
 
     boolean isCapital;
     String status;
 
-    @Override
-    public String toString() {
-        return "ClassMember{" +
-                "user=" + user +
-                '}';
-    }
+
 }

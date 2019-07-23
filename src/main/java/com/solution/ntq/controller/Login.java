@@ -11,19 +11,18 @@ import com.solution.ntq.repository.IUserRepository;
 import com.solution.ntq.service.IClazzService;
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
-import com.solution.ntq.service.impl.ClazzServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
-@Controller
+
+@RestController
 @AllArgsConstructor
 public class Login {
     private static final String URL_GOOGLE_API = "https://accounts.google.com/o/oauth2/auth?scope=openid%20profile%20email&redirect_uri=http://localhost:8080/login-google&response_type=code&client_id=80724656105-fg2ndheoujm7c7dd4ob1i9mq3ebdbjhb.apps.googleusercontent.com&approval_prompt=force&access_type=offline";
@@ -39,18 +38,13 @@ public class Login {
     @Autowired
     IUserRepository userRepository;
 
-    @GetMapping("/API/V1/login")
-    public String listAllCustomer() {
+    @GetMapping("/hello")
+    public List<Clazz> listAllCustomer() {
 
 
 
+return null;
 
-
-
-
-
-
-        return "redirect:" + URL_GOOGLE_API;
     }
 
 

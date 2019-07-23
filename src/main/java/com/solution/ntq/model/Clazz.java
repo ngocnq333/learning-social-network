@@ -1,5 +1,6 @@
 package com.solution.ntq.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,9 @@ public class Clazz {
     String thumbnail;
     Date startDate;
     Date endDate;
+    @JsonIgnore
     @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
-    List<ClassMember>  listMember= new ArrayList<>();
+    List<ClassMember> classMembers;
+
 
 }

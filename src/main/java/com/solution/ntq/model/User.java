@@ -1,9 +1,11 @@
 package com.solution.ntq.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User Class provide all properties and method of entity User in Project
@@ -32,22 +34,8 @@ public class User {
     private String hd;
     private String locale;
     private Date dateOfBirth;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<ClassMember> classMembers;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", email='" + email + '\'' +
-                ", verified_email=" + verified_email +
-                ", name='" + name + '\'' +
-                ", given_name='" + given_name + '\'' +
-                ", family_name='" + family_name + '\'' +
-                ", link='" + link + '\'' +
-                ", picture='" + picture + '\'' +
-                ", skype='" + skype + '\'' +
-                ", hd='" + hd + '\'' +
-                ", locale='" + locale + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                '}';
-    }
 }

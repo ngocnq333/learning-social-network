@@ -8,7 +8,7 @@ import org.springframework.data.repository.Repository;
 import java.util.List;
 
 public interface IClassMemberRepository extends Repository<ClassMember,Integer> {
-    List<ClassMember> findByUser(User user);
+    List<ClassMember> findByUserId(String userId);
     ClassMember findByClazzAndIsCapitalTrue(Clazz clazz);
 
 }

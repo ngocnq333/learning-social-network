@@ -7,8 +7,10 @@ import com.solution.ntq.repository.IClassMemberRepository;
 import com.solution.ntq.repository.IClazzRepository;
 import com.solution.ntq.service.IClazzService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,14 +28,14 @@ public class ClazzServiceImpl implements IClazzService {
     }
 
     @Override
-    public List<Clazz> getClassByUser(User user) {
-        List<ClassMember> classMembers = iClassMemberRepository.findByUser(user);
-        return classMembers.stream().map(s -> s.getClazz()).collect(Collectors.toList());
+    public List<Clazz> getClassByUser(String userId) {
+        List<ClassMember> classMembers = iClassMemberRepository.findByUserId(userId);
+        return classMembers.stream().map(i->i.getClazz()).collect(Collectors.toList());
     }
 
     @Override
     public User findCapitalByClass(Clazz clazz) {
         ClassMember classMember=iClassMemberRepository.findByClazzAndIsCapitalTrue(clazz);
-        return classMember.getUser();
+        return null;
     }
 }
