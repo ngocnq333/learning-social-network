@@ -11,13 +11,12 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.solution.ntq.common.Token;
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigInteger;
+
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Date;
@@ -61,7 +60,7 @@ public class TokenServiceImpl implements ITokenService {
 
             // Print user identifier
             String userId = payload.getSubject();
-            System.out.println("User ID: " + userId);
+
 
             // Get profile information from payload
             String email = payload.getEmail();

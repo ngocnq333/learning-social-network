@@ -4,15 +4,12 @@ package com.solution.ntq.service.impl;
 import com.solution.ntq.common.GoogleUtils;
 import com.solution.ntq.model.User;
 import com.solution.ntq.service.IGoogleService;
-import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigInteger;
 
 @NoArgsConstructor
 @AllArgsConstructor

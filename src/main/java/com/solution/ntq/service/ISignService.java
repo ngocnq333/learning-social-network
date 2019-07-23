@@ -4,7 +4,9 @@ import com.solution.ntq.model.User;
 
 public interface ISignService {
 
-    /** Sign up service*/
+    /**
+     * Sign up service
+     */
 
     void sigUp(User user);
 

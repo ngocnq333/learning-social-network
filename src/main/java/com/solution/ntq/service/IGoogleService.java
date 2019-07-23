@@ -2,7 +2,6 @@ package com.solution.ntq.service;
 
 import com.solution.ntq.model.User;
 
-import java.math.BigInteger;
 
 public interface IGoogleService {
     String getAccessTokenFormGoogle(String response);
