@@ -7,8 +7,11 @@ import com.solution.ntq.model.Clazz;
 import com.solution.ntq.model.User;
 import com.solution.ntq.repository.IClassMemberRepository;
 import com.solution.ntq.repository.IClazzRepository;
+import com.solution.ntq.repository.IUserRepository;
+import com.solution.ntq.service.IClazzService;
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ITokenService;
+import com.solution.ntq.service.impl.ClazzServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,17 +33,18 @@ public class Login {
      * Login to application
      */
     @Autowired
-    IClazzRepository iClazz;
+    IClazzService clazzService;
+    @Autowired
     IClassMemberRepository iClassMemberRepository;
+    @Autowired
+    IUserRepository userRepository;
 
     @GetMapping("/API/V1/login")
     public String listAllCustomer() {
-        User user = new User();
-        user.setId("a");
-        List<ClassMember> classMembers = iClassMemberRepository.findByUser(user);
 
-        List<String> clazzList= classMembers.stream().map(s-> s.getClazz().getName()).collect(Collectors.toList());
-        System.out.println(clazzList);
+
+
+
 
 
 

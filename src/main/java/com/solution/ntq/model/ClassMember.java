@@ -29,4 +29,10 @@ public class ClassMember {
     boolean isCapital;
     String status;
 
+    @Override
+    public String toString() {
+        return "ClassMember{" +
+                "user=" + user +
+                '}';
+    }
 }

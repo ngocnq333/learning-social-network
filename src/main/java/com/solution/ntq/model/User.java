@@ -33,4 +33,21 @@ public class User {
     private String locale;
     private Date dateOfBirth;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", email='" + email + '\'' +
+                ", verified_email=" + verified_email +
+                ", name='" + name + '\'' +
+                ", given_name='" + given_name + '\'' +
+                ", family_name='" + family_name + '\'' +
+                ", link='" + link + '\'' +
+                ", picture='" + picture + '\'' +
+                ", skype='" + skype + '\'' +
+                ", hd='" + hd + '\'' +
+                ", locale='" + locale + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                '}';
+    }
 }

@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface IClassMemberRepository extends Repository<ClassMember,Integer> {
     List<ClassMember> findByUser(User user);
+    ClassMember findByClazzAndIsCapitalTrue(Clazz clazz);
 
 }

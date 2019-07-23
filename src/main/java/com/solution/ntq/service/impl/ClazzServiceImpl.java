@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class IClazzServiceImpl implements IClazzService {
+public class ClazzServiceImpl implements IClazzService {
     @Autowired
     IClazzRepository iClazzRepository;
     @Autowired
@@ -28,8 +28,12 @@ public class IClazzServiceImpl implements IClazzService {
     @Override
     public List<Clazz> getClassByUser(User user) {
         List<ClassMember> classMembers = iClassMemberRepository.findByUser(user);
-
-
         return classMembers.stream().map(s -> s.getClazz()).collect(Collectors.toList());
+    }
+
+    @Override
+    public User findCapitalByClass(Clazz clazz) {
+        ClassMember classMember=iClassMemberRepository.findByClazzAndIsCapitalTrue(clazz);
+        return classMember.getUser();
     }
 }

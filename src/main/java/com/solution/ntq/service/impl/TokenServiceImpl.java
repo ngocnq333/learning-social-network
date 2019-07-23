@@ -82,7 +82,7 @@ public class TokenServiceImpl implements ITokenService {
 
     /**
      * @param userId userid
-     * @return true if not time out
+     * @return true if time out
      */
     @Override
     public boolean isTimeOut(String userId) {

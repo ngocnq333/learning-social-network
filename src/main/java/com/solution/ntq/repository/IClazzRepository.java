@@ -11,7 +11,7 @@ import java.util.List;
 public interface IClazzRepository extends Repository<Clazz,Integer> {
 
     void save (Clazz clazz);
-    Clazz findById(int id);
+
 
 
 }
