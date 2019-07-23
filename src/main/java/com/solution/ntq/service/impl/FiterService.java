@@ -21,7 +21,7 @@ import java.util.Collections;
 @Service
 @AllArgsConstructor
 public class FiterService implements IFilterService {
-    private static final String CLIENT_ID = "477273415363-lk76nci51a18rnv1sd9e7pjq8qkajgm8.apps.googleusercontent.com";
+    private static final String CLIENT_ID = "80724656105-fg2ndheoujm7c7dd4ob1i9mq3ebdbjhb.apps.googleusercontent.com";
     private static HttpTransport httpTransport = new NetHttpTransport();
     private static JsonFactory jacksonFactory = new JacksonFactory();
 
@@ -37,24 +37,19 @@ public class FiterService implements IFilterService {
         }
         /* String id_Token = iGoogleService.getIdTokenActive();*/
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jacksonFactory)
-                .setAudience(Collections.singletonList("80724656105-fg2ndheoujm7c7dd4ob1i9mq3ebdbjhb.apps.googleusercontent.com"))
+                .setAudience(Collections.singletonList(CLIENT_ID))
                 .build();
         GoogleIdToken idToken = verifier.verify(idTokenString);
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
             // Print user identifier
             String userId = payload.getSubject();
-
             // Get profile information from payload
             String email = payload.getEmail();
             boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
-            /* String name = (String) payload.get("name");
-            String pictureUrl = (String) payload.get("picture");
-            String locale = (String) payload.get("locale");
-            String familyName = (String) payload.get("family_name");
-            String givenName = (String) payload.get("given_name");*/
 
             // Use or store profile information
+            /*Check user information at hare*/
             return true;
         } else {
             return false;
