@@ -27,7 +27,7 @@ public class FiterService implements IFilterService {
 
     private IGoogleService iGoogleService;
     @Autowired
-    GoogleUtils googleUtils;
+    private GoogleUtils googleUtils;
 
     public boolean filter(HttpServletRequest request) throws GeneralSecurityException, IOException {
         String idTokenString = request.getHeader("id_token");
