@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 
 @NoArgsConstructor
@@ -84,10 +85,11 @@ public class GoogleServiceImpl implements IGoogleService {
     }
 
     @Override
-    public String getIdTokenActive(){
+    public String getIdTokenActive() {
         idToken = getIdTokenFromGoogle(token);
         return idToken;
     }
+
     /**
      * Verify email of ntq
      */
@@ -111,8 +113,6 @@ public class GoogleServiceImpl implements IGoogleService {
             return null;
         }
     }
-
-
 
 
     /**
@@ -161,7 +161,7 @@ public class GoogleServiceImpl implements IGoogleService {
     public User getUserFormGoogle(String accessToken) {
         try {
             return googleUtils.getUserInfo(accessToken);
-        } catch (IOException ex) {
+        } catch (ParseException|IOException|NullPointerException ex) {
             return null;
         }
     }

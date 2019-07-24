@@ -13,11 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class SignServiceImpl implements ISignService {
-
     private IUserRepository iUserRepository;
-
     private ITokenService iTokenService;
-
     private IGoogleService iGoogleService;
 
     /**

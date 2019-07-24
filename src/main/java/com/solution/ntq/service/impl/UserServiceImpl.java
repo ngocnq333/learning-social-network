@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserService implements IUserService {
+public class UserServiceImpl implements IUserService {
     private IUserRepository userRepository;
 
     /** Get an user with id*/

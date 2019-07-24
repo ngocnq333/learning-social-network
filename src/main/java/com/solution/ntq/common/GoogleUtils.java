@@ -10,6 +10,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.mysql.cj.conf.PropertyKey.logger;
 
 
 @Component
@@ -60,11 +65,74 @@ public class GoogleUtils {
         return node.textValue();
     }
 
-    public User getUserInfo(final String accessToken) throws IOException {
+    public User getUserInfo(final String accessToken) throws IOException, ParseException {
+        User user = new User();
         String link = env.getProperty("google.link.get.user_info") + accessToken;
         String response = Request.Get(link).execute().returnContent().asString();
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(response, User.class);
+        try {
+            String id = mapper.readTree(response).get("id").textValue();
+            user.setId(id);
+        } catch (NullPointerException ex) {
+            user.setId(null);
+        }
+        try {
+            user.setEmail(mapper.readTree(response).get("email").textValue());
+        } catch (NullPointerException ex) {
+            user.setEmail(null);
+        }
+        try {
+            user.setVerifiedEmail(mapper.readTree(response).get("verified_email").asBoolean());
+        } catch (NullPointerException ex) {
+            user.setVerifiedEmail(false);
+        }
+        try {
+            user.setName(mapper.readTree(response).get("name").textValue());
+        } catch (NullPointerException ex) {
+            user.setName("");
+        }
+        try {
+            user.setGivenName(mapper.readTree(response).get("given_name").textValue());
+        } catch (NullPointerException ex) {
+            user.setGivenName("");
+        }
+        try {
+            user.setFamilyName(mapper.readTree(response).get("family_name").textValue());
+        } catch (NullPointerException ex) {
+            user.setFamilyName("");
+        }
+        try {
+            user.setLink(mapper.readTree(response).get("link").textValue());
+        } catch (NullPointerException ex) {
+            user.setLink("");
+        }
+        try {
+            user.setPicture(mapper.readTree(response).get("picture").textValue());
+        } catch (NullPointerException ex) {
+            user.setPicture("");
+        }
+        try {
+            user.setSkype(mapper.readTree(response).get("skype").textValue());
+        } catch (NullPointerException ex) {
+            user.setSkype("");
+        }
+        try {
+            user.setHd(mapper.readTree(response).get("hd").textValue());
+        } catch (NullPointerException ex) {
+            user.setHd("");
+        }
+        try {
+            user.setLocale(mapper.readTree(response).get("locale").textValue());
+        } catch (NullPointerException ex) {
+            user.setLocale("");
+        }
+        try {
+            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(mapper.readTree(response).get("date").textValue());
+            user.setDateOfBirth(date);
+        } catch (NullPointerException ex) {
+
+        }
+        return user;
     }
 
 
