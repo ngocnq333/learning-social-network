@@ -31,9 +31,9 @@ public class ClazzController {
      */
 
 
-    @GetMapping("/users/{user-id}/classes")
+    @GetMapping("/classes/users/{user-id}")
     public ResponseEntity<List<Clazz>> getClassFollowingByUser(@PathVariable("user-id") String userId) throws ParseException {
-        
+
         List<Clazz> clazzList= iClazzService.getClassByUser(userId);
         return new ResponseEntity<>(clazzList, HttpStatus.OK);
     }

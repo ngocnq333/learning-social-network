@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ContentController {
     IContentService iContentService;
 
-    @PutMapping ("/api/v1/class/{class_id}/add-content")
+    @PutMapping ("class/{class_id}/add-content")
     public void addContentForClass(@PathVariable("class_id") int classId, @RequestBody Content content) {
         iContentService.addContent(content);
 
