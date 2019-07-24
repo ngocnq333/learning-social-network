@@ -1,6 +1,6 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.model.User;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

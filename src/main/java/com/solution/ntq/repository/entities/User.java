@@ -1,4 +1,4 @@
-package com.solution.ntq.model;
+package com.solution.ntq.repository.entities;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package com.solution.ntq.service.base;
 
-import com.solution.ntq.model.User;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.response.Response;
 
 /**
