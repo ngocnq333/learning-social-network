@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,6 +30,12 @@ public class Clazz {
     @JsonIgnore
     @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
     List<ClassMember> classMembers;
+    @JsonIgnore
+    @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
+    List<Content> contents;
+
+
+
 
 
 }
