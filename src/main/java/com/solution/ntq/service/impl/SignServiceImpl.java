@@ -1,10 +1,11 @@
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.model.User;
-import com.solution.ntq.repository.IUserRepository;
-import com.solution.ntq.service.IGoogleService;
-import com.solution.ntq.service.ISignService;
-import com.solution.ntq.service.ITokenService;
+import com.solution.ntq.repository.base.UserRepository;
+import com.solution.ntq.response.Response;
+import com.solution.ntq.service.base.GoogleService;
+import com.solution.ntq.service.base.SignService;
+import com.solution.ntq.service.base.TokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class SignServiceImpl implements ISignService {
-    private IUserRepository iUserRepository;
-    private ITokenService iTokenService;
-    private IGoogleService iGoogleService;
+public class SignServiceImpl implements SignService {
+    private UserRepository iUserRepository;
+    private TokenService iTokenService;
+    private GoogleService iGoogleService;
 
     /**
      * Sign up user to application
@@ -28,16 +29,24 @@ public class SignServiceImpl implements ISignService {
     public void sigIn(User user) {
         String idUser = user.getId();
         String idToken = iGoogleService.getIdTokenActive();
-        iTokenService.addToken(idUser,idToken);
+        iTokenService.addToken(idUser, idToken);
         if (!isSignUp(idUser)) {
             signUpUser(user);
         }
     }
 
-    /** Sign out application*/
+    /**
+     * Sign out application
+     */
     @Override
-    public void signOut(String idToken) {
-        iTokenService.clearIdToken(idToken);
+    public Response<String> signOut(String idToken) {
+        try {
+            iTokenService.clearIdToken(idToken);
+            return new Response<String>(200, null);
+        } catch (Exception ex) {
+            return new Response<String>(0, null);
+        }
+
     }
 
     /**
@@ -57,7 +66,9 @@ public class SignServiceImpl implements ISignService {
         // Can viet them method de luu id_token
     }
 
-    /** Get id of user current sign in*/
+    /**
+     * Get id of user current sign in
+     */
     @Override
     public String idCurrentUserSignIn() {
         return iGoogleService.getIdUserActive();

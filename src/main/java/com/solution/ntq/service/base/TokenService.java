@@ -1,5 +1,6 @@
 package com.solution.ntq.service.base;
 
+
 import com.solution.ntq.model.Token;
 
 /**

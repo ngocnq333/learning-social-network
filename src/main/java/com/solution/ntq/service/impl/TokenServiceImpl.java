@@ -5,6 +5,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+
 import com.solution.ntq.model.Token;
 import com.solution.ntq.service.base.GoogleService;
 import com.solution.ntq.service.base.TokenService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * @author Nam_Phuong
@@ -53,7 +55,7 @@ public class TokenServiceImpl implements TokenService {
     public void addToken(String userId, String idToken) {
         try {
             clearIdToken(idToken);
-            Token tokenNew = new Token(new Date(), idToken);
+            Token tokenNew = new Token(userId,idToken,new Date());
             tokenList.put(userId, tokenNew);
         } catch (NullPointerException ex) {
             clearIdToken(idToken);

@@ -1,9 +1,9 @@
 
 package com.solution.ntq.service.impl;
 
-import com.solution.ntq.common.GoogleUtils;
+import com.solution.ntq.common.until.GoogleUtils;
 import com.solution.ntq.model.User;
-import com.solution.ntq.service.IGoogleService;
+import com.solution.ntq.service.base.GoogleService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +22,7 @@ import java.text.ParseException;
 @NoArgsConstructor
 @AllArgsConstructor
 @Service
-public class GoogleServiceImpl implements IGoogleService {
+public class GoogleServiceImpl implements GoogleService {
     private static final String NTQ_EMAIL_FORM = "ntq-solution.com.vn";
     private static String token;
     private static String accessToken;

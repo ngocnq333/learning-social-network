@@ -1,9 +1,11 @@
 package com.solution.ntq.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * User Class provide all properties and method of entity User in Project
