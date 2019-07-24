@@ -1,5 +1,4 @@
-package com.solution.ntq.model;
-
+package com.solution.ntq.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,3 +20,4 @@ public class Token {
     String userId;
     String refreshToken;
 }
+

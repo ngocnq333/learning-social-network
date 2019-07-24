@@ -1,4 +1,4 @@
-package com.solution.ntq.service;
+package com.solution.ntq.service.base;
 
 import com.solution.ntq.model.User;
 
@@ -7,6 +7,6 @@ import com.solution.ntq.model.User;
  * Delear user service
  * Date update 24/7/2019
  */
-public interface IUserService {
+public interface UserService {
     User getUserById(String id);
 }
