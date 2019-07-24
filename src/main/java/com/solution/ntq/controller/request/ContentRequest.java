@@ -1,9 +1,7 @@
 package com.solution.ntq.controller.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.util.Date;
 
 @Getter
@@ -16,14 +14,12 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContentRequest {
     int id;
+
     int classId;
     Date startDate;
     Date endDate;
     String content;
     String title;
     String level;
-    String thumbnail;
-
-
 
 }

@@ -36,4 +36,5 @@ public class Content {
     String level;
     String thumbnail;
     Date timePost;
+    String avatar;
 }

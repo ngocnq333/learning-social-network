@@ -29,6 +29,7 @@ public class ClazzMember {
     User user;
     boolean isCapital;
     boolean isApprove;
+    Date joinDate;
 
 
 }

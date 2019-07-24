@@ -1,9 +1,8 @@
 package com.solution.ntq.controller;
 
+import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
-import com.solution.ntq.repository.entities.Content;
-
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.service.base.ContentService;
 import com.solution.ntq.service.validator.ContentValidator;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin
 /**
  * @author Duc Anh
  */
@@ -26,41 +24,35 @@ public class ContentController {
 
 
     @PutMapping
-    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken ,@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
-        Response<ContentRequest> response = new Response<>();
-        new ContentValidator().validate(contentRequest, bindingResult);
-        if (bindingResult.hasFieldErrors()) {
-            response.setCodeStatus(HttpStatus.BAD_REQUEST.value());
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        }
-        contentService.addContent(contentRequest,idToken);
+    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
 
-        response.setCodeStatus(HttpStatus.OK.value());
-        response.setData(null);
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        Response<ContentRequest> response = new Response<>();
+
+        if (!ContentValidator.isValidContentRequest(bindingResult, contentRequest, response)) {
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @PostMapping
     public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
         Response<ContentRequest> response = new Response<>();
-        new ContentValidator().validate(contentRequest, bindingResult);
-        if (bindingResult.hasFieldErrors()) {
-            response.setCodeStatus(HttpStatus.BAD_REQUEST.value());
-            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        if (!ContentValidator.isValidContentRequest(bindingResult, contentRequest, response)) {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        contentService.updateContent(contentRequest);
-        response.setCodeStatus(HttpStatus.OK.value());
-        response.setData(null);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("{content-id}")
-    public ResponseEntity<Response<ContentResponse>> getContentById(@PathVariable("content-id") int contentId) {
+    @GetMapping("/{contentId}")
+    public ResponseEntity<Response<ContentResponse>> getContentById(@PathVariable("contentId") int contentId) {
         Response<ContentResponse> response = new Response<>();
-        response.setCodeStatus(HttpStatus.OK.value());
+        response.setCodeStatus(ResponseCode.OK.value());
         response.setData(contentService.getContentById(contentId));
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+
+
     }
 
 }

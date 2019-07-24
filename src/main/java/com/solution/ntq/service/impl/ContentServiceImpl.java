@@ -67,7 +67,38 @@ private UserRepository userRepository;
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         content=mapper.convertValue(contentRequest,Content.class);
-        
+
+        content.setClazz(clazzRepository.findClazzById(contentRequest.getClassId()));
+        contentRepository.save(content);
+
+    }
+
+    @Override
+    public List<Content> getPendingItemByClassId(int classId) {
+        return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
+    public ContentResponse getContentById(int contentId) {
+
+        return getContentResponseMapContent(contentRepository.findContentById(contentId));
+    }
+    private ContentResponse getContentResponseMapContent(Content content) {
+        ContentResponse contentResponse ;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        contentResponse = objectMapper.convertValue(content, ContentResponse.class);
+        contentResponse.setClazzId(content.getClazz().getId());
+        contentResponse.setAuthorName(userRepository.findById(content.getAuthorId()).getName());
+        return contentResponse;
+    }
+
+
+    @Override
+
+    public void updateContent(ContentRequest contentRequest) {
+        Content content;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        content=mapper.convertValue(contentRequest,Content.class);
         content.setClazz(clazzRepository.findClazzById(contentRequest.getClassId()));
         contentRepository.save(content);
 
@@ -77,4 +108,5 @@ private UserRepository userRepository;
     public List<Content> getPendingItemByClassId(int classId) {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
+
 }

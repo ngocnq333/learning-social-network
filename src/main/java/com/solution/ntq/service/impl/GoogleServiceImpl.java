@@ -1,14 +1,12 @@
 
 package com.solution.ntq.service.impl;
 
-import com.solution.ntq.common.until.GoogleUtils;
-import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.common.utils.GoogleUtils;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.GoogleService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,27 +22,91 @@ import java.text.ParseException;
 @AllArgsConstructor
 @Service
 public class GoogleServiceImpl implements GoogleService {
+    private static final String NTQ_EMAIL_FORM = "ntq-solution.com.vn";
+    private static String token;
+    private static String accessToken;
+    private static String idToken;
+    private static User user = new User();
 
-    @Autowired
+//    @Autowired
     private GoogleUtils googleUtils;
 
 
-    public Token getToken(String code) {
+    /**
+     * Verify token
+     */
+    @Override
+    public boolean verifyToken(String code) {
         if (isCode(code)) {
-            return null;
+            return false;
         } else {
-            Token token = new Token();
-            String tokenFormGoogle = getTokenFormGoogle(code);
-            String accessToken = getAccessTokenFormGoogle(tokenFormGoogle);
-            User user = getUserFormGoogle(accessToken);
-            String refreshToken = getRefreshTokenFormGoogle(tokenFormGoogle);
-            String idToken = getIdTokenFromGoogle(tokenFormGoogle);
-            token.setAccessToken(accessToken);
-            token.setUser(user);
-            token.setRefreshToken(refreshToken);
-            token.setIdToken(idToken);
-            return token;
+            token = getTokenFormGoogle(code);
+            accessToken = getAccessTokenFormGoogle(token);
+            if (accessToken != null) {
+                user = getUserFormGoogle(accessToken);
+                return verifyUserNTQ(user);
+            } else {
+                return false;
+            }
         }
+    }
+
+    /**
+     * Get token Active
+     */
+    @Override
+    public String getTokenActive() {
+        return token;
+    }
+
+    /**
+     * Get User active
+     */
+    @Override
+    public User getUserActive() {
+        return user;
+    }
+
+    /**
+     * Get Id of user
+     */
+    @Override
+    public String getIdUserActive() {
+        return user.getId();
+    }
+
+    /**
+     * Get access token active
+     */
+    @Override
+    public String getAccessTokenActive() {
+        return accessToken;
+    }
+
+    @Override
+    public String getRefreshTokenActive() {
+        return getRefreshTokenFormGoogle(token);
+    }
+
+    @Override
+    public String getIdTokenActive() {
+        idToken = getIdTokenFromGoogle(token);
+        return idToken;
+    }
+
+    /**
+     * Verify email of ntq
+     */
+
+    @Override
+    public boolean verifyUserNTQ(User user) {
+        try {
+            String suffixEmail = user.getHd();
+            return (isNTQMail(suffixEmail));
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     @Override
@@ -83,8 +145,9 @@ public class GoogleServiceImpl implements GoogleService {
     }
 
     /**
-     * Get Refresh token active form google
+     * Get id_token form google
      */
+
     @Override
     public String getIdTokenFromGoogle(String response) {
         try {
@@ -102,11 +165,23 @@ public class GoogleServiceImpl implements GoogleService {
     public User getUserFormGoogle(String accessToken) {
         try {
             return googleUtils.getUserInfo(accessToken);
-        } catch (ParseException | IOException | NullPointerException ex) {
+        } catch (ParseException|IOException|NullPointerException ex) {
             return null;
         }
     }
 
+
+    /**
+     * Verify mail ntq with mail gmail
+     */
+
+    private boolean isNTQMail(String userEmail) {
+        return (NTQ_EMAIL_FORM.equalsIgnoreCase(userEmail));
+    }
+
+    /**
+     * Check code recovery code form google
+     */
 
     private boolean isCode(String code) {
         return (code == null || code.isEmpty());

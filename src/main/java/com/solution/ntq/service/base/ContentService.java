@@ -9,7 +9,7 @@ import java.util.List;
  * @author Duc Anh
  */
 public interface ContentService {
-    void addContent(ContentRequest content, String idToken);
+    void addContent(ContentRequest content);
     ContentResponse getContentById(int contentId);
     void updateContent(ContentRequest content);
     List<Content> getPendingItemByClassId(int classId);

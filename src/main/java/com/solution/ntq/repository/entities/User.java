@@ -41,6 +41,8 @@ public class User {
     private Token token;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    List<ClazzMember> clazzMembers;//.
+
+    List<ClazzMember> clazzMembers;
+
 
 }
