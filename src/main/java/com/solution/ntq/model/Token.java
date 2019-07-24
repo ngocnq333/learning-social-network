@@ -1,4 +1,4 @@
-package com.solution.ntq.repository.entities;
+package com.solution.ntq.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

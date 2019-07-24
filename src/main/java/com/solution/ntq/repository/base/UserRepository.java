@@ -1,7 +1,7 @@
 package com.solution.ntq.repository.base;
 
 
-import com.solution.ntq.repository.entities.User;
+import com.solution.ntq.model.User;
 import org.springframework.stereotype.Repository;
 
 /**

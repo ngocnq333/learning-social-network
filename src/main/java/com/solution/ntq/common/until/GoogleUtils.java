@@ -2,7 +2,7 @@ package com.solution.ntq.common.until;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.solution.ntq.repository.entities.User;
+import com.solution.ntq.model.User;
 import lombok.AllArgsConstructor;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
