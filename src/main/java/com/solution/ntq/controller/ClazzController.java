@@ -19,7 +19,12 @@ public class ClazzController {
 
     private IClazzService iClazzService;
 
-    @GetMapping(path = "/add-data")
+    /**
+     * fix data of application
+     * @return
+     * @throws ParseException
+     */
+    @GetMapping(path = "/configure-data")
     public ResponseEntity<String> getData() throws ParseException {
         iClazzService.addAllData();
         return new ResponseEntity<>("Add ok", HttpStatus.OK);
