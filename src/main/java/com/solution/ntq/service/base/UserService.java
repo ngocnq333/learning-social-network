@@ -9,4 +9,5 @@ import com.solution.ntq.model.User;
  */
 public interface UserService {
     User getUserById(String id);
+    User getUserByTokenId(String id);
 }

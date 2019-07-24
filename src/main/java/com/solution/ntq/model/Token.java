@@ -1,11 +1,12 @@
 package com.solution.ntq.model;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Getter
@@ -13,13 +14,18 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- * @author Duc Anh
- */
 public class Token {
     @Id
-    String userId;
-    String refreshToken;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    private String accessToken;
+    private String refreshToken;
+    @Type(type = "text")
+    private String idToken;
     private Date time;
+    @OneToOne (fetch = FetchType.EAGER )
+    @JoinColumn (name ="user_id")
+    private User user;
+
 }
 

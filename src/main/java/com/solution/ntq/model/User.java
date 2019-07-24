@@ -36,6 +36,9 @@ public class User {
     private String locale;
     private Date dateOfBirth;
     @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Token token;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<ClassMember> classMembers;//.
 

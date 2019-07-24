@@ -27,5 +27,5 @@ public interface UserRepository extends org.springframework.data.repository.Repo
      */
     boolean existsById(String id);
 
-
+    User findUserByTokenIdToken(String tokenId);
 }

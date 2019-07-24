@@ -27,4 +27,16 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
+
+
+    /**
+     * Get an user with id
+     */
+    public User getUserByTokenId(String id) {
+        try {
+            return userRepository.findUserByTokenIdToken(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.solution.ntq.service.base;
 
+import com.solution.ntq.model.Token;
 import com.solution.ntq.model.User;
 import com.solution.ntq.response.Response;
 
@@ -13,13 +14,13 @@ public interface SignService {
     /**
      * Sign out application
      */
-    Response<String> signOut(String idToken);
+    Response<String> signOut(String userId);
 
     /**
      * Sign up service
      */
 
-    void sigIn(User user);
+    Token sigIn(String code);
 
     /**
      * Check user sign up in application
@@ -31,6 +32,5 @@ public interface SignService {
      */
     void signUpUser(User user);
 
-    String idCurrentUserSignIn();
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
 /**
  * @author Duc Anh
  */
@@ -20,8 +21,5 @@ public class ContentController {
     @PutMapping ("class/{class_id}/add-content")
     public void addContentForClass(@PathVariable("class_id") int classId, @RequestBody Content content) {
         iContentService.addContent(content);
-
-
-
     }
 }
