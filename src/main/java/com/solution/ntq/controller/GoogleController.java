@@ -3,6 +3,7 @@ package com.solution.ntq.controller;
 import com.solution.ntq.response.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,8 @@ public class GoogleController {
     /**
      * Login to application
      */
-    @PostMapping(value = "/api/v1/google", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Procedure(MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/api/v1/google")
     public ResponseEntity<Response> signIn() {
         int codeStatus = 200;
         String linkGoogleApi = env.getProperty("url_google_api");

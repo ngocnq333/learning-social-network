@@ -26,7 +26,7 @@ public class TokenController {
     /* *
      * Return status (token + value) of login by google
      * */
-    @GetMapping(path = "/login-google")
+    @GetMapping("/login-google")
     public ResponseEntity<Response> signIn(@RequestParam(value = "code", defaultValue = "") String code) {
         if (googleService.verifyToken(code)) {
             signService.sigIn(googleService.getUserActive());
