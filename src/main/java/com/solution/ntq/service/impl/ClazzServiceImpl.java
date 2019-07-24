@@ -6,6 +6,7 @@ import com.solution.ntq.model.User;
 import com.solution.ntq.repository.IClassMemberRepository;
 import com.solution.ntq.repository.IClazzRepository;
 import com.solution.ntq.service.IClazzService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
 public class ClazzServiceImpl implements IClazzService {
-    @Autowired
+
     IClazzRepository iClazzRepository;
-    @Autowired
+
     IClassMemberRepository iClassMemberRepository;
 
     @Override
@@ -94,5 +96,11 @@ public class ClazzServiceImpl implements IClazzService {
         user1.setClassMembers(listClassMember);
         addClazz(clazz1);
 
+    }
+
+    @Override
+    public Clazz getClassById(int clazzId) {
+
+        return iClazzRepository.findClazzById(clazzId);
     }
 }

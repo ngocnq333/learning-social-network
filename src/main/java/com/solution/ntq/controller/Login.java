@@ -34,13 +34,6 @@ public class Login {
         return "redirect:" + URL_GOOGLE_API;
     }
 
-    @GetMapping("/get-class")
-    public List<Clazz> signIn1() {
-
-
-        return clazzService.getClassByUser("a");
-    }
-
 
     /* *
      * Return status (token + value) of login by google

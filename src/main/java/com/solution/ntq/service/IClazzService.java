@@ -8,7 +8,12 @@ import java.util.List;
 
 public interface IClazzService {
     void addClazz(Clazz clazz);
+
     List<Clazz> getClassByUser(String userId);
+
     User findCapitalByClass(Clazz clazz);
-     void addAllData() throws ParseException;
+
+    void addAllData() throws ParseException;
+
+    Clazz getClassById(int clazzId);
 }
