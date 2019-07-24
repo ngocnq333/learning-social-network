@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Response {
+public class Response<T> {
     private int codeStatus;
-    private Object data;
+    private T data;
 }

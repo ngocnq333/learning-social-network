@@ -13,7 +13,7 @@ public interface SignService {
     /**
      * Sign out application
      */
-    Response signOut(String idToken);
+    Response<String> signOut(String idToken);
 
     /**
      * Sign up service

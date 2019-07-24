@@ -1,4 +1,4 @@
-package com.solution.ntq.repository;
+package com.solution.ntq.repository.base;
 
 
 import com.solution.ntq.repository.entities.User;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface IUserRepository extends org.springframework.data.repository.Repository<User, String> {
+public interface UserRepository extends org.springframework.data.repository.Repository<User, String> {
     /**
      * create one user
      */

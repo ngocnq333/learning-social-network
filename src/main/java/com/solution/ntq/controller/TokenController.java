@@ -33,7 +33,7 @@ public class TokenController {
             String idUserCurrentSignIn = signService.idCurrentUserSignIn();
             String idToken = googleService.getIdTokenActive();
             IdUserTokenGoogle idUserTokenGoogle = new IdUserTokenGoogle(idUserCurrentSignIn, idToken);
-            return new ResponseEntity<>(new Response(200, idUserTokenGoogle), HttpStatus.OK);
+            return new ResponseEntity<>(new Response<>(200, idUserTokenGoogle), HttpStatus.OK);
         } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -43,7 +43,7 @@ public class TokenController {
 
     @DeleteMapping("/api/v1/token")
     public ResponseEntity<Response> signOut(@RequestHeader("id_token") String idToken) {
-        Response response = signService.signOut(idToken);
+        Response<String> response = signService.signOut(idToken);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -1,7 +1,7 @@
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.repository.entities.User;
-import com.solution.ntq.repository.IUserRepository;
+import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.response.Response;
 import com.solution.ntq.service.base.GoogleService;
 import com.solution.ntq.service.base.SignService;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class SignServiceImpl implements SignService {
-    private IUserRepository iUserRepository;
+    private UserRepository userRepository;
     private TokenService tokenService;
     private GoogleService googleService;
 
@@ -42,9 +42,9 @@ public class SignServiceImpl implements SignService {
     public Response signOut(String idToken) {
         try {
             tokenService.clearIdToken(idToken);
-            return new Response(200, new Object());
+            return new Response<String>(200, "");
         } catch (Exception ex) {
-            return new Response(403, new Object());
+            return new Response<String>(403, "");
         }
 
 
@@ -55,7 +55,7 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public boolean isSignUp(String idUser) {
-        return (iUserRepository.existsById(idUser));
+        return (userRepository.existsById(idUser));
     }
 
     /**
@@ -63,7 +63,7 @@ public class SignServiceImpl implements SignService {
      */
     @Override
     public void signUpUser(User user) {
-        iUserRepository.save(user);
+        userRepository.save(user);
         // Can viet them method de luu id_token
     }
 
