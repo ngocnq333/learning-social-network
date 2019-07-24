@@ -33,7 +33,7 @@ public class ClazzController {
 
     @GetMapping("/users/{user-id}/classes")
     public ResponseEntity<List<Clazz>> getClassFollowingByUser(@PathVariable("user-id") String userId) throws ParseException {
-        iClazzService.addAllData();
+        
         List<Clazz> clazzList= iClazzService.getClassByUser(userId);
         return new ResponseEntity<>(clazzList, HttpStatus.OK);
     }
