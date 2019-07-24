@@ -24,6 +24,7 @@ import java.util.Date;
 @lombok.Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
+
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

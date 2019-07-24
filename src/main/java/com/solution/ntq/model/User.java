@@ -7,19 +7,15 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-/**
- * User Class provide all properties and method of entity User in Project
- * @author Ngo Quy Ngoc
- * @version 1.01
- * Created at 18/07/2019*/
-
 
 @Getter
 @Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-
+/**
+ * @author Duc Anh
+ */
 public class User {
     @Id
     private String id;

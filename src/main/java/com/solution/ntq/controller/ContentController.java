@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
+/**
+ * @author Duc Anh
+ */
 public class ContentController {
     IClazzService clazzService;
     IContentRepository iContentRepository;
