@@ -32,6 +32,6 @@ public class User {
     private Date dateOfBirth;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    List<ClassMember> classMembers;
+    List<ClassMember> classMembers;//.
 
 }
