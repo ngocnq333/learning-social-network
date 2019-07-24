@@ -1,4 +1,4 @@
-package com.solution.ntq.service;
+package com.solution.ntq.service.base;
 
 import com.solution.ntq.model.User;
 
@@ -7,7 +7,7 @@ import com.solution.ntq.model.User;
  * Delear google service
  * Date update 24/7/2019
  */
-public interface IGoogleService {
+public interface GoogleService {
     boolean verifyToken(String code);
 
     String getAccessTokenFormGoogle(String response);

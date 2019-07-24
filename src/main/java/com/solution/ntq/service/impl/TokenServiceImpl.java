@@ -5,9 +5,9 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.solution.ntq.common.Token;
-import com.solution.ntq.service.IGoogleService;
-import com.solution.ntq.service.ITokenService;
+import com.solution.ntq.model.Token;
+import com.solution.ntq.service.base.GoogleService;
+import com.solution.ntq.service.base.TokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +22,13 @@ import java.util.Map;
  */
 @Service
 @AllArgsConstructor
-public class TokenServiceImpl implements ITokenService {
+public class TokenServiceImpl implements TokenService {
     private static final Map<String, Token> tokenList = new HashMap<>();
     private static final int MINUTE_TIMEOUT = 1;
     private static HttpTransport httpTransport = new NetHttpTransport();
     private static JsonFactory jacksonFactory = new JacksonFactory();
 
-    private IGoogleService iGoogleService;
+    private GoogleService googleService;
 
     /**
      * @param userId userid
@@ -90,7 +90,7 @@ public class TokenServiceImpl implements ITokenService {
 
     @Override
     public String getRefreshToken() {
-        return iGoogleService.getRefreshTokenActive();
+        return googleService.getRefreshTokenActive();
     }
 
     @Override

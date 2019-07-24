@@ -1,12 +1,12 @@
 package com.solution.ntq.controller;
 
 import com.solution.ntq.model.User;
-import com.solution.ntq.service.ISignService;
-import com.solution.ntq.service.IUserService;
+import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -19,16 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 public class UserController {
-    private IUserService iUserService;
-    private ISignService iSignService;
+    private UserService userService;
 
     /**
      * Get an user detail
      */
-    @GetMapping(path = "/api/v1/account")
-    public ResponseEntity<User> getUserDetail() {
-        String idUserCurrentSignIn = iSignService.idCurrentUserSignIn();
-        User user = iUserService.getUserById(idUserCurrentSignIn);
+    @GetMapping("/api/v1/account/{id}")
+    public ResponseEntity<User> getUserDetail(@PathVariable("id") String idUser) {
+        User user = userService.getUserById(idUser);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
