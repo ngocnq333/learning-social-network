@@ -1,7 +1,9 @@
 package com.solution.ntq.repository;
 import com.solution.ntq.model.User;
 import org.springframework.stereotype.Repository;
-
+/**
+ * @author Duc Anh
+ */
 @Repository
 public interface IUserRepository extends org.springframework.data.repository.Repository<User, String> {
     void save(User user);

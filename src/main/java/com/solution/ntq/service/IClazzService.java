@@ -5,7 +5,9 @@ import com.solution.ntq.model.User;
 
 import java.text.ParseException;
 import java.util.List;
-
+/**
+ * @author Duc Anh
+ */
 public interface IClazzService {
     void addClazz(Clazz clazz);
 

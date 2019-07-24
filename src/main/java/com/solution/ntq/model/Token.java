@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
+/**
+ * @author Duc Anh
+ */
 @Getter
 @Setter
 @Entity

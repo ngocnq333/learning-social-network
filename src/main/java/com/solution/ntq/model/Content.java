@@ -12,6 +12,9 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * @author Duc Anh
+ */
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

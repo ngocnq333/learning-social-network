@@ -13,7 +13,9 @@ import javax.persistence.*;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-
+/**
+ * @author Duc Anh
+ */
 public class ClassMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

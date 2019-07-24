@@ -3,7 +3,9 @@ package com.solution.ntq.repository;
 import com.solution.ntq.model.Clazz;
 
 import org.springframework.data.repository.Repository;
-
+/**
+ * @author Duc Anh
+ */
 
 public interface IClazzRepository extends Repository<Clazz,Integer> {
 

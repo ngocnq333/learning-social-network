@@ -7,7 +7,6 @@ import com.solution.ntq.repository.IClassMemberRepository;
 import com.solution.ntq.repository.IClazzRepository;
 import com.solution.ntq.service.IClazzService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -17,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Duc Anh
+ */
 @AllArgsConstructor
 @Service
 public class ClazzServiceImpl implements IClazzService {
