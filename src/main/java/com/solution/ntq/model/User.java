@@ -33,5 +33,8 @@ public class User {
     private String hd;
     private String locale;
     private Date dateOfBirth;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    List<ClassMember> classMembers;//.
 
 }

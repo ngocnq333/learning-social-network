@@ -20,7 +20,6 @@ public class ClassMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_id")
     Clazz clazz;
@@ -28,7 +27,7 @@ public class ClassMember {
     @JoinColumn(name = "user_id")
     User user;
     boolean isCapital;
-    String status;
+    String status;//.
 
 
 }
