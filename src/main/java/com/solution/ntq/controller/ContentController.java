@@ -1,8 +1,8 @@
 package com.solution.ntq.controller;
 
 import com.solution.ntq.model.Content;
-import com.solution.ntq.repository.IContentRepository;
-import com.solution.ntq.service.IClazzService;
+import com.solution.ntq.repository.base.IContentRepository;
+import com.solution.ntq.service.base.IClazzService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

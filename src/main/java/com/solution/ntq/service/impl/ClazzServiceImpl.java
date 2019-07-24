@@ -3,9 +3,9 @@ package com.solution.ntq.service.impl;
 import com.solution.ntq.model.ClassMember;
 import com.solution.ntq.model.Clazz;
 import com.solution.ntq.model.User;
-import com.solution.ntq.repository.IClassMemberRepository;
-import com.solution.ntq.repository.IClazzRepository;
-import com.solution.ntq.service.IClazzService;
+import com.solution.ntq.repository.base.IClassMemberRepository;
+import com.solution.ntq.repository.base.IClazzRepository;
+import com.solution.ntq.service.base.IClazzService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class ClazzServiceImpl implements IClazzService {
 
     IClazzRepository iClazzRepository;
 
-    IClassMemberRepository iClassMemberRepository;
+    IClassMemberRepository IClassMemberRepository;
 
     @Override
     public void addClazz(Clazz clazz) {
@@ -35,13 +35,13 @@ public class ClazzServiceImpl implements IClazzService {
 
     @Override
     public List<Clazz> getClassByUser(String userId) {
-        List<ClassMember> classMembers = iClassMemberRepository.findByUserId(userId);
+        List<ClassMember> classMembers = IClassMemberRepository.findByUserId(userId);
         return classMembers.stream().map(i -> i.getClazz()).collect(Collectors.toList());
     }
 
     @Override
     public User findCapitalByClass(Clazz clazz) {
-        ClassMember classMember = iClassMemberRepository.findByClazzAndIsCapitalTrue(clazz);
+        ClassMember classMember = IClassMemberRepository.findByClazzAndIsCapitalTrue(clazz);
         return classMember.getUser();
     }
 

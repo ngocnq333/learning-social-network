@@ -1,4 +1,4 @@
-package com.solution.ntq.repository;
+package com.solution.ntq.repository.base;
 
 import com.solution.ntq.model.Clazz;
 

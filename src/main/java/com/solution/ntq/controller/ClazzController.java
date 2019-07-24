@@ -1,7 +1,7 @@
 package com.solution.ntq.controller;
 
 import com.solution.ntq.model.Clazz;
-import com.solution.ntq.service.IClazzService;
+import com.solution.ntq.service.base.IClazzService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +34,13 @@ public class ClazzController {
 
     }
 
-    @GetMapping(path="/api/v1/classes/{user_id}")
+    @GetMapping(path="/api/v1/users/{user-id}/classes")
     public ResponseEntity<List<Clazz>> getClassFollowingByUser(@PathVariable("user_id") String userId) {
         List<Clazz> clazzList= iClazzService.getClassByUser(userId);
         return new ResponseEntity<>(clazzList, HttpStatus.OK);
     }
 
-    @GetMapping(path="/api/v1/class/{class_id}")
+    @GetMapping(path="/api/v1/classes/{class_id}")
     public ResponseEntity<Clazz> getClassById(@PathVariable("class_id") int clazzId) {
         Clazz clazz= iClazzService.getClassById(clazzId);
         return new ResponseEntity<>(clazz, HttpStatus.OK);
