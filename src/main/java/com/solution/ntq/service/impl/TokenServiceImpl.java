@@ -1,8 +1,5 @@
 package com.solution.ntq.service.impl;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -14,13 +11,15 @@ import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Nam_Phuong
+ * Delear token service
+ * Date update 24/7/2019
+ */
 @Service
 @AllArgsConstructor
 public class TokenServiceImpl implements ITokenService {
@@ -30,52 +29,6 @@ public class TokenServiceImpl implements ITokenService {
     private static JsonFactory jacksonFactory = new JacksonFactory();
 
     private IGoogleService iGoogleService;
-
-    public boolean isVerify() {
-        try {
-            String token = iGoogleService.getTokenActive();
-            String idToken = iGoogleService.getIdTokenFromGoogle(token);
-             verifyAccessToken(idToken);
-             return true;
-        }catch (IOException|GeneralSecurityException ex) {
-            return false;
-        }
-    }
-
-    public void verifyAccessToken(String idTokenString) throws GeneralSecurityException, IOException {
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jacksonFactory)
-                // Specify the CLIENT_ID of the app that accesses the backend:
-                .setAudience(Collections.singletonList("80724656105-fg2ndheoujm7c7dd4ob1i9mq3ebdbjhb.apps.googleusercontent.com"))
-                // Or, if multiple clients access the backend:
-                //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
-                .build();
-
-// (Receive idTokenString by HTTPS POST)
-
-        GoogleIdToken idToken = verifier.verify(idTokenString);
-        if (idToken != null) {
-            Payload payload = idToken.getPayload();
-
-            // Print user identifier
-            String userId = payload.getSubject();
-            System.out.println("User ID: " + userId);
-
-            // Get profile information from payload
-            String email = payload.getEmail();
-            boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
-            String name = (String) payload.get("name");
-            String pictureUrl = (String) payload.get("picture");
-            String locale = (String) payload.get("locale");
-            String familyName = (String) payload.get("family_name");
-            String givenName = (String) payload.get("given_name");
-
-            // Use or store profile information
-            // ...
-
-        } else {
-            System.out.println("Invalid ID token.");
-        }
-    }
 
     /**
      * @param userId userid
@@ -98,13 +51,13 @@ public class TokenServiceImpl implements ITokenService {
      */
     @Override
     public void addToken(String userId, String idToken) {
-            try {
-                clearIdToken(idToken);
-                Token tokenNew = new Token(new Date(), idToken);
-                tokenList.put(userId, tokenNew);
-            } catch (NullPointerException ex) {
-                clearIdToken(idToken);
-            }
+        try {
+            clearIdToken(idToken);
+            Token tokenNew = new Token(new Date(), idToken);
+            tokenList.put(userId, tokenNew);
+        } catch (NullPointerException ex) {
+            clearIdToken(idToken);
+        }
     }
 
     /**

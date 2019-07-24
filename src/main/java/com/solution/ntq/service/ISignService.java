@@ -2,9 +2,16 @@ package com.solution.ntq.service;
 
 import com.solution.ntq.model.User;
 
+/**
+ * @author Nam_Phuong
+ * Delear sign service
+ * Date update 24/7/2019
+ */
 public interface ISignService {
 
-    /** Sign out application*/
+    /**
+     * Sign out application
+     */
     void signOut(String idToken);
 
     /**
@@ -22,4 +29,6 @@ public interface ISignService {
      * Sign up user in database
      */
     void signUpUser(User user);
+
+    String idCurrentUserSignIn();
 }

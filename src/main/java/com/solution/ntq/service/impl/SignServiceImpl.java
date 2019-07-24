@@ -8,7 +8,11 @@ import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
+/**
+ * @author Nam_Phuong
+ * Delear sign service
+ * Date update 24/7/2019
+ */
 
 @Service
 @AllArgsConstructor
@@ -51,5 +55,11 @@ public class SignServiceImpl implements ISignService {
     public void signUpUser(User user) {
         iUserRepository.save(user);
         // Can viet them method de luu id_token
+    }
+
+    /** Get id of user current sign in*/
+    @Override
+    public String idCurrentUserSignIn() {
+        return iGoogleService.getIdUserActive();
     }
 }

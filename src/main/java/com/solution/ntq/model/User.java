@@ -7,9 +7,11 @@ import java.util.Date;
 
 /**
  * User Class provide all properties and method of entity User in Project
+ *
  * @author Ngo Quy Ngoc
  * @version 1.01
- * Created at 18/07/2019*/
+ * Created at 18/07/2019
+ */
 
 
 @Getter
@@ -17,7 +19,6 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class User {
     @Id
     private String id;

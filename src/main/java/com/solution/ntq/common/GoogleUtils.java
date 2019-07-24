@@ -14,7 +14,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.mysql.cj.conf.PropertyKey.logger;
+/**
+ * @author Nam_Phuong
+ * Delear google service
+ * Date update 24/7/2019
+ */
 
 
 @Component

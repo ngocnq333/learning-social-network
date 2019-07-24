@@ -3,7 +3,6 @@ package com.solution.ntq.controller;
 
 import com.solution.ntq.service.IGoogleService;
 import com.solution.ntq.service.ISignService;
-import com.solution.ntq.service.ITokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -18,11 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Nam_Phuong
+ * Delear google service
+ * Date update 24/7/2019
+ */
 
 @RestController
 @AllArgsConstructor
 public class SignController {
-
     private IGoogleService iGoogleService;
     private ISignService iSignService;
     private Environment env;
@@ -33,7 +36,7 @@ public class SignController {
     @GetMapping(value = "/api/v1/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HashMap> signIn() {
         Map<String, String> hashMap = new HashMap<>();
-        hashMap.put("url_link",env.getProperty("url_google_api"));
+        hashMap.put("url_link", env.getProperty("url_google_api"));
         return new ResponseEntity<>((HashMap) hashMap, HttpStatus.OK);
     }
 
@@ -54,7 +57,7 @@ public class SignController {
      */
 
     @GetMapping("/api/v1/logout")
-    public ResponseEntity<Void> listAllCustomer(@RequestHeader("id_token") String idToken){
+    public ResponseEntity<Void> listAllCustomer(@RequestHeader("id_token") String idToken) {
         // co the check id token o day
         iSignService.signOut(idToken);
         return new ResponseEntity<>(HttpStatus.OK);
