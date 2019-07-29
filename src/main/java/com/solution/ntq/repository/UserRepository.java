@@ -1,7 +1,8 @@
-package com.solution.ntq.repository.base;
+package com.solution.ntq.repository;
 
 
-import com.solution.ntq.model.User;
+import com.solution.ntq.repository.entities.Clazz;
+import com.solution.ntq.repository.entities.User;
 import org.springframework.stereotype.Repository;
 
 /**

@@ -1,13 +1,10 @@
 package com.solution.ntq.controller;
 
 
-import com.solution.ntq.model.Token;
-import com.solution.ntq.repository.base.TokenRepository;
-import com.solution.ntq.response.IdUserTokenGoogle;
-import com.solution.ntq.response.Response;
+import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.SignService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

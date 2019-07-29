@@ -1,10 +1,15 @@
 package com.solution.ntq.service.impl;
 
-import com.solution.ntq.model.User;
-import com.solution.ntq.repository.base.UserRepository;
+import com.solution.ntq.repository.ClazzMemberRepository;
+import com.solution.ntq.repository.entities.ClazzMember;
+import com.solution.ntq.repository.entities.User;
+import com.solution.ntq.repository.UserRepository;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Nam_Phuong
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+    private ClazzMemberRepository clazzMemberRepository;
     private UserRepository userRepository;
 
     /**
@@ -38,5 +44,11 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public List<User> findUserNoApproveInClazz(int clazzId) {
+        List<ClazzMember> clazzMembers= clazzMemberRepository.findByClazzIdAndIsApproveFalse(clazzId);
+        return clazzMembers.stream().map(ClazzMember::getUser).collect(Collectors.toList());
     }
 }

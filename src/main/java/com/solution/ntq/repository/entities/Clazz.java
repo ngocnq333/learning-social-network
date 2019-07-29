@@ -1,13 +1,12 @@
-package com.solution.ntq.model;
+package com.solution.ntq.repository.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,23 +17,26 @@ import java.util.List;
 /**
  * @author Duc Anh
  */
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Clazz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(value = "classId")
     int id;
     String name;
     String slug;
     String description;
     String thumbnail;
+    String avatar;
     Date startDate;
     Date endDate;
     @JsonIgnore
     @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
-    List<ClassMember> classMembers;
+    List<ClazzMember> clazzMembers;
     @JsonIgnore
     @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
     List<Content> contents;
+    boolean isJoin;
 
 
 

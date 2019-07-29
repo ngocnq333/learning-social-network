@@ -1,6 +1,9 @@
 package com.solution.ntq.service.base;
 
-import com.solution.ntq.model.User;
+
+import com.solution.ntq.repository.entities.User;
+
+import java.util.List;
 
 /**
  * @author Nam_Phuong
@@ -10,4 +13,5 @@ import com.solution.ntq.model.User;
 public interface UserService {
     User getUserById(String id);
     User getUserByTokenId(String id);
+    List<User> findUserNoApproveInClazz(int clazzId);
 }

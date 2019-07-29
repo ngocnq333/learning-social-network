@@ -1,4 +1,4 @@
-package com.solution.ntq.response;
+package com.solution.ntq.controller.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +11,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 public class Response<T> {
-    private HttpStatus codeStatus;
+    private int codeStatus;
     private T data;
 }

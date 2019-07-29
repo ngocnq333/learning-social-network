@@ -1,11 +1,11 @@
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.common.constant.GoogleLink;
-import com.solution.ntq.model.Token;
-import com.solution.ntq.model.User;
-import com.solution.ntq.repository.base.TokenRepository;
-import com.solution.ntq.repository.base.UserRepository;
-import com.solution.ntq.response.Response;
+import com.solution.ntq.controller.response.Response;
+import com.solution.ntq.repository.UserRepository;
+import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.GoogleService;
 import com.solution.ntq.service.base.SignService;
 import lombok.AllArgsConstructor;
@@ -67,13 +67,13 @@ public class SignServiceImpl implements SignService {
         try {
             Token token = tokenRepository.findTokenByUserId(userId);
             if (token == null) {
-                return new Response<>(HttpStatus.BAD_REQUEST, null);
+                return new Response<>(HttpStatus.BAD_REQUEST.value(), null);
             } else {
                 tokenRepository.removeTokenById(token.getId());
-                return new Response<>(HttpStatus.OK, "done");
+                return new Response<>(HttpStatus.OK.value(), "done");
             }
         } catch (Exception ex) {
-            return new Response<>(HttpStatus.NOT_FOUND, ex.toString());
+            return new Response<>(HttpStatus.NOT_FOUND.value(), ex.toString());
         }
     }
 

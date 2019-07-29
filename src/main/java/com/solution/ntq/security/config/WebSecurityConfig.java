@@ -1,4 +1,4 @@
-/*
+package com.solution.ntq.security.config;/*
 package com.solution.ntq.security.config;
 
 import com.solution.ntq.security.filter.RequestAuthenticationFilter;

@@ -1,7 +1,8 @@
 package com.solution.ntq.service.base;
 
-import com.solution.ntq.model.Token;
-import com.solution.ntq.model.User;
+
+import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.repository.entities.User;
 
 /**
  * @author Nam_Phuong

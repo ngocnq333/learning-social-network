@@ -1,8 +1,8 @@
-package com.solution.ntq.repository.base;
+package com.solution.ntq.repository;
 
 
-import com.solution.ntq.model.Token;
-import com.solution.ntq.model.User;
+
+import com.solution.ntq.repository.entities.Token;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

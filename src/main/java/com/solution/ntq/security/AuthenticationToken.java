@@ -1,4 +1,4 @@
-/*
+package com.solution.ntq.security;/*
 package com.solution.ntq.security;
 
 
@@ -8,7 +8,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.solution.ntq.common.constant.GoogleLink;
+import com.solution.GoogleLink;
 import com.solution.ntq.model.Token;
 import com.solution.ntq.repository.base.TokenRepository;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Date;
 
-import static com.solution.ntq.common.constant.GoogleLink.MINUTE_TIMEOUT;
+import static com.solution.GoogleLink.MINUTE_TIMEOUT;
 import static java.util.Collections.emptyList;
 
 */

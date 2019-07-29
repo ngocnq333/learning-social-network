@@ -2,8 +2,8 @@
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.common.until.GoogleUtils;
-import com.solution.ntq.model.Token;
-import com.solution.ntq.model.User;
+import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.GoogleService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

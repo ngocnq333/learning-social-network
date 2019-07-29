@@ -1,9 +1,10 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.model.Token;
-import com.solution.ntq.model.User;
-import com.solution.ntq.repository.base.TokenRepository;
-import com.solution.ntq.response.Response;
+
+import com.solution.ntq.controller.response.Response;
+import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class UserController {
     public ResponseEntity<Response<User>> getUserDetail(@RequestHeader("id_token") String idToken) {
         Token token = tokenRepository.findTokenByIdToken(idToken);
         User user = userService.getUserById(token.getUser().getId());
-        Response<User> response = new Response<>(HttpStatus.OK,user);
+        Response<User> response = new Response<>(HttpStatus.OK.value(),user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -40,9 +41,9 @@ public class UserController {
     public Response getToken(@PathVariable("idUser") String idUser) {
         Token token = tokenRepository.findTokenByUserId(idUser);
         if (token == null) {
-            return new Response<>(HttpStatus.OK, token);
+            return new Response<>(HttpStatus.OK.value(), token);
         } else {
-            return new Response<>(HttpStatus.NOT_FOUND, null);
+            return new Response<>(HttpStatus.NOT_FOUND.value(), null);
         }
 
     }
