@@ -1,5 +1,6 @@
 package com.solution.ntq.service.validator;
 
+import com.solution.ntq.common.constant.Level;
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.Response;
@@ -24,9 +25,19 @@ public class ContentValidator implements Validator {
             errors.rejectValue("content", "content not null");
         }
         if (content.getStartDate() == null || content.getStartDate().after(new Date())) {
-            errors.rejectValue("date", "Date not null must be ");
+            errors.rejectValue("startDate", "Date not null  ");
         }
-
+        if (content.getEndDate() == null || content.getEndDate().before(content.getStartDate())) {
+            errors.rejectValue("endDate", "Date not null  ");
+        }
+        if(content.getTitle()==null)
+        {
+            errors.rejectValue("title","tile not null");
+        }
+        if (!content.getLevel().equalsIgnoreCase(Level.BEGINNER.value()) && !content.getLevel().equalsIgnoreCase(Level.INTERMEDISE.value())
+                && !content.getLevel().equalsIgnoreCase(Level.EXPERT.value())) {
+            errors.rejectValue("level", "level not match");
+        }
 
     }
 
@@ -34,12 +45,11 @@ public class ContentValidator implements Validator {
 
       new ContentValidator().validate(contentRequest, bindingResult);
         if (bindingResult.hasFieldErrors()) {
-            contentRequestResponse.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+
             return false;
         }
 
-        contentRequestResponse.setCodeStatus(ResponseCode.OK.value());
-        contentRequestResponse.setData(contentRequest);
+
         return true;
 
     }

@@ -1,4 +1,4 @@
-package com.solution.ntq.common.utils;
+package com.solution.ntq.common.until;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

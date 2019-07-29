@@ -36,7 +36,7 @@ public class Clazz {
     @JsonIgnore
     @OneToMany(mappedBy = "clazz", cascade = CascadeType.ALL)
     List<Content> contents;
-    boolean isJoin;
+
 
 
 

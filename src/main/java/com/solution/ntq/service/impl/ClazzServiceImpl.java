@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.util.DateTime;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.repository.ContentRepository;
+import com.solution.ntq.repository.TokenRepository;
 import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.repository.entities.Clazz;
+import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.repository.ClazzMemberRepository;
 import com.solution.ntq.repository.ClazzRepository;
@@ -33,6 +35,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     private ClazzMemberRepository clazzMemberRepository;
     private ContentRepository contentRepository;
+    private TokenRepository tokenRepository;
 
     @Override
     public void addClazz(Clazz clazz) {
@@ -66,8 +69,6 @@ public class ClazzServiceImpl implements ClazzService {
         java.util.Date date1 = sdf.parse("2018-04-10T04:00:00.000Z");
         java.util.Date date2 = sdf.parse("2018-04-10T04:00:00.000Z");
         java.util.Date date3 = sdf.parse("2018-04-10T04:00:00.000Z");
-
-        DateTime dateTime;
 
         User user = new User();
         user.setId("a");
@@ -124,6 +125,22 @@ public class ClazzServiceImpl implements ClazzService {
 
 
         return getResponseMapByClazz(clazz);
+    }
+
+    @Override
+    public ClazzResponse getClassById(int clazzId, String tokenId) {
+        Token token = tokenRepository.findTokenByIdToken(tokenId);
+        String userId = token.getUser().getId();
+        ClazzResponse clazzResponse =getClassById(clazzId);
+        for ( ClazzMember member :clazzRepository.findClazzById(clazzId).getClazzMembers())
+        {
+            if(member.getUser().getId().contains(userId))
+            {
+                clazzResponse.setJoin(true);
+                break;
+            }
+        }
+        return clazzResponse;
     }
 
     private ClazzResponse getResponseMapByClazz(Clazz clazz) {

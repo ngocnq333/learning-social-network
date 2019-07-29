@@ -29,6 +29,7 @@ public class Content {
     Date startDate;
     Date endDate;
     String authorId;
+    @Column(length=1024)
     String content;
     String title;
     boolean isApprove;

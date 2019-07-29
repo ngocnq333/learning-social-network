@@ -2,7 +2,9 @@ package com.solution.ntq.controller.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
 import java.util.Date;
+
 
 @Getter
 @Setter
@@ -14,8 +16,8 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContentRequest {
     int id;
-
     int classId;
+
     Date startDate;
     Date endDate;
     String content;

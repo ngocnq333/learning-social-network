@@ -12,25 +12,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
+
 
 @RestController
 @AllArgsConstructor
 /**
  * @author Duc Anh
  */
+@CrossOrigin
 @RequestMapping("/api/v1/contents")
 public class ContentController {
     private ContentService contentService;
 
 
     @PutMapping
-    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
+    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken,@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
 
         Response<ContentRequest> response = new Response<>();
 
         if (!ContentValidator.isValidContentRequest(bindingResult, contentRequest, response)) {
             return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
+        contentService.addContent(contentRequest,idToken);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
@@ -40,8 +45,13 @@ public class ContentController {
         Response<ContentRequest> response = new Response<>();
 
         if (!ContentValidator.isValidContentRequest(bindingResult, contentRequest, response)) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+        response.setData(contentRequest);
+        response.setCodeStatus(HttpStatus.OK.value());
+        contentService.updateContent(contentRequest);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
@@ -54,5 +64,16 @@ public class ContentController {
 
 
     }
+    @GetMapping
+    public ResponseEntity<Response> getListContent(@RequestParam("classId") int clazzId){
+        Response<List<ContentResponse>> response = new Response<>();
+        response.setCodeStatus(HttpStatus.OK.value());
+      
+            List<ContentResponse> contentResponseList = contentService.findContentByClassId(clazzId);
+            response.setData(contentResponseList);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
 
 }

@@ -18,7 +18,6 @@ public class ContentResponse {
     int id;
     int clazzId;
     Date startDate;
-
     Date endDate;
     String authorId;
     String authorName;
@@ -29,7 +28,4 @@ public class ContentResponse {
     String level;
     String thumbnail;
     Date timePost;
-
-
-
 }

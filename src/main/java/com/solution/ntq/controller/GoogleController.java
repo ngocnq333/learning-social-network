@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.*;
  * Delear google service
  * Date update 24/7/2019
  */
+@CrossOrigin
 @RestController
 @AllArgsConstructor
-@CrossOrigin
+
 public class GoogleController {
     private Environment env;
     private SignService signService;
