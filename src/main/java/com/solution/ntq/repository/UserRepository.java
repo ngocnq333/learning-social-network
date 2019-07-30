@@ -1,7 +1,8 @@
-package com.solution.ntq.repository.base;
+package com.solution.ntq.repository;
 
 
-import com.solution.ntq.model.User;
+import com.solution.ntq.repository.entities.Clazz;
+import com.solution.ntq.repository.entities.User;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -27,5 +28,5 @@ public interface UserRepository extends org.springframework.data.repository.Repo
      */
     boolean existsById(String id);
 
-
+    User findUserByTokenIdToken(String tokenId);
 }

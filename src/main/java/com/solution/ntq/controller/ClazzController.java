@@ -1,48 +1,57 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.model.Clazz;
-import com.solution.ntq.service.base.IClazzService;
+import com.solution.ntq.controller.response.ClazzResponse;
+import com.solution.ntq.controller.response.Response;
+import com.solution.ntq.repository.ClazzRepository;
+import com.solution.ntq.service.base.ClazzService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 /**
  * @author Duc Anh
  */
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/classes")
 public class ClazzController {
 
 
-    private IClazzService iClazzService;
+    private ClazzService clazzService;
+    private ClazzRepository clazzRepository;
 
     /**
      * fix data of application
+     *
      * @return
      * @throws ParseException
      */
 
-
-    @GetMapping("/classes/users/{user-id}")
-    public ResponseEntity<List<Clazz>> getClassFollowingByUser(@PathVariable("user-id") String userId) throws ParseException {
-
-        List<Clazz> clazzList= iClazzService.getClassByUser(userId);
-        return new ResponseEntity<>(clazzList, HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<Response<List<ClazzResponse>>> getListClassByUserId( @RequestParam(value = "userId",defaultValue = "")  String userId) {
+        Response<List<ClazzResponse>> response = new Response<>();
+        response.setCodeStatus(HttpStatus.OK.value());
+        response.setData(clazzService.getClassByUser(userId));
+        return  new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/classes/{class_id}")
-    public ResponseEntity<Clazz> getClassById(@PathVariable("class_id") int clazzId) {
-        Clazz clazz= iClazzService.getClassById(clazzId);
-        return new ResponseEntity<>(clazz, HttpStatus.OK);
+    @GetMapping("/{classId}")
+    public ResponseEntity<Response<ClazzResponse>> getClassById(@PathVariable("classId") int clazzId, @RequestHeader("id_token") String tokenId) {
+        ClazzResponse clazzResponse = clazzService.getClassById(clazzId, tokenId);
+        Response<ClazzResponse> response = new Response<>();
+        response.setCodeStatus(HttpStatus.OK.value());
+        response.setData(clazzResponse);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
+    @PutMapping("/add-data")
+    public ResponseEntity<String> addData() throws ParseException {
+        clazzService.addAllData();
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
 
 }

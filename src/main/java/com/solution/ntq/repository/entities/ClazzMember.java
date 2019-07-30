@@ -1,11 +1,11 @@
-package com.solution.ntq.model;
+package com.solution.ntq.repository.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Getter
@@ -16,18 +16,21 @@ import javax.persistence.*;
 /**
  * @author Duc Anh
  */
-public class ClassMember {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ClazzMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
+    @JsonProperty(value = "class")
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "class_id")
+    @JoinColumn(name = "clazz_id")
     Clazz clazz;
     @ManyToOne( cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     User user;
     boolean isCapital;
-    String status;//.
+    boolean isApprove;
+    Date joinDate;
 
 
 }

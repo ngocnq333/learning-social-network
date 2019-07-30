@@ -1,15 +1,22 @@
 package com.solution.ntq.service.impl;
 
-import com.solution.ntq.model.ClassMember;
-import com.solution.ntq.model.Clazz;
-import com.solution.ntq.model.User;
-import com.solution.ntq.repository.base.IClassMemberRepository;
-import com.solution.ntq.repository.base.IClazzRepository;
-import com.solution.ntq.service.base.IClazzService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.util.DateTime;
+import com.solution.ntq.controller.response.ClazzResponse;
+import com.solution.ntq.repository.ContentRepository;
+import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.entities.ClazzMember;
+import com.solution.ntq.repository.entities.Clazz;
+import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.repository.entities.User;
+import com.solution.ntq.repository.ClazzMemberRepository;
+import com.solution.ntq.repository.ClazzRepository;
+import com.solution.ntq.service.base.ClazzService;
+import com.solution.ntq.service.validator.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,39 +26,49 @@ import java.util.stream.Collectors;
 /**
  * @author Duc Anh
  */
+
 @AllArgsConstructor
 @Service
-public class ClazzServiceImpl implements IClazzService {
+public class ClazzServiceImpl implements ClazzService {
 
-    IClazzRepository iClazzRepository;
+    private ClazzRepository clazzRepository;
 
-    IClassMemberRepository IClassMemberRepository;
+    private ClazzMemberRepository clazzMemberRepository;
+    private ContentRepository contentRepository;
+    private TokenRepository tokenRepository;
 
     @Override
     public void addClazz(Clazz clazz) {
-        iClazzRepository.save(clazz);
+        clazzRepository.save(clazz);
 
     }
 
     @Override
-    public List<Clazz> getClassByUser(String userId) {
-        List<ClassMember> classMembers = IClassMemberRepository.findByUserId(userId);
-        return classMembers.stream().map(i -> i.getClazz()).collect(Collectors.toList());
+    public List<ClazzResponse> getClassByUser(String userId) {
+        List<ClazzResponse> clazzResponses = new ArrayList<>();
+        if (StringUtils.isNullOrEmpty(userId)) {
+            List<Clazz> clazzList = clazzRepository.findAll();
+            for (Clazz clazz : clazzList) {
+                clazzResponses.add(getResponseMapByClazz(clazz));
+            }
+            return clazzResponses;
+        }
+        List<ClazzMember> clazzMembers = clazzMemberRepository.findByUserId(userId);
+        List<Clazz> clazzList = clazzMembers.stream().map(ClazzMember::getClazz).collect(Collectors.toList());
+        return  clazzList.stream().map(i->getResponseMapByClazz(i)).collect(Collectors.toList());
     }
 
-    @Override
-    public User findCapitalByClass(Clazz clazz) {
-        ClassMember classMember = IClassMemberRepository.findByClazzAndIsCapitalTrue(clazz);
-        return classMember.getUser();
-    }
+
 
     @Override
     public void addAllData() throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        java.util.Date date = sdf.parse("06/10/2018");
-        java.util.Date date1 = sdf.parse("06/10/2020");
-        java.util.Date date2 = sdf.parse("05/06/2019");
-        java.util.Date date3 = sdf.parse("06/06/2020");
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        java.util.Date date = sdf.parse("2018-04-10T04:00:00.000Z");
+        java.util.Date date1 = sdf.parse("2018-04-10T04:00:00.000Z");
+        java.util.Date date2 = sdf.parse("2018-04-10T04:00:00.000Z");
+        java.util.Date date3 = sdf.parse("2018-04-10T04:00:00.000Z");
 
         User user = new User();
         user.setId("a");
@@ -62,47 +79,85 @@ public class ClazzServiceImpl implements IClazzService {
         Clazz clazz = new Clazz();
         clazz.setName("Java");
         clazz.setDescription("Class about java");
-        clazz.setStartDate(new Date(date.getTime()));
-        clazz.setEndDate(new Date(date1.getTime()));
+        clazz.setStartDate(date);
+        clazz.setEndDate(date1);
         clazz.setSlug("Slug Info");
-        clazz.setThumbnail("Thumbnail Info");
+        clazz.setThumbnail("https://undesigns.net/wp-content/uploads/2018/02/Material-Design-Background-Undesigns-00.jpg");
         Clazz clazz1 = new Clazz();
         clazz1.setName("PHP");
         clazz1.setDescription("Class about PHP");
-        clazz1.setStartDate(new Date(date2.getTime()));
-        clazz1.setEndDate(new Date(date3.getTime()));
+        clazz1.setStartDate(date2);
+        clazz1.setEndDate((date3));
         clazz1.setSlug("Slug Info");
-        clazz1.setThumbnail("Thumbnail Info");
-        ClassMember classMember = new ClassMember();
-        classMember.setClazz(clazz);
-        classMember.setUser(user1);
-        ClassMember classMember1 = new ClassMember();
-        classMember1.setClazz(clazz1);
-        classMember1.setCapital(true);
-        classMember1.setUser(user1);
-        ClassMember classMember2 = new ClassMember();
-        classMember2.setClazz(clazz);
-        classMember2.setUser(user);
-        ClassMember classMember3 = new ClassMember();
-        classMember3.setClazz(clazz1);
-        classMember3.setCapital(true);
-        classMember3.setUser(user);
-        List<ClassMember> listClassMember = new ArrayList<>();
-        listClassMember.add(classMember);
-        listClassMember.add(classMember1);
-        listClassMember.add(classMember2);
-        listClassMember.add(classMember3);
-        clazz.setClassMembers(listClassMember);
-        clazz1.setClassMembers(listClassMember);
-        user.setClassMembers(listClassMember);
-        user1.setClassMembers(listClassMember);
+        clazz1.setThumbnail("https://undesigns.net/wp-content/uploads/2018/02/Material-Design-Background-Undesigns-00.jpg");
+        ClazzMember clazzMember = new ClazzMember();
+        clazzMember.setClazz(clazz);
+        clazzMember.setUser(user1);
+        ClazzMember clazzMember1 = new ClazzMember();
+        clazzMember1.setClazz(clazz1);
+        clazzMember1.setCapital(true);
+        clazzMember1.setUser(user1);
+        ClazzMember clazzMember2 = new ClazzMember();
+        clazzMember2.setClazz(clazz);
+        clazzMember2.setUser(user);
+        ClazzMember clazzMember3 = new ClazzMember();
+        clazzMember3.setClazz(clazz1);
+        clazzMember3.setCapital(false);
+        clazzMember3.setUser(user);
+        List<ClazzMember> listClazzMember = new ArrayList<>();
+        listClazzMember.add(clazzMember);
+        listClazzMember.add(clazzMember1);
+        listClazzMember.add(clazzMember2);
+        listClazzMember.add(clazzMember3);
+        clazz.setClazzMembers(listClazzMember);
+        clazz1.setClazzMembers(listClazzMember);
+        user.setClazzMembers(listClazzMember);
+        user1.setClazzMembers(listClazzMember);
         addClazz(clazz1);
 
     }
 
-    @Override
-    public Clazz getClassById(int clazzId) {
 
-        return iClazzRepository.findClazzById(clazzId);
+    @Override
+    public ClazzResponse getClassById(int clazzId) {
+
+        Clazz clazz = clazzRepository.findClazzById(clazzId);
+
+
+        return getResponseMapByClazz(clazz);
     }
+
+    @Override
+    public ClazzResponse getClassById(int clazzId, String tokenId) {
+        Token token = tokenRepository.findTokenByIdToken(tokenId);
+        String userId = token.getUser().getId();
+        ClazzResponse clazzResponse =getClassById(clazzId);
+        for ( ClazzMember member :clazzRepository.findClazzById(clazzId).getClazzMembers())
+        {
+            if(member.getUser().getId().contains(userId))
+            {
+                clazzResponse.setJoin(true);
+                break;
+            }
+        }
+        return clazzResponse;
+    }
+
+    private ClazzResponse getResponseMapByClazz(Clazz clazz) {
+        ClazzResponse clazzResponse;
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        clazzResponse = mapper.convertValue(clazz, ClazzResponse.class);
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCapitalTrue(clazzResponse.getId());
+        clazzResponse.setCaptainName(clazzMember.getUser().getName());
+        clazzResponse.setCaptainId(clazzMember.getUser().getId());
+        clazzResponse.setMembers(clazzMemberRepository.countAllByClazzId(clazz.getId()));
+        clazzResponse.setPendingItems(contentRepository.findAllByClazzIdAndIsApproveFalse(clazz.getId()).size()
+                + clazzMemberRepository.findByClazzIdAndIsApproveFalse(clazz.getId()).size());
+        clazzResponse.setEventNumber(1);
+        return clazzResponse;
+    }
+
+
 }

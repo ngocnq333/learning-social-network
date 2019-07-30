@@ -1,6 +1,8 @@
 package com.solution.ntq.service.base;
 
-import com.solution.ntq.model.User;
+
+import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.repository.entities.User;
 
 /**
  * @author Nam_Phuong
@@ -8,7 +10,7 @@ import com.solution.ntq.model.User;
  * Date update 24/7/2019
  */
 public interface GoogleService {
-    boolean verifyToken(String code);
+    Token getToken(String code);
 
     String getAccessTokenFormGoogle(String response);
 
@@ -16,23 +18,7 @@ public interface GoogleService {
 
     User getUserFormGoogle(String accessToken);
 
-    boolean verifyUserNTQ(User user);
-
     String getTokenFormGoogle(String code);
 
-    String getAccessTokenActive();
-
     String getIdTokenFromGoogle(String response);
-
-    User getUserActive();
-
-    String getIdUserActive();
-
-    String getTokenActive();
-
-    String getIdTokenActive();
-
-    String getRefreshTokenActive();
-
-
 }

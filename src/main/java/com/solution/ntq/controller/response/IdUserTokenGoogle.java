@@ -1,4 +1,4 @@
-package com.solution.ntq.response;
+package com.solution.ntq.controller.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,3 +13,4 @@ public class IdUserTokenGoogle {
     String idUser;
     String idToken;
 }
+

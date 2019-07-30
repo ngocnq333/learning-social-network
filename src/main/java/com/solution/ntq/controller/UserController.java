@@ -1,13 +1,15 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.model.User;
+
+import com.solution.ntq.controller.response.Response;
+import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.entities.Token;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -18,15 +20,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
 public class UserController {
     private UserService userService;
+    private TokenRepository tokenRepository;
 
     /**
      * Get an user detail
      */
-    @GetMapping("/api/v1/account/{id}")
-    public ResponseEntity<User> getUserDetail(@PathVariable("id") String idUser) {
-        User user = userService.getUserById(idUser);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    @GetMapping("/api/v1/account")
+    public ResponseEntity<Response<User>> getUserDetail(@RequestHeader("id_token") String idToken) {
+        Token token = tokenRepository.findTokenByIdToken(idToken);
+        User user = userService.getUserById(token.getUser().getId());
+        Response<User> response = new Response<>(HttpStatus.OK.value(),user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/Token/{idUser}")
+    public Response getToken(@PathVariable("idUser") String idUser) {
+        Token token = tokenRepository.findTokenByUserId(idUser);
+        if (token == null) {
+            return new Response<>(HttpStatus.OK.value(), token);
+        } else {
+            return new Response<>(HttpStatus.NOT_FOUND.value(), null);
+        }
+
     }
 }

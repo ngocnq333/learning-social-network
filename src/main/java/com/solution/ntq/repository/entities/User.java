@@ -1,7 +1,8 @@
-package com.solution.ntq.model;
+package com.solution.ntq.repository.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created at 18/07/2019
  */
 
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
 @Entity
@@ -36,7 +37,12 @@ public class User {
     private String locale;
     private Date dateOfBirth;
     @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Token token;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    List<ClassMember> classMembers;//.
+
+    List<ClazzMember> clazzMembers;
+
 
 }
