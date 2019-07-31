@@ -14,10 +14,11 @@ public interface ContentService {
 
     ContentResponse getContentById(int contentId);
 
-    void updateContent(ContentRequest content);
+    void updateContent(ContentRequest content,String tokenId);
 
     List<Content> getPendingItemByClassId(int classId);
 
     List<ContentResponse> findContentByClassId(int classId);
+    void deleteContentById(int idContent);
 
 }

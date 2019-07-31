@@ -31,6 +31,7 @@ public class ClazzMember {
     boolean isCapital;
     boolean isApprove;
     Date joinDate;
+    String status;
 
 
 }

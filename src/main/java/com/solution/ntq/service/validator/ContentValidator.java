@@ -24,13 +24,13 @@ public class ContentValidator implements Validator {
         if (content.getContent() == null) {
             errors.rejectValue("content", "content not null");
         }
-        if (content.getStartDate() == null || content.getStartDate().after(new Date())) {
+        if (content.getStartDate() == null || content.getStartDate().before(new Date())) {
             errors.rejectValue("startDate", "Date not null  ");
         }
         if (content.getEndDate() == null || content.getEndDate().before(content.getStartDate())) {
             errors.rejectValue("endDate", "Date not null  ");
         }
-        if(content.getTitle()==null)
+        if(content.getTitle()==null || content.getTitle().length()>65)
         {
             errors.rejectValue("title","tile not null");
         }

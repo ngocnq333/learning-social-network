@@ -44,20 +44,27 @@ public class ContentServiceImpl implements ContentService {
         content.setDone(false);
         content.setAuthorId(userId);
         content.setThumbnail(clazz.getThumbnail());
-        content.setAvatar(token.getUser().getPicture());
+        content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
         contentRepository.save(content);
     }
 
     @Override
-    public void updateContent(ContentRequest contentRequest) {
-        Content content;
+    public void updateContent(ContentRequest contentRequest,String idToken) {
+        Content content=new Content();
         ObjectMapper mapper = new ObjectMapper();
+        Token token = tokenRepository.findTokenByIdToken(idToken);
+        String userId = token.getUser().getId();
 
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        content.setId(contentRequest.getId());
+        Clazz clazz= clazzRepository.findClazzById(contentRequest.getClassId());
 
         content = mapper.convertValue(contentRequest, Content.class);
-
-        content.setClazz(clazzRepository.findClazzById(contentRequest.getClassId()));
+        content.setTimePost(new Date());
+        content.setClazz(clazz);
+        content.setAuthorId(userId);
+        content.setThumbnail(clazz.getThumbnail());
+        content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
         contentRepository.save(content);
 
     }
@@ -67,7 +74,11 @@ public class ContentServiceImpl implements ContentService {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
 
-    // manh
+    /**
+     *
+     * @param contentId
+     * @return
+     */
     @Override
     public ContentResponse getContentById(int contentId) {
 
@@ -113,6 +124,11 @@ public class ContentServiceImpl implements ContentService {
         contentResponse.setClazzId(content.getClazz().getId());
         contentResponse.setAuthorName(userRepository.findById(content.getAuthorId()).getName());
         return contentResponse;
+    }
+
+    @Override
+    public void deleteContentById(int idContent) {
+        contentRepository.deleteById(idContent);
     }
 
 

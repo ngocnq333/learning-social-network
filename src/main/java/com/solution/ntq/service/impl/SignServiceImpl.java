@@ -32,16 +32,17 @@ public class SignServiceImpl implements SignService {
      * Sign up user to application
      */
     @Override
+
+
     public Token sigIn(String code) {
         Token token = iGoogleService.getToken(code);
         if (token != null && token.getUser() != null && token.getIdToken() != null &&
                 token.getRefreshToken() != null
                 && verifyToken(token)) {
             try {
-                Token token1 = tokenRepository.findTokenByUserId(token.getUser().getId());
-
-                if (token1 != null) {
-                    tokenRepository.removeTokenById(token1.getId());
+                Token tokenOfUserSignUp = tokenRepository.findTokenByUserId(token.getUser().getId());
+                if (tokenOfUserSignUp != null) {
+                    tokenRepository.removeTokenById(tokenOfUserSignUp.getId());
                 }
                 String idUser = token.getUser().getId();
                 if (!isSignUp(idUser)) {
@@ -50,8 +51,8 @@ public class SignServiceImpl implements SignService {
                 token.setTime(new Date());
                 tokenRepository.save(token);
                 return token;
-            } catch (InvalidDataAccessApiUsageException ex) {
-                return null;
+            } catch (InvalidDataAccessApiUsageException invalidData) {
+                throw invalidData;
             }
         }
         return null;

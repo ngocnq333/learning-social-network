@@ -35,5 +35,5 @@ public class ClazzResponse {
     String captainName;
     int pendingItems;
     int eventNumber;
-    boolean isJoin;
+    String status;
 }

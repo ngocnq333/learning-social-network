@@ -1,0 +1,20 @@
+package com.solution.ntq.common.constant;
+
+public enum Status {
+    JOINED(1, "JOINED"),
+    APPROVE(2, "APPROVE"),
+    NOTJOIN(3, "NOTJOIN");
+
+    final int code;
+    final String value;
+
+    Status(int code, String value) {
+        this.code = code;
+        this.value = value;
+    }
+
+
+    public String value() {
+        return this.value;
+    }
+}
