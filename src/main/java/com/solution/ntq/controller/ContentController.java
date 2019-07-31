@@ -5,7 +5,7 @@ import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.service.base.ContentService;
-import com.solution.ntq.service.validator.ContentValidator;
+import com.solution.ntq.service.validator.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +31,13 @@ public class ContentController {
 
         Response<ContentRequest> response = new Response<>();
 
-        if (!ContentValidator.isValidContentRequest(bindingResult, contentRequest, response)) {
+        if (!Validator.isValidContentRequest(contentRequest)) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
         contentService.addContent(contentRequest,idToken);
+        response.setData(contentRequest);
+        response.setCodeStatus(ResponseCode.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
@@ -44,10 +47,13 @@ public class ContentController {
 
         Response<ContentRequest> response = new Response<>();
 
-        if (!ContentValidator.isValidContentRequest(bindingResult, contentRequest, response)) {
+        if (Validator.isValidContentRequest(contentRequest)) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
         contentService.updateContent(contentRequest,idToken);
+        response.setData(contentRequest);
+        response.setCodeStatus(ResponseCode.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
