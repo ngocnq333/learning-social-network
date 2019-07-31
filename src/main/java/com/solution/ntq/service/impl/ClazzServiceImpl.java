@@ -2,7 +2,7 @@ package com.solution.ntq.service.impl;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.util.DateTime;
+import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.repository.ContentRepository;
 import com.solution.ntq.repository.TokenRepository;
@@ -93,17 +93,21 @@ public class ClazzServiceImpl implements ClazzService {
         ClazzMember clazzMember = new ClazzMember();
         clazzMember.setClazz(clazz);
         clazzMember.setUser(user1);
+        clazzMember.setStatus(Status.JOINED.value());
         ClazzMember clazzMember1 = new ClazzMember();
         clazzMember1.setClazz(clazz1);
         clazzMember1.setCapital(true);
         clazzMember1.setUser(user1);
+        clazzMember1.setStatus(Status.JOINED.value());
         ClazzMember clazzMember2 = new ClazzMember();
         clazzMember2.setClazz(clazz);
+        clazzMember2.setCapital(true);
         clazzMember2.setUser(user);
+        clazzMember2.setStatus(Status.JOINED.value());
         ClazzMember clazzMember3 = new ClazzMember();
         clazzMember3.setClazz(clazz1);
-        clazzMember3.setCapital(false);
         clazzMember3.setUser(user);
+        clazzMember3.setStatus(Status.JOINED.value());
         List<ClazzMember> listClazzMember = new ArrayList<>();
         listClazzMember.add(clazzMember);
         listClazzMember.add(clazzMember1);
@@ -114,7 +118,6 @@ public class ClazzServiceImpl implements ClazzService {
         user.setClazzMembers(listClazzMember);
         user1.setClazzMembers(listClazzMember);
         addClazz(clazz1);
-
     }
 
 
@@ -134,11 +137,24 @@ public class ClazzServiceImpl implements ClazzService {
         ClazzResponse clazzResponse =getClassById(clazzId);
         for ( ClazzMember member :clazzRepository.findClazzById(clazzId).getClazzMembers())
         {
+
             if(member.getUser().getId().contains(userId))
             {
-                clazzResponse.setJoin(true);
-                break;
+                if(member.getStatus().equals(Status.APPROVE.value()))
+                {
+                    clazzResponse.setStatus(Status.APPROVE.value());
+                    break;
+                }
+                else
+                {
+                    clazzResponse.setStatus(Status.JOINED.value());
+                    break;
+                }
+
             }
+                clazzResponse.setStatus(Status.NOTJOIN.value());
+                break;
+
         }
         return clazzResponse;
     }

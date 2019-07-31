@@ -1,5 +1,6 @@
 package com.solution.ntq.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,6 +17,7 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContentResponse {
     int id;
+    @JsonProperty("classId")
     int clazzId;
     Date startDate;
     Date endDate;
@@ -28,4 +30,5 @@ public class ContentResponse {
     String level;
     String thumbnail;
     Date timePost;
+    String avatar;
 }

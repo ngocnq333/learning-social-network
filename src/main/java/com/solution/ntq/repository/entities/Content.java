@@ -23,13 +23,12 @@ public class Content {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     @JsonProperty(value = "class")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "clazz_id")
     Clazz clazz;
     Date startDate;
     Date endDate;
     String authorId;
-    @Column(length=1024)
     String content;
     String title;
     boolean isApprove;

@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 
@@ -41,20 +40,17 @@ public class ContentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
+    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken,@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
+
         Response<ContentRequest> response = new Response<>();
 
         if (!ContentValidator.isValidContentRequest(bindingResult, contentRequest, response)) {
-            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
         }
-        response.setData(contentRequest);
-        response.setCodeStatus(HttpStatus.OK.value());
-        contentService.updateContent(contentRequest);
-        return new ResponseEntity<>(response,HttpStatus.OK);
-    }
+        contentService.updateContent(contentRequest,idToken);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
+    }
     @GetMapping("/{contentId}")
     public ResponseEntity<Response<ContentResponse>> getContentById(@PathVariable("contentId") int contentId) {
         Response<ContentResponse> response = new Response<>();
@@ -68,11 +64,18 @@ public class ContentController {
     public ResponseEntity<Response> getListContent(@RequestParam("classId") int clazzId){
         Response<List<ContentResponse>> response = new Response<>();
         response.setCodeStatus(HttpStatus.OK.value());
-      
-            List<ContentResponse> contentResponseList = contentService.findContentByClassId(clazzId);
-            response.setData(contentResponseList);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        List<ContentResponse> contentResponseList = contentService.findContentByClassId(clazzId);
+        response.setData(contentResponseList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
+    }
+    @DeleteMapping("/{contentId}")
+    public  ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
+        Response<Response> response = new Response<>();
+        contentService.deleteContentById(contentId);
+        response.setCodeStatus(HttpStatus.OK.value());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
