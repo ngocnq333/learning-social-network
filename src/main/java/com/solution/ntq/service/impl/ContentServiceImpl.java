@@ -84,6 +84,7 @@ public class ContentServiceImpl implements ContentService {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
 
+
     @Override
     public ContentResponse getContentById(int contentId) {
 
@@ -91,16 +92,6 @@ public class ContentServiceImpl implements ContentService {
         return getContentResponseMapContent(content);
 
     }
-
-
-    @Override
-    public List<ContentResponse> findContentByClassId(int classId) {
-        List<Content> listContent = contentRepository.findContentByIdClazz(classId);
-        updateStatusContents(listContent);
-
-        return getListContentResponse(listContent);
-    }
-
 
     private void updateStatusContents(List<Content> contentList) {
         Date currentTime = new Date();
@@ -117,7 +108,6 @@ public class ContentServiceImpl implements ContentService {
         for (Content content : contentList) {
             listContentResponse.add(getContentResponseMapContent(content));
         }
-
         return listContentResponse;
     }
 

@@ -32,4 +32,10 @@ public interface ContentRepository extends Repository<Content,Integer> {
 
     boolean existsById(int idContent);
 
+    @Query(value = "SELECT * FROM content WHERE clazz_id = ?1  AND id IN (SELECT content_id FROM attendance) ORDER BY end_date DESC , start_date DESC ", nativeQuery = true)
+    List<Content> findContentByIdClazzAndNotDone(int classId);
+
+    @Query(value = "SELECT * FROM Content c WHERE c.clazz_id = ?1 AND c.is_done = 0 AND c.title LIKE %?2% ORDER BY c.end_date DESC , c.start_date DESC ", nativeQuery = true)
+    List<Content> findContentByIdClazzAndTitle(int classId, String title);
+
 }

@@ -81,7 +81,8 @@ public class ContentController {
         Response<ContentResponse> response = new Response<>();
         response.setCodeStatus(ResponseCode.OK.value());
         response.setData(contentService.getContentById(contentId));
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 
     }
@@ -100,9 +101,8 @@ public class ContentController {
         }
     }
 
-
     @DeleteMapping("/{contentId}")
-    public  ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
+    public ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
         Response<Response> response = new Response<>();
         contentService.deleteContentById(contentId);
         response.setCodeStatus(HttpStatus.OK.value());
