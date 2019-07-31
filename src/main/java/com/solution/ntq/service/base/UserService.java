@@ -13,5 +13,5 @@ import java.util.List;
 public interface UserService {
     User getUserById(String id);
     User getUserByTokenId(String id);
-    List<User> findUserNoApproveInClazz(int clazzId);
+
 }

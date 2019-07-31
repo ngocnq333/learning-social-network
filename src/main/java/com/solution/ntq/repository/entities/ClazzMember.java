@@ -29,7 +29,6 @@ public class ClazzMember {
     @JoinColumn(name = "user_id")
     User user;
     boolean isCapital;
-    boolean isApprove;
     Date joinDate;
     String status;
 

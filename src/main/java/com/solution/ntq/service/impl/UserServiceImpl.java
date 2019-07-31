@@ -46,9 +46,5 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public List<User> findUserNoApproveInClazz(int clazzId) {
-        List<ClazzMember> clazzMembers= clazzMemberRepository.findByClazzIdAndIsApproveFalse(clazzId);
-        return clazzMembers.stream().map(ClazzMember::getUser).collect(Collectors.toList());
-    }
+
 }

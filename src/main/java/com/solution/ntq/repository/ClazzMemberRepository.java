@@ -13,7 +13,7 @@ import java.util.List;
 public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     List<ClazzMember> findByUserId(String userId);
     ClazzMember findByClazzIdAndIsCapitalTrue(int clazzId);
-    List<ClazzMember> findByClazzIdAndIsApproveFalse(int clazzId);
+
     int countAllByClazzId(int id);
 
 }

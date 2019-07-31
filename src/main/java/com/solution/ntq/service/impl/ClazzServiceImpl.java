@@ -169,8 +169,7 @@ public class ClazzServiceImpl implements ClazzService {
         clazzResponse.setCaptainName(clazzMember.getUser().getName());
         clazzResponse.setCaptainId(clazzMember.getUser().getId());
         clazzResponse.setMembers(clazzMemberRepository.countAllByClazzId(clazz.getId()));
-        clazzResponse.setPendingItems(contentRepository.findAllByClazzIdAndIsApproveFalse(clazz.getId()).size()
-                + clazzMemberRepository.findByClazzIdAndIsApproveFalse(clazz.getId()).size());
+        clazzResponse.setPendingItems(contentRepository.findAllByClazzIdAndIsApproveFalse(clazz.getId()).size());
         clazzResponse.setEventNumber(1);
         return clazzResponse;
     }
