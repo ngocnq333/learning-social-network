@@ -17,10 +17,10 @@ public interface ContentService {
     void updateContent(ContentRequest content,String tokenId);
 
     List<Content> getPendingItemByClassId(int classId);
-
     List<ContentResponse> findContentByClassId(int classId);
     void deleteContentById(int idContent);
 
     boolean exitContent(int idContent);
 
+    List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title);
 }

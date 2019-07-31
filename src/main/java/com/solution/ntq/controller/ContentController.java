@@ -67,17 +67,14 @@ public class ContentController {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             response.setMessage(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             response.setMessage(e.getMessage());
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
-
     }
+
     @GetMapping("/{contentId}")
     public ResponseEntity<Response<ContentResponse>> getContentById(@PathVariable("contentId") int contentId) {
         Response<ContentResponse> response = new Response<>();
@@ -88,8 +85,24 @@ public class ContentController {
 
     }
     @GetMapping
-    public ResponseEntity<Response> getListContent(@RequestParam("classId") int clazzId){
-        Response<List<ContentResponse>> response = new Response<>();
+    public ResponseEntity<Response> getListContentsSorted(@RequestParam(value = "classId", defaultValue = Constant.CLASS_ID_DEFAULT) int clazzId,
+                                                          @RequestParam(value = "sorted", defaultValue = "false") boolean sorted,
+                                                          @RequestParam(value = "title", defaultValue = "") String title) {
+        try {
+            Response<List<ContentResponse>> response = new Response<>();
+            List<ContentResponse> contentsSortedGroup = contentService.getContentsResponseSorted(clazzId, sorted, title);
+            response.setCodeStatus(ResponseCode.OK.value());
+            response.setData(contentsSortedGroup);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{contentId}")
+    public ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
+        Response<Response> response = new Response<>();
+        contentService.deleteContentById(contentId);
         response.setCodeStatus(HttpStatus.OK.value());
         List<ContentResponse> contentResponseList = contentService.findContentByClassId(clazzId);
         response.setData(contentResponseList);

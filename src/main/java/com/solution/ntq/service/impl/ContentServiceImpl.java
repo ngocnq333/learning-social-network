@@ -83,16 +83,12 @@ public class ContentServiceImpl implements ContentService {
     public List<Content> getPendingItemByClassId(int classId) {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
-    /**
-     *
-     * @param contentId
-     * @return
-     */
+
     @Override
     public ContentResponse getContentById(int contentId) {
 
-            Content content = contentRepository.findContentById(contentId);
-            return getContentResponseMapContent(content);
+        Content content = contentRepository.findContentById(contentId);
+        return getContentResponseMapContent(content);
 
     }
 
@@ -137,7 +133,6 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void deleteContentById(int idContent) {
-
         contentRepository.deleteById(idContent);
     }
 
@@ -145,6 +140,19 @@ public class ContentServiceImpl implements ContentService {
     public boolean exitContent(int idContent) {
 
         return contentRepository.existsById(idContent);
+    }
+    @Override
+    public List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title) {
+        if (!title.equals("")) {
+            List<Content> contentList = contentRepository.findContentByIdClazzAndTitle(classId, title);
+            return getListContentResponse(contentList);
+        }else if (sort) {
+            List<Content> listContent = contentRepository.findContentByIdClazzAndNotDone(classId);
+            return getListContentResponse(listContent);
+        }
+        List<Content> listContent = contentRepository.findContentByIdClazz(classId);
+        updateStatusContents(listContent);
+        return getListContentResponse(listContent);
     }
     private boolean isValidContentRequest(ContentRequest contentRequest) {
 
