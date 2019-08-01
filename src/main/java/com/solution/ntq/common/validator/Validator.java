@@ -1,4 +1,4 @@
-package com.solution.ntq.service.validator;
+package com.solution.ntq.common.validator;
 
 import com.solution.ntq.common.constant.Level;
 import com.solution.ntq.controller.request.ContentRequest;

@@ -3,6 +3,8 @@ package com.solution.ntq.service.impl;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.common.validator.Validator;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.repository.ClazzRepository;
@@ -13,7 +15,6 @@ import com.solution.ntq.repository.entities.Clazz;
 import com.solution.ntq.repository.entities.Content;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.ContentService;
-import com.solution.ntq.service.validator.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +31,10 @@ public class ContentServiceImpl implements ContentService {
     private TokenRepository tokenRepository;
 
     @Override
-    public boolean addContent(ContentRequest contentRequest, String idToken) {
+    public void addContent(ContentRequest contentRequest, String idToken) {
         if (Validator.isValidContentRequest(contentRequest)) {
+            throw new InvalidRequestException("Invalid Request !");
+        } else {
             Content content;
             ObjectMapper mapper = new ObjectMapper();
             Token token = tokenRepository.findTokenByIdToken(idToken);
@@ -47,14 +50,14 @@ public class ContentServiceImpl implements ContentService {
             content.setThumbnail(clazz.getThumbnail());
             content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
             contentRepository.save(content);
-            return true;
         }
-        return false;
     }
 
     @Override
-    public boolean updateContent(ContentRequest contentRequest, String idToken) {
+    public void updateContent(ContentRequest contentRequest, String idToken) {
         if (Validator.isValidContentRequest(contentRequest)) {
+            throw new InvalidRequestException("Invalid Request !");
+        } else {
             Content content = new Content();
             ObjectMapper mapper = new ObjectMapper();
             Token token = tokenRepository.findTokenByIdToken(idToken);
@@ -71,11 +74,10 @@ public class ContentServiceImpl implements ContentService {
             content.setThumbnail(clazz.getThumbnail());
             content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
             contentRepository.save(content);
-            return true;
+        }
 
         }
-        return false;
-    }
+
 
     @Override
     public List<Content> getPendingItemByClassId(int classId) {

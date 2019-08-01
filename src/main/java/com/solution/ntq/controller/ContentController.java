@@ -1,5 +1,6 @@
 package com.solution.ntq.controller;
 
+import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
@@ -8,7 +9,6 @@ import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,34 +27,37 @@ public class ContentController {
 
 
     @PutMapping
-    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken,@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
+    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken, @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
-
-        if (contentService.addContent(contentRequest, idToken)) {
+        try {
+            contentService.addContent(contentRequest, idToken);
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.OK.value());
-            return responseResponseEntity;
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setData(contentRequest);
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-
-        response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-
 
     }
 
     @PostMapping
-    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken,@RequestBody ContentRequest contentRequest, BindingResult bindingResult) {
+    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken, @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
-
-        if (contentService.updateContent(contentRequest, idToken)) {
+        try {
+            contentService.updateContent(contentRequest, idToken);
+            response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setData(contentRequest);
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
 
     }

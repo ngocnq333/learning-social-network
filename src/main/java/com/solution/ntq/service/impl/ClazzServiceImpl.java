@@ -13,7 +13,7 @@ import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.repository.ClazzMemberRepository;
 import com.solution.ntq.repository.ClazzRepository;
 import com.solution.ntq.service.base.ClazzService;
-import com.solution.ntq.service.validator.StringUtils;
+import com.solution.ntq.common.validator.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

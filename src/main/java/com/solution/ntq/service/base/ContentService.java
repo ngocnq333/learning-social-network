@@ -10,11 +10,11 @@ import java.util.List;
  */
 public interface ContentService {
 
-    boolean addContent(ContentRequest content, String idToken);
+    void addContent(ContentRequest content, String idToken);
 
     ContentResponse getContentById(int contentId);
 
-    boolean updateContent(ContentRequest content,String tokenId);
+    void updateContent(ContentRequest content,String tokenId);
 
     List<Content> getPendingItemByClassId(int classId);
 
