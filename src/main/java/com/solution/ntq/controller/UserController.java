@@ -36,6 +36,15 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * Get an user detail
+     */
+    @GetMapping("/api/v1/users/{idUser}")
+    public ResponseEntity<Response<User>> getUserDetails(@PathVariable("idUser") String idUser) {
+        User user = userService.getUserById(idUser);
+        Response<User> response = new Response<>(HttpStatus.OK.value(),user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @GetMapping("/Token/{idUser}")
     public Response getToken(@PathVariable("idUser") String idUser) {
