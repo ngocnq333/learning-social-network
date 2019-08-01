@@ -9,8 +9,6 @@ import java.util.Date;
 public class Validator {
     private Validator() {
     }
-
-
     public static boolean isValidContentRequest(ContentRequest contentRequest) {
 
         if (contentRequest.getStartDate().before(new Date())) {

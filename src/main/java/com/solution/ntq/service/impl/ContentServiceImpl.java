@@ -32,7 +32,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void addContent(ContentRequest contentRequest, String idToken) {
-        if (Validator.isValidContentRequest(contentRequest)) {
+        if (!Validator.isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
         } else {
             Content content;
@@ -55,7 +55,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void updateContent(ContentRequest contentRequest, String idToken) {
-        if (Validator.isValidContentRequest(contentRequest)) {
+        if (!Validator.isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
         } else {
             Content content = new Content();

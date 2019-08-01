@@ -16,8 +16,9 @@ import java.util.Date;
  */
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ContentRequest {
+    @NotNull
     int id;
-
+    @NotNull
     int classId;
     @NotNull(message = "Please pick a start date")
     Date startDate;
