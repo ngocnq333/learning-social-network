@@ -24,11 +24,11 @@ import java.util.List;
 @RequestMapping("/api/v1/contents")
 public class ContentController {
     private ContentService contentService;
-    private ResponseEntity<Response<ContentRequest>> responseResponseEntity;
+
 
 
     @PutMapping
-    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken, @Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken,@Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
@@ -45,7 +45,7 @@ public class ContentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken,  @Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken,@Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
