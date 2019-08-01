@@ -10,6 +10,7 @@ import java.util.List;
  * @author Duc Anh
  */
 
+@org.springframework.stereotype.Repository
 public interface ClazzRepository extends Repository<Clazz,Integer> {
 
     void save(Clazz clazz);

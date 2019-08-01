@@ -43,6 +43,15 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
+    public boolean isCaptainClazz(String userId, int clazzId) {
+        if (StringUtils.isNullOrEmpty(userId)) {
+            return false;
+        }
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
+        return (clazzMember != null && userId.equals(clazzMember.getUser().getId()));
+    }
+
+    @Override
     public List<ClazzResponse> getClassByUser(String userId) {
         List<ClazzResponse> clazzResponses = new ArrayList<>();
         if (StringUtils.isNullOrEmpty(userId)) {
@@ -54,9 +63,8 @@ public class ClazzServiceImpl implements ClazzService {
         }
         List<ClazzMember> clazzMembers = clazzMemberRepository.findByUserId(userId);
         List<Clazz> clazzList = clazzMembers.stream().map(ClazzMember::getClazz).collect(Collectors.toList());
-        return  clazzList.stream().map(i->getResponseMapByClazz(i)).collect(Collectors.toList());
+        return clazzList.stream().map(i -> getResponseMapByClazz(i)).collect(Collectors.toList());
     }
-
 
 
     @Override

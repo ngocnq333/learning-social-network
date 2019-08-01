@@ -21,4 +21,6 @@ public interface ContentService {
     List<ContentResponse> findContentByClassId(int classId);
     void deleteContentById(int idContent);
 
+    boolean exitContent(int idContent);
+
 }

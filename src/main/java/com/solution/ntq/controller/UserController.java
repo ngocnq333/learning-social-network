@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @CrossOrigin
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1")
 public class UserController {
     private UserService userService;
     private TokenRepository tokenRepository;
@@ -29,7 +29,7 @@ public class UserController {
     /**
      * Get an user detail
      */
-    @GetMapping("/api/v1/account")
+    @GetMapping("/account")
     public ResponseEntity<Response<User>> getUserDetail(@RequestHeader("id_token") String idToken) {
         Token token = tokenRepository.findTokenByIdToken(idToken);
         User user = userService.getUserById(token.getUser().getId());
@@ -40,7 +40,7 @@ public class UserController {
     /**
      * Get an user detail
      */
-    @GetMapping("/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<Response<User>> getUserDetails(@PathVariable("userId") String userId) {
         User user = userService.getUserById(userId);
         Response<User> response = new Response<>(HttpStatus.OK.value(),user);
