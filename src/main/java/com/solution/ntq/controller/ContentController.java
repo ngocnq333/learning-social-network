@@ -5,7 +5,6 @@ import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.service.base.ContentService;
-import com.solution.ntq.service.validator.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1/contents")
 public class ContentController {
     private ContentService contentService;
+    private ResponseEntity<Response<ContentRequest>> responseResponseEntity;
 
 
     @PutMapping
@@ -31,14 +31,15 @@ public class ContentController {
 
         Response<ContentRequest> response = new Response<>();
 
-        if (!Validator.isValidContentRequest(contentRequest)) {
-            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        if (contentService.addContent(contentRequest, idToken)) {
+            response.setData(contentRequest);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return responseResponseEntity;
         }
-        contentService.addContent(contentRequest,idToken);
-        response.setData(contentRequest);
-        response.setCodeStatus(ResponseCode.OK.value());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+
+        response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
 
     }
 
@@ -47,14 +48,14 @@ public class ContentController {
 
         Response<ContentRequest> response = new Response<>();
 
-        if (Validator.isValidContentRequest(contentRequest)) {
-            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        if (contentService.updateContent(contentRequest, idToken)) {
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        contentService.updateContent(contentRequest,idToken);
-        response.setData(contentRequest);
-        response.setCodeStatus(ResponseCode.OK.value());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+
+        response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
 
     }
     @GetMapping("/{contentId}")
