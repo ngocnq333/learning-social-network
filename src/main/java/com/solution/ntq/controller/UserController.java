@@ -39,9 +39,9 @@ public class UserController {
     /**
      * Get an user detail
      */
-    @GetMapping("/api/v1/users/{idUser}")
-    public ResponseEntity<Response<User>> getUserDetails(@PathVariable("idUser") String idUser) {
-        User user = userService.getUserById(idUser);
+    @GetMapping("/api/v1/users/{userId}")
+    public ResponseEntity<Response<User>> getUserDetails(@PathVariable("userId") String userId) {
+        User user = userService.getUserById(userId);
         Response<User> response = new Response<>(HttpStatus.OK.value(),user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
