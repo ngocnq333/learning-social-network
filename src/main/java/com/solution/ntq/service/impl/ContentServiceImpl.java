@@ -83,7 +83,6 @@ public class ContentServiceImpl implements ContentService {
     public List<Content> getPendingItemByClassId(int classId) {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
-
     /**
      *
      * @param contentId
