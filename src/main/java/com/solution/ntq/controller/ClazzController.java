@@ -1,5 +1,8 @@
 package com.solution.ntq.controller;
 
+import com.solution.ntq.common.constant.ResponseCode;
+import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.controller.request.ClazzMemberRequest;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.repository.ClazzRepository;
@@ -23,8 +26,6 @@ public class ClazzController {
 
 
     private ClazzService clazzService;
-    private ClazzRepository clazzRepository;
-
     /**
      * fix data of application
      *
@@ -54,4 +55,22 @@ public class ClazzController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
+    @PostMapping("/{classId}/users/{userId}")
+    public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@RequestHeader("id_token") String idToken, @PathVariable("classId") int classId
+            , @PathVariable("userId") String userId) {
+        Response<ClazzMemberRequest> response = new Response<>();
+        try {
+            clazzService.setCaptainForClass(classId, idToken, userId);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+        } catch (Exception e) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

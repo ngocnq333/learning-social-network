@@ -1,8 +1,6 @@
 package com.solution.ntq.common.constant;
 
 
-import org.springframework.lang.Nullable;
-
 public enum ResponseCode {
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
     CONFLICT(409, "Conflict"),
@@ -39,28 +37,6 @@ public enum ResponseCode {
     }
 
 
-    @Nullable
-    public static ResponseCode resolve(int statusCode) {
-        ResponseCode[] var1 = values();
-        int var2 = var1.length;
 
-        for (int var3 = 0; var3 < var2; ++var3) {
-            ResponseCode status = var1[var3];
-            if (status.value == statusCode) {
-                return status;
-            }
-        }
-
-        return null;
-    }
-
-    public static ResponseCode valueOf(int statusCode) {
-        ResponseCode status = resolve(statusCode);
-        if (status == null) {
-            throw new IllegalArgumentException("No matching constant for [" + statusCode + "]");
-        } else {
-            return status;
-        }
-    }
 }
 
