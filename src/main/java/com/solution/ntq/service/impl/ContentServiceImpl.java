@@ -34,7 +34,7 @@ public class ContentServiceImpl implements ContentService {
     public void addContent(ContentRequest contentRequest, String idToken) {
         if (!Validator.isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
-        } else {
+        }
             Content content;
             ObjectMapper mapper = new ObjectMapper();
             Token token = tokenRepository.findTokenByIdToken(idToken);
@@ -48,21 +48,20 @@ public class ContentServiceImpl implements ContentService {
             content.setDone(false);
             content.setAuthorId(userId);
             content.setThumbnail(clazz.getThumbnail());
-            content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
+            content.setAvatar(token.getUser().getPicture());
             contentRepository.save(content);
-        }
+
     }
 
     @Override
     public void updateContent(ContentRequest contentRequest, String idToken) {
         if (!Validator.isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
-        } else {
+        }
             Content content = new Content();
             ObjectMapper mapper = new ObjectMapper();
             Token token = tokenRepository.findTokenByIdToken(idToken);
             String userId = token.getUser().getId();
-
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             content.setId(contentRequest.getId());
             Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
@@ -72,11 +71,11 @@ public class ContentServiceImpl implements ContentService {
             content.setClazz(clazz);
             content.setAuthorId(userId);
             content.setThumbnail(clazz.getThumbnail());
-            content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
+            content.setAvatar(token.getUser().getPicture());
             contentRepository.save(content);
         }
 
-        }
+
 
 
     @Override

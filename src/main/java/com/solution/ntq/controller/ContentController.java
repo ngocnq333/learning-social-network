@@ -41,6 +41,12 @@ public class ContentController {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+        catch (Exception e)
+        {
+            response.setData(contentRequest);
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
@@ -57,6 +63,12 @@ public class ContentController {
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e)
+        {
+            response.setData(contentRequest);
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
