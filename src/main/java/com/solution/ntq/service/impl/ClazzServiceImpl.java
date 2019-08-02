@@ -13,7 +13,7 @@ import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.repository.ClazzMemberRepository;
 import com.solution.ntq.repository.ClazzRepository;
 import com.solution.ntq.service.base.ClazzService;
-import com.solution.ntq.service.validator.StringUtils;
+import com.solution.ntq.common.validator.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -96,12 +96,12 @@ public class ClazzServiceImpl implements ClazzService {
         clazzMember.setStatus(Status.JOINED.value());
         ClazzMember clazzMember1 = new ClazzMember();
         clazzMember1.setClazz(clazz1);
-        clazzMember1.setCapital(true);
+        clazzMember1.setCaptain(true);
         clazzMember1.setUser(user1);
         clazzMember1.setStatus(Status.JOINED.value());
         ClazzMember clazzMember2 = new ClazzMember();
         clazzMember2.setClazz(clazz);
-        clazzMember2.setCapital(true);
+        clazzMember2.setCaptain(true);
         clazzMember2.setUser(user);
         clazzMember2.setStatus(Status.JOINED.value());
         ClazzMember clazzMember3 = new ClazzMember();
@@ -165,7 +165,7 @@ public class ClazzServiceImpl implements ClazzService {
 
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         clazzResponse = mapper.convertValue(clazz, ClazzResponse.class);
-        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCapitalTrue(clazzResponse.getId());
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzResponse.getId());
         clazzResponse.setCaptainName(clazzMember.getUser().getName());
         clazzResponse.setCaptainId(clazzMember.getUser().getId());
         clazzResponse.setMembers(clazzMemberRepository.countAllByClazzId(clazz.getId()));

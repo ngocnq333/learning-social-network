@@ -28,7 +28,7 @@ public class ClazzMember {
     @ManyToOne( cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     User user;
-    boolean isCapital;
+    boolean isCaptain;
     Date joinDate;
     String status;
 

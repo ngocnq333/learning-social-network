@@ -3,19 +3,20 @@ package com.solution.ntq.service.impl;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.common.validator.Validator;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.repository.ClazzRepository;
+import com.solution.ntq.repository.ContentRepository;
 import com.solution.ntq.repository.TokenRepository;
 import com.solution.ntq.repository.UserRepository;
 import com.solution.ntq.repository.entities.Clazz;
 import com.solution.ntq.repository.entities.Content;
-import com.solution.ntq.repository.ContentRepository;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,49 +32,56 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void addContent(ContentRequest contentRequest, String idToken) {
-        Content content;
-        ObjectMapper mapper = new ObjectMapper();
-        Token token = tokenRepository.findTokenByIdToken(idToken);
-        String userId = token.getUser().getId();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        content = mapper.convertValue(contentRequest, Content.class);
-        Clazz clazz= clazzRepository.findClazzById(contentRequest.getClassId());
-        content.setClazz(clazz);
-        content.setApprove(false);
-        content.setTimePost(new Date());
-        content.setDone(false);
-        content.setAuthorId(userId);
-        content.setThumbnail(clazz.getThumbnail());
-        content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
-        contentRepository.save(content);
+        if (!Validator.isValidContentRequest(contentRequest)) {
+            throw new InvalidRequestException("Invalid Request !");
+        }
+            Content content;
+            ObjectMapper mapper = new ObjectMapper();
+            Token token = tokenRepository.findTokenByIdToken(idToken);
+            String userId = token.getUser().getId();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            content = mapper.convertValue(contentRequest, Content.class);
+            Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
+            content.setClazz(clazz);
+            content.setApprove(false);
+            content.setTimePost(new Date());
+            content.setDone(false);
+            content.setAuthorId(userId);
+            content.setThumbnail(clazz.getThumbnail());
+            content.setAvatar(token.getUser().getPicture());
+            contentRepository.save(content);
+
     }
 
     @Override
-    public void updateContent(ContentRequest contentRequest,String idToken) {
-        Content content=new Content();
-        ObjectMapper mapper = new ObjectMapper();
-        Token token = tokenRepository.findTokenByIdToken(idToken);
-        String userId = token.getUser().getId();
+    public void updateContent(ContentRequest contentRequest, String idToken) {
+        if (!Validator.isValidContentRequest(contentRequest)) {
+            throw new InvalidRequestException("Invalid Request !");
+        }
+            Content content = new Content();
+            ObjectMapper mapper = new ObjectMapper();
+            Token token = tokenRepository.findTokenByIdToken(idToken);
+            String userId = token.getUser().getId();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            content.setId(contentRequest.getId());
+            Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
 
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        content.setId(contentRequest.getId());
-        Clazz clazz= clazzRepository.findClazzById(contentRequest.getClassId());
+            content = mapper.convertValue(contentRequest, Content.class);
+            content.setTimePost(new Date());
+            content.setClazz(clazz);
+            content.setAuthorId(userId);
+            content.setThumbnail(clazz.getThumbnail());
+            content.setAvatar(token.getUser().getPicture());
+            contentRepository.save(content);
+        }
 
-        content = mapper.convertValue(contentRequest, Content.class);
-        content.setTimePost(new Date());
-        content.setClazz(clazz);
-        content.setAuthorId(userId);
-        content.setThumbnail(clazz.getThumbnail());
-        content.setAvatar("https://lh6.googleusercontent.com/-nMY8qLCt46E/AAAAAAAAAAI/AAAAAAAAABI/4YHZ7M15Uks/photo.jpg");
-        contentRepository.save(content);
 
-    }
+
 
     @Override
     public List<Content> getPendingItemByClassId(int classId) {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
-
     /**
      *
      * @param contentId

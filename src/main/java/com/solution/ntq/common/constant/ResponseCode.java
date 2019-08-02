@@ -4,6 +4,8 @@ package com.solution.ntq.common.constant;
 import org.springframework.lang.Nullable;
 
 public enum ResponseCode {
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
+    CONFLICT(409, "Conflict"),
     CONTINUE(100, "Continue"),
     SWITCHING_PROTOCOLS(101, "Switching Protocols"),
     PROCESSING(102, "Processing"),
