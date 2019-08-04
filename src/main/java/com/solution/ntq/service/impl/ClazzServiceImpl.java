@@ -45,7 +45,7 @@ public class ClazzServiceImpl implements ClazzService {
     @Override
     public List<ClazzResponse> getClassByUser(String userId) {
         List<ClazzResponse> clazzResponses = new ArrayList<>();
-        if (StringUtils.isNullOrEmpty(userId)) {
+        if (!StringUtils.isNullOrEmpty(userId)) {
             List<Clazz> clazzList = clazzRepository.findAll();
             for (Clazz clazz : clazzList) {
                 clazzResponses.add(getResponseMapByClazz(clazz));
@@ -124,8 +124,6 @@ public class ClazzServiceImpl implements ClazzService {
     public ClazzResponse getClassById(int clazzId) {
 
         Clazz clazz = clazzRepository.findClazzById(clazzId);
-
-
         return getResponseMapByClazz(clazz);
     }
 
