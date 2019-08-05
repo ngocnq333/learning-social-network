@@ -5,7 +5,6 @@ import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.ClazzMemberRequest;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.controller.response.Response;
-import com.solution.ntq.repository.ClazzRepository;
 import com.solution.ntq.service.base.ClazzService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,11 +42,21 @@ public class ClazzController {
 
     @GetMapping("/{classId}")
     public ResponseEntity<Response<ClazzResponse>> getClassById(@PathVariable("classId") int clazzId, @RequestHeader("id_token") String tokenId) {
-        ClazzResponse clazzResponse = clazzService.getClassById(clazzId, tokenId);
         Response<ClazzResponse> response = new Response<>();
-        response.setCodeStatus(HttpStatus.OK.value());
-        response.setData(clazzResponse);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        try {
+
+            ClazzResponse clazzResponse = clazzService.getClassById(clazzId, tokenId);
+            response.setCodeStatus(HttpStatus.OK.value());
+            response.setData(clazzResponse);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+
+            response.setCodeStatus(HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @PutMapping("/add-data")
     public ResponseEntity<String> addData() throws ParseException {
@@ -60,7 +69,7 @@ public class ClazzController {
             , @PathVariable("userId") String userId) {
         Response<ClazzMemberRequest> response = new Response<>();
         try {
-            clazzService.setCaptainForClass(classId, idToken, userId);
+            clazzService.updateCaptainForClass(classId, idToken, userId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {

@@ -45,7 +45,7 @@ public class ClazzServiceImpl implements ClazzService {
     @Override
     public List<ClazzResponse> getClassByUser(String userId) {
         List<ClazzResponse> clazzResponses = new ArrayList<>();
-        if (!StringUtils.isNullOrEmpty(userId)) {
+        if (StringUtils.isNullOrEmpty(userId)) {
             List<Clazz> clazzList = clazzRepository.findAll();
             for (Clazz clazz : clazzList) {
                 clazzResponses.add(getResponseMapByClazz(clazz));
@@ -132,17 +132,16 @@ public class ClazzServiceImpl implements ClazzService {
         Token token = tokenRepository.findTokenByIdToken(tokenId);
         String userId = token.getUser().getId();
         ClazzResponse clazzResponse =getClassById(clazzId);
-        List<ClazzMember> clazzMembers = clazzRepository.findClazzById(clazzId).getClazzMembers();
-        Optional<ClazzMember> optional = clazzMembers.stream().filter(i -> i.getUser().getId().equals(userId)).findFirst();
-        if (optional.isPresent()) {
-            ClazzMember clazzMember = optional.get();
-            clazzResponse.setStatus(clazzMember.getStatus());
+        ClazzMember memberInClass = clazzMemberRepository.findByClazzIdAndUserId(clazzId,userId);
+        if (memberInClass ==null) {
+            throw new InvalidRequestException("Not have this member in class");
         }
+        clazzResponse.setStatus(memberInClass.getStatus());
         return clazzResponse;
     }
 
     @Override
-    public void setCaptainForClass(int clazzId, String tokenId, String userId) {
+    public void updateCaptainForClass(int clazzId, String tokenId, String userId) {
         Token token = tokenRepository.findTokenByIdToken(tokenId);
         String userIdCurrent = token.getUser().getId();
         if (clazzRepository.findClazzById(clazzId) == null) {
@@ -153,17 +152,15 @@ public class ClazzServiceImpl implements ClazzService {
         if (!captainMember.getUser().getId().equals(userIdCurrent)) {
             throw new InvalidRequestException("Current user not is captain of class !");
         }
-        List<ClazzMember> clazzMembers = clazzMemberRepository.findByClazzId(clazzId);
+       ClazzMember memberInClass = clazzMemberRepository.findByClazzIdAndUserId(clazzId,userId);
         // check member in class or not
-        Optional<ClazzMember> optional = clazzMembers.stream().filter(i -> i.getUser().getId().equals(userId)).findFirst();
-        // check not set captain for captain
-        if (!optional.isPresent() || (userRepository.findById(userId).getId().equals(captainMemberId))) {
+        if (memberInClass==null || (userRepository.findById(userId).getId().equals(captainMemberId))) {
             throw new InvalidRequestException("Not find user in class or invalid user !");
         }
-        ClazzMember clazzMember = optional.get();
-        clazzMember.setCaptain(true);
+
+        memberInClass.setCaptain(true);
         captainMember.setCaptain(false);
-        clazzMemberRepository.save(clazzMember);
+        clazzMemberRepository.save(memberInClass);
         clazzMemberRepository.save(captainMember);
 
     }

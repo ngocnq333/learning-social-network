@@ -10,9 +10,7 @@ import java.util.List;
 public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     List<ClazzMember> findByUserId(String userId);
     List<ClazzMember> findByClazzId(int clazzId);
-
-    ClazzMember findById(int id);
-
+    ClazzMember findByClazzIdAndUserId(int clazzId,String userId);
     int countAllByClazzId(int clazzid);
 
     void save(ClazzMember clazzMember);

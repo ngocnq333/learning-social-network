@@ -19,5 +19,5 @@ public interface ClazzService {
     ClazzResponse getClassById(int clazzId);
 
     ClazzResponse getClassById(int clazzId,String tokenId);
-    void setCaptainForClass(int  clazzId,String tokenId,String userId);
+    void updateCaptainForClass(int  clazzId,String tokenId,String userId);
 }
