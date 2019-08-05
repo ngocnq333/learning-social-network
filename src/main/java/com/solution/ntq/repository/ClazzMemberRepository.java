@@ -1,7 +1,6 @@
 package com.solution.ntq.repository;
 
 import com.solution.ntq.repository.entities.ClazzMember;
-
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
@@ -10,7 +9,12 @@ import java.util.List;
  */
 public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     List<ClazzMember> findByUserId(String userId);
-    ClazzMember findByClazzIdAndIsCaptainTrue(int clazzId);
-    int countAllByClazzId(int id);
+    List<ClazzMember> findByClazzId(int clazzId);
+    ClazzMember findByClazzIdAndUserId(int clazzId,String userId);
+    int countAllByClazzId(int clazzid);
 
+    void save(ClazzMember clazzMember);
+
+
+    ClazzMember findByClazzIdAndIsCaptainTrue(int id);
 }

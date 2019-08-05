@@ -3,17 +3,15 @@ package com.solution.ntq.service.impl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Status;
+import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.common.validator.StringUtils;
 import com.solution.ntq.controller.response.ClazzResponse;
-import com.solution.ntq.repository.ContentRepository;
-import com.solution.ntq.repository.TokenRepository;
-import com.solution.ntq.repository.entities.ClazzMember;
+import com.solution.ntq.repository.*;
 import com.solution.ntq.repository.entities.Clazz;
+import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.repository.entities.User;
-import com.solution.ntq.repository.ClazzMemberRepository;
-import com.solution.ntq.repository.ClazzRepository;
 import com.solution.ntq.service.base.ClazzService;
-import com.solution.ntq.common.validator.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 public class ClazzServiceImpl implements ClazzService {
 
     private ClazzRepository clazzRepository;
-
+    private UserRepository userRepository;
     private ClazzMemberRepository clazzMemberRepository;
     private ContentRepository contentRepository;
     private TokenRepository tokenRepository;
@@ -66,9 +65,9 @@ public class ClazzServiceImpl implements ClazzService {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         java.util.Date date = sdf.parse("2018-04-10T04:00:00.000Z");
-        java.util.Date date1 = sdf.parse("2018-04-10T04:00:00.000Z");
-        java.util.Date date2 = sdf.parse("2018-04-10T04:00:00.000Z");
-        java.util.Date date3 = sdf.parse("2018-04-10T04:00:00.000Z");
+        java.util.Date date1 = sdf.parse("2018-04-12T04:00:00.000Z");
+        java.util.Date date2 = sdf.parse("2018-04-13T04:00:00.000Z");
+        java.util.Date date3 = sdf.parse("2018-04-14T04:00:00.000Z");
 
         User user = new User();
         user.setId("a");
@@ -125,8 +124,6 @@ public class ClazzServiceImpl implements ClazzService {
     public ClazzResponse getClassById(int clazzId) {
 
         Clazz clazz = clazzRepository.findClazzById(clazzId);
-
-
         return getResponseMapByClazz(clazz);
     }
 
@@ -135,28 +132,37 @@ public class ClazzServiceImpl implements ClazzService {
         Token token = tokenRepository.findTokenByIdToken(tokenId);
         String userId = token.getUser().getId();
         ClazzResponse clazzResponse =getClassById(clazzId);
-        for ( ClazzMember member :clazzRepository.findClazzById(clazzId).getClazzMembers())
-        {
-
-            if(member.getUser().getId().contains(userId))
-            {
-                if(member.getStatus().equals(Status.APPROVE.value()))
-                {
-                    clazzResponse.setStatus(Status.APPROVE.value());
-                    break;
-                }
-                else
-                {
-                    clazzResponse.setStatus(Status.JOINED.value());
-                    break;
-                }
-
-            }
-                clazzResponse.setStatus(Status.NOTJOIN.value());
-                break;
-
+        ClazzMember memberInClass = clazzMemberRepository.findByClazzIdAndUserId(clazzId,userId);
+        if (memberInClass ==null) {
+            throw new InvalidRequestException("Not have this member in class");
         }
+        clazzResponse.setStatus(memberInClass.getStatus());
         return clazzResponse;
+    }
+
+    @Override
+    public void updateCaptainForClass(int clazzId, String tokenId, String userId) {
+        Token token = tokenRepository.findTokenByIdToken(tokenId);
+        String userIdCurrent = token.getUser().getId();
+        if (clazzRepository.findClazzById(clazzId) == null) {
+            throw new InvalidRequestException("Not have this class in system !");
+        }
+        ClazzMember captainMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
+        String captainMemberId = captainMember.getUser().getId();
+        if (!captainMember.getUser().getId().equals(userIdCurrent)) {
+            throw new InvalidRequestException("Current user not is captain of class !");
+        }
+       ClazzMember memberInClass = clazzMemberRepository.findByClazzIdAndUserId(clazzId,userId);
+        // check member in class or not
+        if (memberInClass==null || (userRepository.findById(userId).getId().equals(captainMemberId))) {
+            throw new InvalidRequestException("Not find user in class or invalid user !");
+        }
+
+        memberInClass.setCaptain(true);
+        captainMember.setCaptain(false);
+        clazzMemberRepository.save(memberInClass);
+        clazzMemberRepository.save(captainMember);
+
     }
 
     private ClazzResponse getResponseMapByClazz(Clazz clazz) {
