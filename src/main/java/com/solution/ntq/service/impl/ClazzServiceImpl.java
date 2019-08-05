@@ -3,6 +3,7 @@ package com.solution.ntq.service.impl;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Status;
+import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.controller.request.ClazzMemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.common.exception.InvalidRequestException;
@@ -170,9 +171,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     private ClazzResponse getResponseMapByClazz(Clazz clazz) {
         ClazzResponse clazzResponse;
-        ObjectMapper mapper = new ObjectMapper();
-
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ObjectMapper mapper = ConvertObject.mapper();
         clazzResponse = mapper.convertValue(clazz, ClazzResponse.class);
         ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainIsTrue(clazzResponse.getId());
         clazzResponse.setCaptainName(clazzMember.getUser().getName());
@@ -198,8 +197,7 @@ public class ClazzServiceImpl implements ClazzService {
 
 
     private ClazzMemberResponse convertToResponse(ClazzMember clazzMember){
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        ObjectMapper mapper = ConvertObject.mapper();
         ClazzMemberResponse response = mapper.convertValue(clazzMember,ClazzMemberResponse.class);
         response.setUserId(clazzMember.getUser().getId());
         response.setName(clazzMember.getUser().getName());
@@ -212,8 +210,7 @@ public class ClazzServiceImpl implements ClazzService {
 
 
 
-    @Override
-    public boolean isIllegalParamsAddMember(String userId, String userIdAdd, int classId) {
+    private boolean isIllegalParamsAddMember(String userId, String userIdAdd, int classId) {
         boolean checkUserIdNull = StringUtils.isBlank(userId);
         boolean checkUserIAdddNull = StringUtils.isBlank(userId);
         if (checkUserIAdddNull || checkUserIdNull){
@@ -241,6 +238,9 @@ public class ClazzServiceImpl implements ClazzService {
     @Override
     public ClazzMemberResponse addClazzMember(ClazzMemberRequest clazzMemberRequest, int classId) {
         String[] status = {"joined","pending","has left"};
+        if (isIllegalParamsAddMember(clazzMemberRequest.getUserId(), clazzMemberRequest.getUserIdAdd(),classId)){
+            return null;
+        }
         ClazzMember newclazzMember = new ClazzMember();
         User user = userRepository.findById(clazzMemberRequest.getUserIdAdd());
         newclazzMember.setUser(user);

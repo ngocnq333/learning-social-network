@@ -82,7 +82,7 @@ public class ClazzController {
             return new ResponseEntity<>(response,HttpStatus.OK);
         }
         catch (Exception ex){
-            return new ResponseEntity<>(response,HttpStatus.OK);
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -91,20 +91,15 @@ public class ClazzController {
         Response<ClazzMemberResponse> response = new Response<>();
         ClazzMemberResponse memberResponse ;
 
-        if (clazzService.isIllegalParamsAddMember(clazzMemberRequest.getUserId(),clazzMemberRequest.getUserIdAdd(),classId)){
-            response.setCodeStatus(ResponseCode.NO_CONTENT.value());
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        }
         try{
 
             memberResponse = clazzService.addClazzMember(clazzMemberRequest,classId);
-
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(memberResponse);
             return new ResponseEntity<>(response,HttpStatus.OK);
         }
         catch (Exception ex){
-            return new ResponseEntity<>(response,HttpStatus.OK);
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/{classId}/users/{userId}")

@@ -25,11 +25,9 @@ public interface ClazzService {
 
     List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId);
 
-    boolean isIllegalParamsAddMember(String userId, String userIdAdd, int classId);
-
     boolean checkUserIsCaptainOfClazz(String userId, int classId);
 
-    ClazzMemberResponse addClazzMember(ClazzMemberRequest userIdAdd , int classId);
+    ClazzMemberResponse addClazzMember(ClazzMemberRequest clazzMemberRequest , int classId);
 
     void updateCaptainForClass(int  clazzId,String tokenId,String userId);
 }

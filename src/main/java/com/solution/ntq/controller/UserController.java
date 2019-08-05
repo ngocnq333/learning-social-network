@@ -61,15 +61,21 @@ public class UserController {
             return new Response<>(HttpStatus.NOT_FOUND.value(), null);
         }
     }
-    @GetMapping("/api/v1/accounts")
+    @GetMapping("/")
     public ResponseEntity<Response<List<UserResponse>>> getListUsersHaveEmail(@RequestParam (value = "userEmail") String userEmail){
         Response<List<UserResponse>> response = new Response<>();
         if (StringUtils.isBlank(userEmail)){
             response.setCodeStatus(ResponseCode.NO_CONTENT.value());
             return new ResponseEntity<>(response,HttpStatus.OK);
         }
-        response.setData(userService.findByEmailContains(userEmail));
-        response.setCodeStatus(ResponseCode.OK.value());
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        try{
+
+            response.setData(userService.findByEmailContains(userEmail));
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
