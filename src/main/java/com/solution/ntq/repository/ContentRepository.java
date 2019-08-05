@@ -24,4 +24,6 @@ public interface ContentRepository extends Repository<Content,Integer> {
     @Transactional
     void deleteById(int idContent);
 
+    boolean existsById(int idContent);
+
 }

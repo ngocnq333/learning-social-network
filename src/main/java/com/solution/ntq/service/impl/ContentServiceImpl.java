@@ -139,6 +139,8 @@ public class ContentServiceImpl implements ContentService {
         contentRepository.deleteById(idContent);
     }
 
-
-
+    @Override
+    public boolean exitContent(int idContent) {
+        return contentRepository.existsById(idContent);
+    }
 }

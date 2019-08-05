@@ -5,9 +5,6 @@ import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.GoogleService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,12 +16,9 @@ import java.text.ParseException;
  * Date update 24/7/2019
  */
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Service
 public class GoogleServiceImpl implements GoogleService {
-
-    @Autowired
     private GoogleUtils googleUtils;
 
 
