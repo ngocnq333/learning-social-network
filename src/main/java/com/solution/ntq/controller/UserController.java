@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @CrossOrigin
+@RequestMapping("/api/v1/users")
 public class UserController {
     private UserService userService;
     private TokenRepository tokenRepository;
@@ -36,6 +37,15 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * Get an user detail
+     */
+    @GetMapping("/{userId}")
+    public ResponseEntity<Response<User>> getUserDetails(@PathVariable("userId") String userId) {
+        User user = userService.getUserById(userId);
+        Response<User> response = new Response<>(HttpStatus.OK.value(),user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @GetMapping("/Token/{idUser}")
     public Response getToken(@PathVariable("idUser") String idUser) {
@@ -45,6 +55,5 @@ public class UserController {
         } else {
             return new Response<>(HttpStatus.NOT_FOUND.value(), null);
         }
-
     }
 }
