@@ -17,6 +17,4 @@ public interface ClazzRepository extends Repository<Clazz,Integer> {
     Clazz findClazzById(int clazzId);
     List<Clazz> findAll();
 
-
-
 }
