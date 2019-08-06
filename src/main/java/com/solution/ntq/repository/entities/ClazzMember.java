@@ -11,8 +11,6 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 /**
  * @author Duc Anh
  */

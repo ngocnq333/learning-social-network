@@ -1,9 +1,11 @@
 package com.solution.ntq.repository;
 
 
-import com.solution.ntq.repository.entities.Clazz;
 import com.solution.ntq.repository.entities.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Nam_Phuong
@@ -29,4 +31,9 @@ public interface UserRepository extends org.springframework.data.repository.Repo
     boolean existsById(String id);
 
     User findUserByTokenIdToken(String tokenId);
+
+    @Query("FROM User WHERE UPPER(email) LIKE %?#{[0].toUpperCase()}%")
+    List<User> findByEmailContains(String email);
+
+    List<User> findAll();
 }

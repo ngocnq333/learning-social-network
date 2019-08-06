@@ -1,7 +1,7 @@
 package com.solution.ntq.service.base;
-
-
+import com.solution.ntq.controller.response.UserResponse;
 import com.solution.ntq.repository.entities.User;
+import java.util.List;
 
 /**
  * @author Nam_Phuong
@@ -13,5 +13,11 @@ public interface UserService {
 
     User getUserByTokenId(String id);
 
+    List<User> findAll();
+
     boolean existsUser(String userId);
+
+    List<UserResponse> findByEmailContains(String email);
+
+
 }
