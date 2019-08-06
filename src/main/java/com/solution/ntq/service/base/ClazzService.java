@@ -4,10 +4,8 @@ import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.repository.entities.Clazz;
-
 import java.text.ParseException;
 import java.util.List;
-
 /**
  * @author Duc Anh
  * @version 1.01

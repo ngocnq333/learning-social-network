@@ -1,10 +1,10 @@
 package com.solution.ntq.controller;
 
 import com.solution.ntq.common.constant.ResponseCode;
+import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.ClazzMemberRequest;
 import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
-import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.repository.ClazzMemberRepository;
@@ -73,15 +73,25 @@ public class ClazzController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-
+    @GetMapping("/{classId}/users")
+    public ResponseEntity<Response<List<ClazzMemberResponse>>> getListMemberOfClazz(@PathVariable(value = "classId") int classId){
+        Response<List<ClazzMemberResponse>> response = new Response<>();
+        try {
+            List<ClazzMemberResponse> clazzMemberResponseList = clazzService.findAllMemberByClazzId(classId);
+            response.setCodeStatus(ResponseCode.OK.value());
+            response.setData(clazzMemberResponseList);
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PutMapping("/{classId}/users")
     public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest , @PathVariable(value = "classId") int classId){
         Response<ClazzMemberResponse> response = new Response<>();
         ClazzMemberResponse memberResponse ;
-
         try{
-
             memberResponse = clazzService.addClazzMember(memberRequest,classId);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(memberResponse);
@@ -91,7 +101,6 @@ public class ClazzController {
             return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @PostMapping("/{classId}/users/{userId}")
     public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@RequestHeader("id_token") String idToken, @PathVariable("classId") int classId

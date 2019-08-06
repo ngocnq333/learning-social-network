@@ -1,9 +1,9 @@
 package com.solution.ntq.service.impl;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.solution.ntq.common.utils.ConvertObject;
+import com.solution.ntq.repository.ClazzMemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.controller.response.UserResponse;
-import com.solution.ntq.repository.ClazzMemberRepository;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.repository.UserRepository;
 import com.solution.ntq.service.base.UserService;
@@ -57,8 +57,7 @@ public class UserServiceImpl implements UserService {
         return userResponses;
     }
     private UserResponse convertUserToUserResponse(User user){
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        ObjectMapper mapper = ConvertObject.mapper();
         return mapper.convertValue(user,UserResponse.class);
     }
 
