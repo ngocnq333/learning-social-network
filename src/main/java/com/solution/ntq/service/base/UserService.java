@@ -16,13 +16,11 @@ public interface UserService {
 
     User getUserByTokenId(String id);
 
-    List<UserResponse> findByEmailContains(String email);
-
     List<User> findAll();
 
     boolean existsUser(String userId);
+
     List<UserResponse> findByEmailContains(String email);
 
-    List<User> findAll();
 
 }

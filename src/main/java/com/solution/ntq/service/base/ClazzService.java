@@ -1,6 +1,6 @@
 package com.solution.ntq.service.base;
 
-import com.solution.ntq.controller.request.ClazzMemberRequest;
+import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.repository.entities.Clazz;
@@ -28,15 +28,7 @@ public interface ClazzService {
 
     boolean checkUserIsCaptainOfClazz(String userId, int classId);
 
-    ClazzMemberResponse addClazzMember(ClazzMemberRequest clazzMemberRequest , int classId);
-
-    void updateCaptainForClass(int  clazzId,String tokenId,String userId);
-
-    List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId);
-
-    boolean checkUserIsCaptainOfClazz(String userId, int classId);
-
-    ClazzMemberResponse addClazzMember(ClazzMemberRequest clazzMemberRequest , int classId);
+    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId);
 
     void updateCaptainForClass(int clazzId, String tokenId, String userId);
 

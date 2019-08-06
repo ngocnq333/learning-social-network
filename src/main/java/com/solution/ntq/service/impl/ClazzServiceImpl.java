@@ -1,13 +1,9 @@
 package com.solution.ntq.service.impl;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.common.utils.ConvertObject;
-import com.solution.ntq.controller.request.ClazzMemberRequest;
-import com.solution.ntq.controller.response.ClazzMemberResponse;
-import com.solution.ntq.common.utils.ConvertObject;
-import com.solution.ntq.controller.request.ClazzMemberRequest;
+import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.response.ClazzResponse;
@@ -51,7 +47,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public boolean isCaptainClazz(String userId, int clazzId) {
-        if (StringUtils.isNullOrEmpty(userId)) {
+        if (StringUtils.isBlank(userId)) {
             return false;
         }
         ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
@@ -247,78 +243,16 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public ClazzMemberResponse addClazzMember(ClazzMemberRequest clazzMemberRequest, int classId) {
+    public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId) {
         String[] status = {"joined","pending","has left"};
-        if (isIllegalParamsAddMember(clazzMemberRequest.getUserId(), clazzMemberRequest.getUserIdAdd(),classId)){
+        if (isIllegalParamsAddMember(memberRequest.getUserId(), memberRequest.getUserIdAdd(),classId)){
             return null;
         }
         ClazzMember newclazzMember = new ClazzMember();
-        User user = userRepository.findById(clazzMemberRequest.getUserIdAdd());
+        User user = userRepository.findById(memberRequest.getUserIdAdd());
         newclazzMember.setUser(user);
 
-        if (checkUserIsCaptainOfClazz(clazzMemberRequest.getUserId(),classId)){
-            newclazzMember.setStatus(status[0]);
-        }
-        else newclazzMember.setStatus(status[1]);
-
-        newclazzMember.setJoinDate(new Date());
-
-        newclazzMember.setClazz(clazzRepository.findClazzById(classId));
-        newclazzMember.setCaptain(false);
-        return convertToResponse(clazzMemberRepository.save(newclazzMember));
-
-    }
-
-    private ClazzMemberResponse convertToResponse(ClazzMember clazzMember){
-        ObjectMapper mapper = ConvertObject.mapper();
-        ClazzMemberResponse response = mapper.convertValue(clazzMember,ClazzMemberResponse.class);
-        response.setUserId(clazzMember.getUser().getId());
-        response.setName(clazzMember.getUser().getName());
-        response.setEmail(clazzMember.getUser().getEmail());
-        response.setAvatar(clazzMember.getUser().getPicture());
-        response.setSkype(clazzMember.getUser().getSkype());
-        response.setJoinDate(clazzMember.getJoinDate());
-        return response;
-    }
-
-
-
-    private boolean isIllegalParamsAddMember(String userId, String userIdAdd, int classId) {
-        boolean checkUserIdNull = StringUtils.isBlank(userId);
-        boolean checkUserIAdddNull = StringUtils.isBlank(userId);
-        if (checkUserIAdddNull || checkUserIdNull){
-            return true;
-        }
-
-        User checkUserExist = userRepository.findById(userId);
-        User checkUserAddExist = userRepository.findById(userIdAdd);
-
-        ClazzMember clazzMemberContainUserIdAdd = clazzMemberRepository.findByClazzIdAndUserId(classId,userIdAdd);
-
-
-        Clazz checkClassExist = clazzRepository.findClazzById(classId);
-
-
-        return (  checkUserExist == null || checkUserAddExist == null || checkClassExist == null || clazzMemberContainUserIdAdd != null);
-    }
-
-    @Override
-    public boolean checkUserIsCaptainOfClazz(String userId, int classId) {
-        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainIsTrue(classId);
-        return clazzMember.getUser().getId().equals(userId);
-    }
-
-    @Override
-    public ClazzMemberResponse addClazzMember(ClazzMemberRequest clazzMemberRequest, int classId) {
-        String[] status = {"joined","pending","has left"};
-        if (isIllegalParamsAddMember(clazzMemberRequest.getUserId(), clazzMemberRequest.getUserIdAdd(),classId)){
-            return null;
-        }
-        ClazzMember newclazzMember = new ClazzMember();
-        User user = userRepository.findById(clazzMemberRequest.getUserIdAdd());
-        newclazzMember.setUser(user);
-
-        if (checkUserIsCaptainOfClazz(clazzMemberRequest.getUserId(),classId)){
+        if (checkUserIsCaptainOfClazz(memberRequest.getUserId(),classId)){
             newclazzMember.setStatus(status[0]);
         }
         else newclazzMember.setStatus(status[1]);

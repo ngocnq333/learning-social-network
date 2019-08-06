@@ -67,10 +67,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-    @Override
     public boolean existsUser(String userId) {
         return userRepository.existsById(userId);
     }
