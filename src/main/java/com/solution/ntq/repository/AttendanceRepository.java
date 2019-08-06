@@ -5,6 +5,8 @@ import org.springframework.data.repository.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
+
 /**
  * @author Nam_Phuong
  * @version 1.01
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @org.springframework.stereotype.Repository
 public interface AttendanceRepository extends Repository<Attendance, Integer> {
+  List<Attendance> findByContentId(int contentId);
     void save(Attendance content);
 
     boolean existsById(int idAttendance);

@@ -3,7 +3,10 @@ package com.solution.ntq.repository;
 
 import com.solution.ntq.repository.entities.Clazz;
 import com.solution.ntq.repository.entities.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Nam_Phuong

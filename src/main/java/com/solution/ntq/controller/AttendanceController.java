@@ -3,6 +3,7 @@ package com.solution.ntq.controller;
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.AttendanceRequest;
+import com.solution.ntq.controller.response.AttendanceResponse;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.service.base.AttendanceService;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author Nam_Phuong
@@ -38,7 +40,19 @@ public class AttendanceController {
         } catch (Exception ex) {
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    @GetMapping
+    public ResponseEntity<Response<List<AttendanceResponse>>>  getListAttendance(@RequestParam(value = "contentId") int contentId) {
+        Response<List<AttendanceResponse>> response = new Response<>();
+        try {
+            List<AttendanceResponse> attendanceResponseList = attendanceService.getListAttendance(contentId);
+            response.setCodeStatus(HttpStatus.OK.value());
+            response.setData(attendanceResponseList);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
