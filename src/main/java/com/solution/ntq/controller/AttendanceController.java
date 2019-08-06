@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author Nam_Phuong
@@ -19,8 +20,8 @@ import javax.validation.Valid;
  */
 @RestController
 @AllArgsConstructor
+@NoArgsConstructor
 @CrossOrigin
-@RequestMapping("/api/v1/attendances")
 public class AttendanceController {
     private AttendanceService attendanceService;
 
@@ -39,6 +40,23 @@ public class AttendanceController {
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<Response<List<AttendanceResponse>>>  getListAttendance(@RequestParam(value = "contentId") int contentId) {
+        Response<List<AttendanceResponse>> response = new Response<>();
+        try {
+            response.setCodeStatus(HttpStatus.OK.value());
+            List<AttendanceResponse> attendanceResponseList = attendanceService.getListAttendance(contentId);
+            response.setData(attendanceResponseList);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (InvalidRequestException ex){
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception ex) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 }
