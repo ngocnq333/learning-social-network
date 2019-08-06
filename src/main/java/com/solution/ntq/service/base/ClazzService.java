@@ -21,7 +21,7 @@ public interface ClazzService {
 
     ClazzResponse getClassById(int clazzId);
 
-    ClazzResponse getClassById(int clazzId, String tokenId);
+    ClazzResponse getClassById(int clazzId,String tokenId);
 
     List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId);
 

@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 /**
  * @author Nam_Phuong
@@ -59,7 +61,7 @@ public class UserController {
             return new Response<>(HttpStatus.NOT_FOUND.value(), null);
         }
     }
-    @GetMapping("/")
+    @GetMapping("/accounts")
     public ResponseEntity<Response<List<UserResponse>>> getListUsersHaveEmail(@RequestParam (value = "userEmail") String userEmail){
         Response<List<UserResponse>> response = new Response<>();
         if (StringUtils.isBlank(userEmail)){
@@ -76,5 +78,4 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

@@ -245,9 +245,6 @@ public class ClazzServiceImpl implements ClazzService {
     @Override
     public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId) {
         String[] status = {"joined","pending","has left"};
-        if (isIllegalParamsAddMember(clazzMemberRequest.getUserId(), clazzMemberRequest.getUserIdAdd(),classId)){
-            return null;
-        }
         if (isIllegalParamsAddMember(memberRequest.getUserId(), memberRequest.getUserIdAdd(),classId)){
             return null;
         }
