@@ -61,7 +61,7 @@ public class UserController {
             return new Response<>(HttpStatus.NOT_FOUND.value(), null);
         }
     }
-    @GetMapping("/accounts")
+    @GetMapping("/users")
     public ResponseEntity<Response<List<UserResponse>>> getListUsersHaveEmail(@RequestParam (value = "userEmail") String userEmail){
         Response<List<UserResponse>> response = new Response<>();
         if (StringUtils.isBlank(userEmail)){

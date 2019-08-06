@@ -190,12 +190,11 @@ public class ClazzServiceImpl implements ClazzService {
     }
     public List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId) {
         List<ClazzMember> listClazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainIsNot(clazzId);
-
-        if (listClazzMember == null || !listClazzMember.isEmpty()){
-            return null;
+        List<ClazzMemberResponse> listResponse = new ArrayList<>();
+        if (listClazzMember == null || listClazzMember.isEmpty()){
+            return listResponse;
         }
 
-        List<ClazzMemberResponse> listResponse = new ArrayList<>();
         listClazzMember.forEach( clazzMember -> listResponse.add(convertToResponse(clazzMember)));
         ClazzMemberResponse clazzMemberCaptain = convertToResponse(clazzMemberRepository.findByClazzIdAndIsCaptainIsTrue(clazzId));
         listResponse.add(FIRST_INDEX_OF_LIST,clazzMemberCaptain);

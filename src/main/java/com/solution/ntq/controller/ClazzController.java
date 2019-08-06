@@ -1,6 +1,7 @@
 package com.solution.ntq.controller;
 
 import com.solution.ntq.common.constant.ResponseCode;
+import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.ClazzMemberRequest;
 import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
