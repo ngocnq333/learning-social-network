@@ -17,6 +17,7 @@ public class AttendanceGroupRequest {
     @Size(max = 214748364)
     private int id;
     private int contentId;
+    @JsonProperty(value = "memberId")
     private String userId;
     @JsonProperty(value = "isAttendance")
     private boolean isAttendance;

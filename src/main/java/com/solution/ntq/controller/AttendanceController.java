@@ -3,6 +3,7 @@ package com.solution.ntq.controller;
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.AttendanceRequest;
+import com.solution.ntq.controller.response.AttendanceResponse;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.service.base.AttendanceService;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,8 @@ import java.util.List;
  */
 @RestController
 @AllArgsConstructor
-@NoArgsConstructor
 @CrossOrigin
+@RequestMapping("/api/v1/attendances")
 public class AttendanceController {
     private AttendanceService attendanceService;
 
@@ -39,7 +40,6 @@ public class AttendanceController {
         } catch (Exception ex) {
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 
@@ -47,16 +47,12 @@ public class AttendanceController {
     public ResponseEntity<Response<List<AttendanceResponse>>>  getListAttendance(@RequestParam(value = "contentId") int contentId) {
         Response<List<AttendanceResponse>> response = new Response<>();
         try {
-            response.setCodeStatus(HttpStatus.OK.value());
             List<AttendanceResponse> attendanceResponseList = attendanceService.getListAttendance(contentId);
+            response.setCodeStatus(HttpStatus.OK.value());
             response.setData(attendanceResponseList);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (InvalidRequestException ex){
-            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception ex) {
-            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
