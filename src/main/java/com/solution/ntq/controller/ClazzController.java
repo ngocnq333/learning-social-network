@@ -28,9 +28,7 @@ import java.util.List;
 @RequestMapping("/api/v1/classes")
 public class ClazzController {
     private ClazzService clazzService;
-    private ClazzRepository clazzRepository;
-    private ClazzMemberRepository clazzMemberRepository;
-    private UserService userService;
+
 
     /**
      * fix data of application
