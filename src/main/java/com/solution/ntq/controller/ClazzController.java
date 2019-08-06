@@ -56,11 +56,7 @@ public class ClazzController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping("/add-data")
-    public ResponseEntity<String> addData() throws ParseException {
-        clazzService.addAllData();
-        return new ResponseEntity<>("OK", HttpStatus.OK);
-    }
+
 
     @PostMapping("/{classId}/users/{userId}")
     public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@RequestHeader("id_token") String idToken, @PathVariable("classId") int classId

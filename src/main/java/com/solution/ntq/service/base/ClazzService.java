@@ -16,7 +16,6 @@ public interface ClazzService {
 
     List<ClazzResponse> getClassByUser(String userId);
 
-    void addAllData() throws ParseException;
 
     ClazzResponse getClassById(int clazzId);
 
