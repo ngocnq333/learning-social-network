@@ -22,8 +22,6 @@ import java.util.List;
  */
 @RequestMapping("/api/v1/classes")
 public class ClazzController {
-
-
     private ClazzService clazzService;
     /**
      * fix data of application

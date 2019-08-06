@@ -1,15 +1,11 @@
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.repository.ClazzMemberRepository;
-import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.repository.UserRepository;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Nam_Phuong
@@ -46,5 +42,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
+    @Override
+    public boolean existsUser(String userId) {
+        return userRepository.existsById(userId);
+    }
 }

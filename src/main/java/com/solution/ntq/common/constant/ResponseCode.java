@@ -1,6 +1,7 @@
 package com.solution.ntq.common.constant;
 
 
+
 public enum ResponseCode {
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
     CONFLICT(409, "Conflict"),
