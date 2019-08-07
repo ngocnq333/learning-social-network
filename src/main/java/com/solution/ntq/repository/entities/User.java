@@ -8,9 +8,6 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
-
-
 /**
  * User Class provide all properties and method of entity User in Project
  *
@@ -49,6 +46,8 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Attendance> attendances;
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    List<JoinEvent> joinEvents;
 
 }
