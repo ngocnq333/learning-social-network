@@ -1,5 +1,6 @@
 package com.solution.ntq.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -21,6 +22,7 @@ public class ClazzMemberResponse {
     String email;
     String avatar;
     private String skype;
+    @JsonProperty(value = "isCaptain")
     boolean isCaptain;
     Date joinDate;
     String status;
