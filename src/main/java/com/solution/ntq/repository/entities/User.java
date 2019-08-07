@@ -24,6 +24,8 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
     @Id
+    String id;
+    String email;
     boolean verifiedEmail;
     String name;
     String givenName;
