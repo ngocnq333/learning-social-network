@@ -24,18 +24,16 @@ import java.util.List;
 @NoArgsConstructor
 public class User {
     @Id
-    private String id;
-    private String email;
-    private boolean verifiedEmail;
-    private String name;
-    private String givenName;
-    private String familyName;
-    private String link;
-    private String picture;
-    private String skype;
-    private String hd;
-    private String locale;
-    private Date dateOfBirth;
+    boolean verifiedEmail;
+    String name;
+    String givenName;
+    String familyName;
+    String link;
+    String picture;
+    String skype;
+    String hd;
+    String locale;
+    Date dateOfBirth;
     @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Token token;
@@ -46,6 +44,7 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Attendance> attendances;
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     List<JoinEvent> joinEvents;
 

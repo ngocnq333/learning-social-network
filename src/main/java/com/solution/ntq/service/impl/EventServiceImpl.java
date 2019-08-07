@@ -2,10 +2,8 @@ package com.solution.ntq.service.impl;
 
 import com.solution.ntq.repository.EventRepository;
 import com.solution.ntq.service.base.EventService;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 
 /**
@@ -14,9 +12,7 @@ import lombok.experimental.FieldDefaults;
  * @version 1.01
  */
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@NoArgsConstructor
 @AllArgsConstructor
 public class EventServiceImpl implements EventService {
-    EventRepository eventRepository;
+    private EventRepository eventRepository;
 }
