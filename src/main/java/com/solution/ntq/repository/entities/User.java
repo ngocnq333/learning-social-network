@@ -46,6 +46,7 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     List<Attendance> attendances;
-
+    @OneToMany(mappedBy = "user")
+    List<JoinEvent> joinEvents;
 
 }
