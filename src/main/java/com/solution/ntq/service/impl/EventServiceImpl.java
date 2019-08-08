@@ -7,6 +7,13 @@ import com.solution.ntq.common.validator.Validator;
 import com.solution.ntq.controller.response.EventResponse;
 import com.solution.ntq.repository.EventRepository;
 import com.solution.ntq.repository.entities.Event;
+import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.common.utils.ConvertObject;
+import com.solution.ntq.controller.request.JoinEventRequest;
+import com.solution.ntq.repository.JoinEventRepository;
+import com.solution.ntq.repository.entities.Event;
+import com.solution.ntq.repository.entities.JoinEvent;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -47,5 +56,30 @@ public class EventServiceImpl implements EventService {
 
     private EventResponse eventMapper(Event event) {
         return ConvertObject.mapper().convertValue(event, EventResponse.class);
+    }
+    private JoinEventRepository joinEventRepository;
+    @Transactional
+    @Override
+    public void saveJoinForUser(JoinEventRequest joinEventRequest) {
+        try {
+            JoinEvent joinEvent = joinEventMapper(joinEventRequest);
+            User user = new User();
+            user.setId(joinEventRequest.getUserId());
+            Event event = new Event();
+            event.setId(joinEventRequest.getEventId());
+            joinEvent.setUser(user);
+            joinEvent.setEvent(event);
+            save(joinEvent);
+        } catch (InvalidRequestException ex) {
+            throw new InvalidRequestException(ex.getMessage());
+        }
+    }
+
+    private void save(JoinEvent joinEvent) {
+        joinEventRepository.save(joinEvent);
+    }
+
+    private JoinEvent joinEventMapper(JoinEventRequest joinEventRequest) {
+        return ConvertObject.mapper().convertValue(joinEventRequest, JoinEvent.class);
     }
 }

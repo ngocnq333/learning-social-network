@@ -1,6 +1,8 @@
 package com.solution.ntq.service.base;
 
 
+import com.solution.ntq.controller.request.JoinEventRequest;
+
 import com.solution.ntq.controller.response.EventResponse;
 
 import java.util.List;
@@ -15,4 +17,5 @@ import java.util.List;
 
 public interface EventService {
     List<EventResponse> getGroupEvent(int classId, long startDate, long endDate);
+    void saveJoinForUser(JoinEventRequest joinEventRequest);
 }

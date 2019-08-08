@@ -13,6 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import com.solution.ntq.common.constant.ResponseCode;
+import com.solution.ntq.controller.request.JoinEventRequest;
+import com.solution.ntq.controller.response.Response;
+import com.solution.ntq.service.base.EventService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -23,6 +31,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/v1/events")
 public class EventController {
     private EventService eventService;
@@ -45,5 +54,16 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+    @PutMapping(value = "/eventId/joint")
+    public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest) {
+        try {
+            Response<String> response = new Response<>();
+            eventService.saveJoinForUser(joinEventRequest);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
