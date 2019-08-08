@@ -20,10 +20,6 @@ public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     List<ClazzMember> findByClazzId(int clazzId);
     ClazzMember findByClazzIdAndUserId(int clazzId, String userId);
 
-    int countAllByClazzId(int clazzid);
-
-    void save(ClazzMember clazzMember);
-
     @Query(value = "SELECT e.id,c.clazz_id,e.user_id,e.is_captain,e.join_date,e.status FROM clazz_member e " +
             " INNER JOIN content c ON c.clazz_id = e.clazz_id WHERE e.is_captain = 0 AND c.id = ?1 " +
             " AND e.status ='JOINED' AND e.user_id NOT IN (SELECT user_id from attendance where content_id = ?1)", nativeQuery = true)
