@@ -54,7 +54,7 @@ public class ContentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken, @Valid @RequestBody ContentRequest contentRequest) throws MethodArgumentNotValidException {
+    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken, @Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
