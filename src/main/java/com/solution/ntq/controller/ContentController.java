@@ -1,7 +1,7 @@
 package com.solution.ntq.controller;
 
-import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.constant.ResponseCode;
+import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.controller.response.Response;
@@ -9,6 +9,7 @@ import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,7 +29,7 @@ public class ContentController {
 
 
     @PutMapping
-    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken,@Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken, @Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
@@ -37,12 +38,14 @@ public class ContentController {
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
+            response.setMessage(e.getMessage());
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e)
         {
+
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,7 +54,7 @@ public class ContentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken,@Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken, @Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
@@ -62,10 +65,11 @@ public class ContentController {
         } catch (InvalidRequestException e) {
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
+            response.setMessage(e.getMessage());
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
