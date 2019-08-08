@@ -2,6 +2,7 @@ package com.solution.ntq.repository;
 
 import com.solution.ntq.repository.entities.ClazzMember;
 import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
@@ -17,7 +18,13 @@ public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     ClazzMember findByClazzIdAndIsCaptainTrue(int clazzId);
     List<ClazzMember> findByClazzId(int clazzId);
     ClazzMember findByClazzIdAndUserId(int clazzId, String userId);
+
+    @Query(value = "SELECT e.id,c.clazz_id,e.user_id,e.is_captain,e.join_date,e.status FROM clazz_member e " +
+            " INNER JOIN content c ON c.clazz_id = e.clazz_id WHERE e.is_captain = 0 AND c.id = ?1 " +
+            " AND e.status ='JOINED' AND e.user_id NOT IN (SELECT user_id from attendance where content_id = ?1)", nativeQuery = true)
+    List<ClazzMember> findAllByCapitalFalse(int contentId);
+
     @Query(value = "SELECT clazz_member.id, clazz_member.clazz_id, clazz_member.user_id, clazz_member.join_date, clazz_member.status, clazz_member.is_captain " +
             "FROM mockproject.clazz_member JOIN mockproject.user ON clazz_member.user_id = user.id WHERE  clazz_id = ?1 AND status = 'joined' AND is_captain = false ORDER BY user.name ASC ",nativeQuery = true)
-    List<ClazzMember> findByClazzIdAndIsCaptainIsNot(int classId);
+    List<ClazzMember> findByClazzIdAndIsCaptainIsNot(int clazzId);
 }
