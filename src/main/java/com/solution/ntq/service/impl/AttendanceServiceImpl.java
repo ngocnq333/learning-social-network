@@ -95,7 +95,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         List<AttendanceResponse> listAttendanceIsTrue = getListAttendanceByIdContent(contentId);
         List<AttendanceResponse> attendanceGroupResponse = getListMember(contentId);
         if (attendanceGroupResponse.isEmpty()) {
-            return attendanceGroupResponse;
+            return listAttendanceIsTrue;
         }
         attendanceGroupResponse.addAll(listAttendanceIsTrue);
         return attendanceGroupResponse;
