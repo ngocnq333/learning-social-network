@@ -21,8 +21,11 @@ public class Validator {
     }
 
     public static boolean isScopeOutOfOneMonth(long startDate, long endDate) {
+        if (startDate == 0) {
+            return false;
+        }
         long diff = endDate - startDate;
         long diffDays = diff / (24 * 60 * 60 * 1000);
-        return (startDate != 0 && diffDays > DAY_OF_THE_MONTH);
+        return diffDays > DAY_OF_THE_MONTH;
     }
 }

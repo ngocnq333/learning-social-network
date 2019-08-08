@@ -39,6 +39,7 @@ public class EventController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(ex.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
