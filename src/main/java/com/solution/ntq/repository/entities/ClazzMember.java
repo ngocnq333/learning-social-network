@@ -11,8 +11,6 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 /**
  * @author Duc Anh
  */
@@ -28,6 +26,7 @@ public class ClazzMember {
     @ManyToOne( cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     User user;
+    @JsonProperty("isCaptain")
     boolean isCaptain;
     Date joinDate;
     String status;

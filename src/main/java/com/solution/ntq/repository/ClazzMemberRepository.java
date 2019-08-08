@@ -11,13 +11,13 @@ import java.util.List;
  * @author Duc Anh
  */
 @org.springframework.stereotype.Repository
-public interface ClazzMemberRepository extends Repository<ClazzMember, Integer> {
+public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
+    ClazzMember save(ClazzMember clazzMember);
     List<ClazzMember> findByUserId(String userId);
-
+    ClazzMember findByClazzIdAndIsCaptainIsTrue(int clazzId);
+    int countAllByClazzId(int classId);
     ClazzMember findByClazzIdAndIsCaptainTrue(int clazzId);
-
     List<ClazzMember> findByClazzId(int clazzId);
-
     ClazzMember findByClazzIdAndUserId(int clazzId, String userId);
 
     int countAllByClazzId(int clazzid);

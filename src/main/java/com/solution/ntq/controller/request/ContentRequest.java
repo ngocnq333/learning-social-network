@@ -2,7 +2,7 @@ package com.solution.ntq.controller.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
+import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -27,6 +27,7 @@ public class ContentRequest {
     @NotNull(message = "Content is required !")
     String content;
     @NotNull(message = "Title is required !")
+    @Length(max = 64 ,message = "Length must be smaller than 64")
     String title;
     @NotNull(message = "Level is required !")
     String level;
