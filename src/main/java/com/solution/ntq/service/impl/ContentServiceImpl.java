@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Level;
 import com.solution.ntq.common.exception.InvalidRequestException;
-import com.solution.ntq.common.validator.Validator;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.repository.ClazzRepository;
@@ -17,6 +16,7 @@ import com.solution.ntq.repository.entities.Content;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -83,28 +83,15 @@ public class ContentServiceImpl implements ContentService {
     public List<Content> getPendingItemByClassId(int classId) {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
-    /**
-     *
-     * @param contentId
-     * @return
-     */
+
+
     @Override
     public ContentResponse getContentById(int contentId) {
 
-            Content content = contentRepository.findContentById(contentId);
-            return getContentResponseMapContent(content);
+        Content content = contentRepository.findContentById(contentId);
+        return getContentResponseMapContent(content);
 
     }
-
-
-    @Override
-    public List<ContentResponse> findContentByClassId(int classId) {
-        List<Content> listContent = contentRepository.findContentByIdClazz(classId);
-        updateStatusContents(listContent);
-
-        return getListContentResponse(listContent);
-    }
-
 
     private void updateStatusContents(List<Content> contentList) {
         Date currentTime = new Date();
@@ -121,7 +108,6 @@ public class ContentServiceImpl implements ContentService {
         for (Content content : contentList) {
             listContentResponse.add(getContentResponseMapContent(content));
         }
-
         return listContentResponse;
     }
 
@@ -137,15 +123,29 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void deleteContentById(int idContent) {
-
         contentRepository.deleteById(idContent);
     }
 
     @Override
     public boolean exitContent(int idContent) {
-
         return contentRepository.existsById(idContent);
     }
+
+    @Override
+    public List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title) {
+        List<Content> contentList;
+        if (!StringUtils.isEmpty(title)) {
+            contentList = contentRepository.findContentByIdClazzAndTitle(classId, title);
+            return getListContentResponse(contentList);
+        }else if (sort) {
+             contentList = contentRepository.findContentByIdClazzAndNotDone(classId);
+        } else {
+            contentList = contentRepository.findContentByIdClazz(classId);
+            updateStatusContents(contentList);
+        }
+        return getListContentResponse(contentList);
+    }
+
     private boolean isValidContentRequest(ContentRequest contentRequest) {
 
         if (contentRequest.getStartDate().before(new Date())) {

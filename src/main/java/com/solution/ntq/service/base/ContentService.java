@@ -18,9 +18,9 @@ public interface ContentService {
 
     List<Content> getPendingItemByClassId(int classId);
 
-    List<ContentResponse> findContentByClassId(int classId);
     void deleteContentById(int idContent);
 
     boolean exitContent(int idContent);
 
+    List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title);
 }
