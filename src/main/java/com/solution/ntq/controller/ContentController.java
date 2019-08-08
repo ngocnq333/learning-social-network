@@ -1,5 +1,6 @@
 package com.solution.ntq.controller;
 
+import com.solution.ntq.common.constant.Constant;
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.ContentRequest;
@@ -9,7 +10,7 @@ import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -99,16 +100,7 @@ public class ContentController {
         }
     }
 
-    @DeleteMapping("/{contentId}")
-    public ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
-        Response<Response> response = new Response<>();
-        contentService.deleteContentById(contentId);
-        response.setCodeStatus(HttpStatus.OK.value());
-        List<ContentResponse> contentResponseList = contentService.findContentByClassId(clazzId);
-        response.setData(contentResponseList);
-        return new ResponseEntity<>(response, HttpStatus.OK);
 
-    }
     @DeleteMapping("/{contentId}")
     public  ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
         Response<Response> response = new Response<>();
