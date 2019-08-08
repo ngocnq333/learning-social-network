@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Nam_Phuong
@@ -36,8 +35,6 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
-
-
     /**
      * Get an user with id
      */
