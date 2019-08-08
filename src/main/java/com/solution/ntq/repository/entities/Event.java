@@ -37,8 +37,8 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "content_id")
     Content content;
-    @OneToMany(mappedBy = "event")
     @JsonIgnore
+    @OneToMany(mappedBy = "event")
     List<JoinEvent> joinEvents;
 }
 

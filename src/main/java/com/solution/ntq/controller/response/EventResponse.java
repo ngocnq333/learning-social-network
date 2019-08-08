@@ -17,10 +17,12 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventResponse {
     int id;
+
     Date startDate;
     String title;
     float duration;
     String speaker;
     String description;
     String document;
+    String status;
 }

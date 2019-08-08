@@ -1,11 +1,10 @@
 package com.solution.ntq.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Status;
+import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
-import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.repository.base.*;
 import com.solution.ntq.repository.entities.Clazz;
@@ -67,9 +66,6 @@ public class ClazzServiceImpl implements ClazzService {
         return clazzList.stream().map(i -> getResponseMapByClazz(i)).collect(Collectors.toList());
     }
 
-
-
-
     @Override
     public ClazzResponse getClassById(int clazzId) {
 
@@ -86,7 +82,6 @@ public class ClazzServiceImpl implements ClazzService {
         if (memberInClass ==null) {
             clazzResponse.setStatus(Status.NOTJOIN.value());
         }
-
         return clazzResponse;
     }
 
@@ -117,8 +112,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     private ClazzResponse getResponseMapByClazz(Clazz clazz) {
         ClazzResponse clazzResponse;
-        ObjectMapper mapper = ConvertObject.mapper();
-        clazzResponse = mapper.convertValue(clazz, ClazzResponse.class);
+        clazzResponse = ConvertObject.mapper().convertValue(clazz, ClazzResponse.class);
         ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzResponse.getId());
         clazzResponse.setCaptainName(clazzMember.getUser().getName());
         clazzResponse.setCaptainId(clazzMember.getUser().getId());
@@ -140,10 +134,9 @@ public class ClazzServiceImpl implements ClazzService {
         return listResponse;
     }
 
-
     private ClazzMemberResponse convertToResponse(ClazzMember clazzMember){
-        ObjectMapper mapper = ConvertObject.mapper();
-        ClazzMemberResponse response = mapper.convertValue(clazzMember,ClazzMemberResponse.class);
+
+        ClazzMemberResponse response = ConvertObject.mapper().convertValue(clazzMember,ClazzMemberResponse.class);
         response.setUserId(clazzMember.getUser().getId());
         response.setName(clazzMember.getUser().getName());
         response.setEmail(clazzMember.getUser().getEmail());
@@ -152,8 +145,6 @@ public class ClazzServiceImpl implements ClazzService {
         response.setJoinDate(clazzMember.getJoinDate());
         return response;
     }
-
-
 
     private boolean isIllegalParamsAddMember(String userId, String userIdAdd, int classId) {
         boolean checkUserIdNull = StringUtils.isBlank(userId);
@@ -164,13 +155,8 @@ public class ClazzServiceImpl implements ClazzService {
 
         User checkUserExist = userRepository.findById(userId);
         User checkUserAddExist = userRepository.findById(userIdAdd);
-
         ClazzMember clazzMemberContainUserIdAdd = clazzMemberRepository.findByClazzIdAndUserId(classId,userIdAdd);
-
-
         Clazz checkClassExist = clazzRepository.findClazzById(classId);
-
-
         return (  checkUserExist == null || checkUserAddExist == null || checkClassExist == null || clazzMemberContainUserIdAdd != null);
     }
 

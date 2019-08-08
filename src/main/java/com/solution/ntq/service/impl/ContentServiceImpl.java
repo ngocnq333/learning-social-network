@@ -1,10 +1,9 @@
 package com.solution.ntq.service.impl;
 
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Level;
 import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.repository.base.ClazzRepository;
@@ -37,11 +36,9 @@ public class ContentServiceImpl implements ContentService {
             throw new InvalidRequestException("Invalid Request !");
         }
             Content content;
-            ObjectMapper mapper = new ObjectMapper();
             Token token = tokenRepository.findTokenByIdToken(idToken);
             String userId = token.getUser().getId();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            content = mapper.convertValue(contentRequest, Content.class);
+            content = ConvertObject.mapper().convertValue(contentRequest, Content.class);
             Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
             content.setClazz(clazz);
             content.setApprove(false);
@@ -51,7 +48,6 @@ public class ContentServiceImpl implements ContentService {
             content.setThumbnail(clazz.getThumbnail());
             content.setAvatar(token.getUser().getPicture());
             contentRepository.save(content);
-
     }
 
     @Override
@@ -60,23 +56,17 @@ public class ContentServiceImpl implements ContentService {
             throw new InvalidRequestException("Invalid Request !");
         }
             Content content = new Content();
-            ObjectMapper mapper = new ObjectMapper();
-            Token token = tokenRepository.findTokenByIdToken(idToken);
-            String userId = token.getUser().getId();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             content.setId(contentRequest.getId());
+            Content contentOrigin=contentRepository.findContentById(content.getId());
             Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
-
-            content = mapper.convertValue(contentRequest, Content.class);
+            content = ConvertObject.mapper().convertValue(contentRequest, Content.class);
             content.setTimePost(new Date());
             content.setClazz(clazz);
-            content.setAuthorId(userId);
+            content.setAuthorId(contentOrigin.getAuthorId());
             content.setThumbnail(clazz.getThumbnail());
-            content.setAvatar(token.getUser().getPicture());
+            content.setAvatar(contentOrigin.getAvatar());
             contentRepository.save(content);
         }
-
-
 
 
     @Override
@@ -113,9 +103,7 @@ public class ContentServiceImpl implements ContentService {
 
     private ContentResponse getContentResponseMapContent(Content content) {
         ContentResponse contentResponse;
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        contentResponse = objectMapper.convertValue(content, ContentResponse.class);
+        contentResponse = ConvertObject.mapper().convertValue(content, ContentResponse.class);
         contentResponse.setClazzId(content.getClazz().getId());
         contentResponse.setAuthorName(userRepository.findById(content.getAuthorId()).getName());
         return contentResponse;
