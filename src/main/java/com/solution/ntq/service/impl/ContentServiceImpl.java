@@ -3,6 +3,7 @@ package com.solution.ntq.service.impl;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solution.ntq.common.constant.Level;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.validator.Validator;
 import com.solution.ntq.controller.request.ContentRequest;
@@ -32,7 +33,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void addContent(ContentRequest contentRequest, String idToken) {
-        if (!Validator.isValidContentRequest(contentRequest)) {
+        if (!isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
         }
             Content content;
@@ -55,7 +56,7 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void updateContent(ContentRequest contentRequest, String idToken) {
-        if (!Validator.isValidContentRequest(contentRequest)) {
+        if (!isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
         }
             Content content = new Content();
@@ -136,11 +137,25 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public void deleteContentById(int idContent) {
+
         contentRepository.deleteById(idContent);
     }
 
     @Override
     public boolean exitContent(int idContent) {
+
         return contentRepository.existsById(idContent);
+    }
+    private boolean isValidContentRequest(ContentRequest contentRequest) {
+
+        if (contentRequest.getStartDate().before(new Date())) {
+            throw new InvalidRequestException("Start date must after today !");
+        }
+        if (contentRequest.getEndDate().before(contentRequest.getStartDate())) {
+            throw new InvalidRequestException("End date must after start date !");
+        }
+
+        return !(!contentRequest.getLevel().equalsIgnoreCase(Level.BEGINNER.value()) && !contentRequest.getLevel().equalsIgnoreCase(Level.INTERMEDISE.value())
+                && !contentRequest.getLevel().equalsIgnoreCase(Level.EXPERT.value()));
     }
 }
