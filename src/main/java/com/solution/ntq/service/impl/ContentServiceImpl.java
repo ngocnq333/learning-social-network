@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Level;
 import com.solution.ntq.common.exception.InvalidRequestException;
-import com.solution.ntq.common.validator.Validator;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
 import com.solution.ntq.repository.ClazzRepository;
@@ -17,6 +16,7 @@ import com.solution.ntq.repository.entities.Content;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -133,17 +133,19 @@ public class ContentServiceImpl implements ContentService {
     }
     @Override
     public List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title) {
-        if (!title.equals("")) {
-            List<Content> contentList = contentRepository.findContentByIdClazzAndTitle(classId, title);
+        List<Content> contentList;
+        if (!StringUtils.isEmpty(title)) {
+            contentList = contentRepository.findContentByIdClazzAndTitle(classId, title);
             return getListContentResponse(contentList);
         }else if (sort) {
-            List<Content> listContent = contentRepository.findContentByIdClazzAndNotDone(classId);
-            return getListContentResponse(listContent);
+             contentList = contentRepository.findContentByIdClazzAndNotDone(classId);
+        } else {
+            contentList = contentRepository.findContentByIdClazz(classId);
+            updateStatusContents(contentList);
         }
-        List<Content> listContent = contentRepository.findContentByIdClazz(classId);
-        updateStatusContents(listContent);
-        return getListContentResponse(listContent);
+        return getListContentResponse(contentList);
     }
+
     private boolean isValidContentRequest(ContentRequest contentRequest) {
 
         if (contentRequest.getStartDate().before(new Date())) {
