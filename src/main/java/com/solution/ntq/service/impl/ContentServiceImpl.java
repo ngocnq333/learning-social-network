@@ -128,9 +128,9 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public boolean exitContent(int idContent) {
-
         return contentRepository.existsById(idContent);
     }
+
     @Override
     public List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title) {
         List<Content> contentList;

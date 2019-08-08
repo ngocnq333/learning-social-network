@@ -85,7 +85,6 @@ public class ContentController {
     }
 
 
-    }
     @GetMapping
     public ResponseEntity<Response> getListContentsSorted(@RequestParam(value = "classId", defaultValue = Constant.CLASS_ID_DEFAULT) int clazzId,
                                                           @RequestParam(value = "sorted", defaultValue = "false") boolean sorted,
