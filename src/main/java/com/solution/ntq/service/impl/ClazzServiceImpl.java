@@ -121,7 +121,7 @@ public class ClazzServiceImpl implements ClazzService {
         ClazzResponse clazzResponse;
         ObjectMapper mapper = ConvertObject.mapper();
         clazzResponse = mapper.convertValue(clazz, ClazzResponse.class);
-        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainIsTrue(clazzResponse.getId());
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzResponse.getId());
         clazzResponse.setCaptainName(clazzMember.getUser().getName());
         clazzResponse.setCaptainId(clazzMember.getUser().getId());
         clazzResponse.setMembers(clazzMemberRepository.countAllByClazzId(clazz.getId()));
@@ -137,7 +137,7 @@ public class ClazzServiceImpl implements ClazzService {
         }
 
         listClazzMember.forEach( clazzMember -> listResponse.add(convertToResponse(clazzMember)));
-        ClazzMemberResponse clazzMemberCaptain = convertToResponse(clazzMemberRepository.findByClazzIdAndIsCaptainIsTrue(clazzId));
+        ClazzMemberResponse clazzMemberCaptain = convertToResponse(clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId));
         listResponse.add(FIRST_INDEX_OF_LIST,clazzMemberCaptain);
         return listResponse;
     }
@@ -178,7 +178,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public boolean checkUserIsCaptainOfClazz(String userId, int classId) {
-        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainIsTrue(classId);
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(classId);
         return clazzMember.getUser().getId().equals(userId);
     }
 
@@ -188,20 +188,20 @@ public class ClazzServiceImpl implements ClazzService {
         if (isIllegalParamsAddMember(memberRequest.getUserId(), memberRequest.getUserIdAdd(),classId)){
             return null;
         }
-        ClazzMember newclazzMember = new ClazzMember();
+        ClazzMember newClazzMember = new ClazzMember();
         User user = userRepository.findById(memberRequest.getUserIdAdd());
-        newclazzMember.setUser(user);
+        newClazzMember.setUser(user);
 
         if (checkUserIsCaptainOfClazz(memberRequest.getUserId(),classId)){
-            newclazzMember.setStatus(status[0]);
+            newClazzMember.setStatus(status[0]);
         }
-        else newclazzMember.setStatus(status[1]);
+        else newClazzMember.setStatus(status[1]);
 
-        newclazzMember.setJoinDate(new Date());
+        newClazzMember.setJoinDate(new Date());
 
-        newclazzMember.setClazz(clazzRepository.findClazzById(classId));
-        newclazzMember.setCaptain(false);
-        return convertToResponse(clazzMemberRepository.save(newclazzMember));
+        newClazzMember.setClazz(clazzRepository.findClazzById(classId));
+        newClazzMember.setCaptain(false);
+        return convertToResponse(clazzMemberRepository.save(newClazzMember));
 
     }
 }
