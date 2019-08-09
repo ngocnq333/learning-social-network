@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+
 import com.solution.ntq.controller.request.JoinEventRequest;
 
 
 /**
  * @author Ngoc Ngo Quy
- * @since  at 7/08/2019
  * @version 1.01
+ * @since at 7/08/2019
  */
 
 @RestController
@@ -48,13 +49,18 @@ public class EventController {
         }
 
     }
+
     @PutMapping(value = "/eventId/joint")
     public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest) {
+        Response<String> response = new Response<>();
         try {
-            Response<String> response = new Response<>();
             eventService.saveJoinForUser(joinEventRequest);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException ex) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
