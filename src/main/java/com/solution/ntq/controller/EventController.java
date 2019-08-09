@@ -13,14 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.controller.request.JoinEventRequest;
-import com.solution.ntq.controller.response.Response;
-import com.solution.ntq.service.base.EventService;
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 
 /**
