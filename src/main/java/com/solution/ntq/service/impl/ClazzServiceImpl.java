@@ -184,7 +184,6 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId) {
-        String[] status = {"joined","pending","has left"};
         if (isIllegalParamsAddMember(memberRequest.getUserId(), memberRequest.getUserIdAdd(),classId)){
             return null;
         }
@@ -193,9 +192,9 @@ public class ClazzServiceImpl implements ClazzService {
         newClazzMember.setUser(user);
 
         if (checkUserIsCaptainOfClazz(memberRequest.getUserId(),classId)){
-            newClazzMember.setStatus(status[0]);
+            newClazzMember.setStatus(Status.JOINED.value());
         }
-        else newClazzMember.setStatus(status[1]);
+        else newClazzMember.setStatus(Status.APPROVE.value());
 
         newClazzMember.setJoinDate(new Date());
 
