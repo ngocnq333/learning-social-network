@@ -1,7 +1,6 @@
 package com.solution.ntq.repository.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -24,11 +23,10 @@ import java.util.List;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(value = "eventId")
     int id;
     String title;
     String description;
-    String documents;
+    String document;
     String speaker;
     Date startDate;
     float duration;
