@@ -1,5 +1,6 @@
 package com.solution.ntq.repository.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,7 +11,7 @@ import java.util.List;
 
 /**
  * @author Ngoc Ngo Quy
- * created at 7/08/2019
+ * @since  at 7/08/2019
  * @version 1.01
  */
 
@@ -39,6 +40,7 @@ public class Event {
     @JoinColumn(name = "content_id")
     Content content;
     @OneToMany(mappedBy = "event")
+    @JsonIgnore
     List<JoinEvent> joinEvents;
 }
 
