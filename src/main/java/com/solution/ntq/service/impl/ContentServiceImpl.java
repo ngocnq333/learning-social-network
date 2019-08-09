@@ -6,6 +6,7 @@ import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
+import com.solution.ntq.repository.base.*;
 import com.solution.ntq.repository.base.ClazzRepository;
 import com.solution.ntq.repository.base.ContentRepository;
 import com.solution.ntq.repository.base.TokenRepository;
@@ -15,7 +16,6 @@ import com.solution.ntq.repository.entities.Content;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -74,7 +74,6 @@ public class ContentServiceImpl implements ContentService {
         return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
     }
 
-
     @Override
     public ContentResponse getContentById(int contentId) {
 
@@ -92,7 +91,6 @@ public class ContentServiceImpl implements ContentService {
             }
         }
     }
-
     private List<ContentResponse> getListContentResponse(List<Content> contentList) {
         List<ContentResponse> listContentResponse = new ArrayList<>();
         for (Content content : contentList) {
@@ -119,18 +117,14 @@ public class ContentServiceImpl implements ContentService {
         return contentRepository.existsById(idContent);
     }
 
+
     @Override
-    public List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title) {
+    public List<ContentResponse> getContentsResponseSorted(int classId) {
         List<Content> contentList;
-        if (!StringUtils.isEmpty(title)) {
-            contentList = contentRepository.findContentByIdClazzAndTitle(classId, title);
-            return getListContentResponse(contentList);
-        }else if (sort) {
-             contentList = contentRepository.findContentByIdClazzAndNotDone(classId);
-        } else {
-            contentList = contentRepository.findContentByIdClazz(classId);
+
+        contentList = contentRepository.findContentByIdClazz(classId);
             updateStatusContents(contentList);
-        }
+
         return getListContentResponse(contentList);
     }
 

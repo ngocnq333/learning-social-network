@@ -24,7 +24,7 @@ public class JoinEvent {
     int id;
     @JsonProperty("isJoined")
     boolean isJoined;
-    @JsonProperty("isAttendance")
+    @JsonProperty(value = "isAttendance")
     boolean isAttendance;
     @ManyToOne
     @JoinColumn(name = "event_id")

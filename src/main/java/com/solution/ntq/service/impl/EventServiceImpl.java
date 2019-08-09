@@ -15,6 +15,7 @@ import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.base.EventMemberRepository;
 
+import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.base.JoinEventRepository;

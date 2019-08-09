@@ -1,5 +1,6 @@
 package com.solution.ntq.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,13 +11,16 @@ import lombok.experimental.FieldDefaults;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AttendanceEventResponse {
     int id;
     int eventId;
+    @JsonProperty(value = "isAttendance")
     boolean isAttendance;
     String userName;
     String userId;
     String picture;
     String email;
+    String eventTitle;
 }
