@@ -2,6 +2,7 @@ package com.solution.ntq.controller;
 
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.controller.request.EventGroupRequest;
 import com.solution.ntq.controller.response.AttendanceEventResponse;
 import com.solution.ntq.controller.response.EventResponse;
 import com.solution.ntq.controller.response.Response;
@@ -17,7 +18,6 @@ import java.util.List;
 import com.solution.ntq.controller.request.JoinEventRequest;
 
 
-
 /**
  * @author Ngoc Ngo Quy
  * @version 1.01
@@ -29,6 +29,7 @@ import com.solution.ntq.controller.request.JoinEventRequest;
 @RequestMapping("/api/v1/events")
 public class EventController {
     private EventService eventService;
+    private JoinEventService joinEventService;
 
     @GetMapping("/{eventId}")
     public ResponseEntity<Response> getEventDetail(@PathVariable("eventId") int eventId, @RequestHeader("id_token") String idToken) {
@@ -48,7 +49,6 @@ public class EventController {
         }
 
     }
-    private JoinEventService joinEventService;
 
     @GetMapping()
     public ResponseEntity<Response<List<EventResponse>>> getEventGroup(@NotNull @Min(0) @RequestParam(value = "classId", defaultValue = "0") int classId,
@@ -60,6 +60,24 @@ public class EventController {
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(groupEvent);
             return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException ex) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/{eventId}/attendances")
+    public ResponseEntity<Response<String>> takeAttendanceEvents(@RequestBody List<EventGroupRequest> eventGroupRequests,
+                                                                 @PathVariable("eventId") int eventId,
+                                                                 @RequestHeader("id_token") String idToken) {
+        Response<String> response = new Response<>();
+        try {
+            eventService.takeAttendanceEvents(eventGroupRequests, eventId, idToken);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (InvalidRequestException ex) {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             response.setMessage(ex.getMessage());

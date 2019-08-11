@@ -4,6 +4,7 @@ import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.common.validator.Validator;
 
+import com.solution.ntq.controller.request.EventGroupRequest;
 import com.solution.ntq.controller.response.EventResponse;
 import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.common.utils.GoogleUtils;
@@ -14,7 +15,11 @@ import com.solution.ntq.repository.base.EventMemberRepository;
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.base.JoinEventRepository;
+import com.solution.ntq.repository.base.UserRepository;
+import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.repository.entities.JoinEvent;
+import com.solution.ntq.service.base.ClazzService;
+import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.EventService;
 import lombok.AllArgsConstructor;
@@ -37,9 +42,11 @@ import java.security.GeneralSecurityException;
 
 @AllArgsConstructor
 @Service
-
 public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
+    private JoinEventRepository joinEventRepository;
+    private ClazzService clazzService;
+    private UserRepository userRepository;
     private EventMemberRepository eventMemberRepository;
 
     @Override
@@ -82,7 +89,7 @@ public class EventServiceImpl implements EventService {
     private EventResponse eventMapper(Event event) {
         return ConvertObject.mapper().convertValue(event, EventResponse.class);
     }
-    private JoinEventRepository joinEventRepository;
+
     @Transactional
     @Override
     public void saveJoinForUser(JoinEventRequest joinEventRequest) {
@@ -106,5 +113,28 @@ public class EventServiceImpl implements EventService {
 
     private JoinEvent joinEventMapper(JoinEventRequest joinEventRequest) {
         return ConvertObject.mapper().convertValue(joinEventRequest, JoinEvent.class);
+    }
+
+    @Override
+    public void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String idToken) {
+            String userId = userRepository.findUserByTokenIdToken(idToken).getId();
+            int classId = eventRepository.findAllById(eventId).getId();
+            if (!clazzService.isCaptainClazz(userId, classId)) {
+               throw new InvalidRequestException("dont have role");
+            }
+            saveAttendance(eventGroupRequests);
+    }
+
+    private void saveAttendance(List<EventGroupRequest> eventGroupRequests) {
+        eventGroupRequests.forEach(eventGroupRequest -> {
+                        int idAttendanceNew = eventGroupRequest.getId();
+                        JoinEvent joinEvent = joinEventRepository.getJoinEventsById(idAttendanceNew);
+                        if (joinEvent == null) {
+                            throw new InvalidRequestException("user or content invalid ");
+                        }
+                        joinEvent.setAttendance(eventGroupRequest.isAttendance());
+                        joinEventRepository.save(joinEvent);
+                }
+        );
     }
 }
