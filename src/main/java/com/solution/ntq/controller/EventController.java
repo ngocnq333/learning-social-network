@@ -14,15 +14,18 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+import com.solution.ntq.controller.request.JoinEventRequest;
+
 
 /**
  * @author Ngoc Ngo Quy
- * @since  at 7/08/2019
  * @version 1.01
+ * @since at 7/08/2019
  */
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/v1/events")
 public class EventController {
     private EventService eventService;
@@ -45,5 +48,21 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    @PutMapping(value = "/eventId/joint")
+    public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest) {
+        Response<String> response = new Response<>();
+        try {
+            eventService.saveJoinForUser(joinEventRequest);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException ex) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

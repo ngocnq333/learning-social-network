@@ -1,5 +1,6 @@
 package com.solution.ntq.repository.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -21,7 +22,9 @@ public class JoinEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     int id;
+    @JsonProperty("isJoined")
     boolean isJoined;
+    @JsonProperty("isAttendance")
     boolean isAttendance;
     @ManyToOne
     @JoinColumn(name = "event_id")

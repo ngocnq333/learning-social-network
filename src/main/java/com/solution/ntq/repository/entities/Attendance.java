@@ -26,7 +26,6 @@ public class Attendance {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
-
     @JsonProperty(value = "content")
     @ManyToOne
     @JoinColumn(name = "content_id")
