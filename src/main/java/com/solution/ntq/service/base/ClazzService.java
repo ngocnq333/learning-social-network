@@ -32,4 +32,5 @@ public interface ClazzService {
 
     boolean isCaptainClazz(String userId, int clazzId);
 
+    void deleteMember(int clazzId, String idToken, String userId) throws IllegalAccessException;
 }

@@ -20,10 +20,10 @@ public class ClazzMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     @JsonProperty(value = "class")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "clazz_id")
     Clazz clazz;
-    @ManyToOne( cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
     @JsonProperty("isCaptain")

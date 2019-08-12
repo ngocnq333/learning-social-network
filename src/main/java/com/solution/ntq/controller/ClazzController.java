@@ -7,10 +7,7 @@ import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.controller.response.Response;
-import com.solution.ntq.repository.ClazzMemberRepository;
-import com.solution.ntq.repository.ClazzRepository;
 import com.solution.ntq.service.base.ClazzService;
-import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -111,5 +108,22 @@ public class ClazzController {
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @DeleteMapping("/{classId}/users/{userId}")
+    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "userId")String userId,  @RequestHeader("id_token") String idToken){
+        Response response = new Response();
+        try {
+            clazzService.deleteMember(clazzId,idToken,userId);
+            response.setCodeStatus(ResponseCode.OK.value());
+        } catch (IllegalAccessException ex){
+            response.setMessage(ex.getMessage());
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        } catch (Exception ex){
+            response.setMessage(ex.getMessage());
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }
