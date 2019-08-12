@@ -2,14 +2,6 @@ package com.solution.ntq.common.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.solution.ntq.common.constant.GoogleLink;
-import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.repository.entities.User;
 import lombok.AllArgsConstructor;
 import org.apache.http.client.fluent.Form;
@@ -18,28 +10,17 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
 
 /**
  * @author Nam_Phuong
- * Delear google service
- * Date update 24/7/2019
+ * @since 24/7/2019
  */
 
 
 @Component
 @AllArgsConstructor
 public class GoogleUtils {
-    private static HttpTransport httpTransport = new NetHttpTransport();
-    private static JsonFactory jacksonFactory = new JacksonFactory();
-    /**
-     * Get token form google with a code
-     */
-
     private Environment env;
-
     public String getToken(final String code) throws IOException {
         String link = env.getProperty("google.link.get.token");
         return Request.Post(link)
@@ -69,21 +50,6 @@ public class GoogleUtils {
         JsonNode node = mapper.readTree(response).get("refresh_token");
         return node.textValue();
     }
-    public static String getUserIdByIdToken(String idTokenRequest) throws GeneralSecurityException, IOException {
-        if (idTokenRequest == null) {
-            throw new InvalidRequestException("Access deny");
-        }
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jacksonFactory)
-                .setAudience(Collections.singletonList(GoogleLink.CLIENT_ID))
-                .build();
-        GoogleIdToken idToken = verifier.verify(idTokenRequest);
-        if (idToken == null) {
-            throw new InvalidRequestException("Access deny");
-        }
-        GoogleIdToken.Payload payload = idToken.getPayload();
-        return payload.getSubject();
-    }
-
 
     /**
      * String getId Access Token form response

@@ -26,6 +26,7 @@ public enum ResponseCode {
     BAD_REQUEST(400, "Bad Request");
 
 
+
     final int value;
     final String reasonPhrase;
 
