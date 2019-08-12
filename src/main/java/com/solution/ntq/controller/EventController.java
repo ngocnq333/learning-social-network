@@ -4,6 +4,7 @@ import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.EventGroupRequest;
 import com.solution.ntq.controller.response.AttendanceEventResponse;
+import com.solution.ntq.controller.request.EventRequest;
 import com.solution.ntq.controller.response.EventResponse;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.service.base.EventService;
@@ -12,14 +13,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import com.solution.ntq.controller.request.EventRequest;
-
-import javax.validation.Valid;
 
 import com.solution.ntq.controller.request.JoinEventRequest;
 
@@ -160,6 +158,26 @@ public class EventController {
             response.setMessage(ex.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Method use Update information of Event
+     */
+
+    @PostMapping("/{eventId}")
+    public ResponseEntity<Response<EventRequest>> updateEvent(@RequestHeader("id_token") String idToken, @Valid @RequestBody EventRequest eventRequest, @PathVariable("eventId") int eventId) {
+        Response<EventRequest> response = new Response<>();
+        try {
+            eventService.updateEvent(idToken, eventRequest, eventId);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return new ResponseEntity<>(response,  HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
