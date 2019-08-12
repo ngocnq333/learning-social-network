@@ -4,6 +4,7 @@ import com.solution.ntq.repository.entities.ClazzMember;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.data.repository.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     ClazzMember findByClazzIdAndIsCaptainTrue(int clazzId);
     List<ClazzMember> findByClazzId(int clazzId);
     ClazzMember findByClazzIdAndUserId(int clazzId, String userId);
+    void deleteById(int clazzMemberId);
 
     @Query(value = "SELECT e.id,c.clazz_id,e.user_id,e.is_captain,e.join_date,e.status FROM clazz_member e " +
             " INNER JOIN content c ON c.clazz_id = e.clazz_id WHERE e.is_captain = 0 AND c.id = ?1 " +

@@ -203,4 +203,24 @@ public class ClazzServiceImpl implements ClazzService {
         return convertToResponse(clazzMemberRepository.save(newClazzMember));
 
     }
+
+    @Override
+    public void deleteMember(int clazzId, String idToken, String userId) throws IllegalAccessException {
+        User captainUser = userRepository.findUserByTokenIdToken(idToken);
+        User user = userRepository.findById(userId);
+        if (captainUser == null || user == null){
+            throw new IllegalAccessException("User invalid !");
+        }
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndUserId(clazzId,user.getId());
+        if (clazzMember == null || !clazzMember.getStatus().equals(Status.JOINED.value()) ){
+            throw new IllegalAccessException("user not joined in class !");
+        }
+        ClazzMember clazzMemberCaption = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
+        boolean check = clazzMemberCaption.getUser().getId().equals(captainUser.getId());
+        if (!check){
+            throw new IllegalAccessException("User not caption !");
+        }
+        clazzMemberRepository.deleteById(clazzMember.getId());
+    }
+
 }
