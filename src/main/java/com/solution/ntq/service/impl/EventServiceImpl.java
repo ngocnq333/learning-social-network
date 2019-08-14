@@ -5,7 +5,12 @@ import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.common.validator.Validator;
 
 import com.solution.ntq.controller.response.EventResponse;
+import com.solution.ntq.common.constant.Status;
+import com.solution.ntq.common.utils.GoogleUtils;
+
 import com.solution.ntq.repository.base.EventRepository;
+import com.solution.ntq.repository.base.EventMemberRepository;
+
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.base.JoinEventRepository;
@@ -20,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 
 /**
  * @author Ngoc Ngo Quy
@@ -29,9 +37,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
+
 public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
+    private EventMemberRepository eventMemberRepository;
 
+    @Override
+    public EventResponse findByEventId(int eventId,String idToken) throws GeneralSecurityException, IOException {
+        Event event= eventRepository.findById(eventId);
+        if(event ==null) {
+            throw new InvalidRequestException("Not find this event!");
+        }
+        EventResponse eventResponse= eventMapper(event);
+        String userId=GoogleUtils.getUserIdByIdToken(idToken);
+
+        JoinEvent joinEvent=eventMemberRepository.findByUserIdAndEventId(userId,eventId);
+        eventResponse.setStatus(getStatus(joinEvent));
+        return eventResponse;
+    }
+    private String getStatus(JoinEvent joinEvent) {
+        if(joinEvent==null) {
+            return Status.UNKNOWN.value();
+        }
+        return joinEvent.isJoined() ? Status.JOINED.value() : Status.NOTJOIN.value();
+    }
 
     @Override
     public List<EventResponse> getGroupEvent(int classId, long startDate, long endDate) {

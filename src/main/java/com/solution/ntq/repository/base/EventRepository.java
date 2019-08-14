@@ -16,4 +16,5 @@ import java.util.List;
 public interface EventRepository extends Repository<Event, Integer> {
     @Query(value = "SELECT * FROM event e WHERE e.clazz_id =?1 and e.start_date BETWEEN  ?2 AND ?3", nativeQuery = true)
     List<Event> getEventByClazzIdAndStartDate(int classId, Date startDate, Date endDate);
+    Event findById(int eventId);
 }

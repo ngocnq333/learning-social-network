@@ -11,12 +11,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-
 import com.solution.ntq.controller.request.JoinEventRequest;
+
 
 
 /**
@@ -24,13 +23,31 @@ import com.solution.ntq.controller.request.JoinEventRequest;
  * @version 1.01
  * @since at 7/08/2019
  */
-
+@CrossOrigin
 @RestController
 @AllArgsConstructor
-@CrossOrigin
 @RequestMapping("/api/v1/events")
 public class EventController {
     private EventService eventService;
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<Response> getEventDetail(@PathVariable("eventId") int eventId, @RequestHeader("id_token") String idToken) {
+        Response<EventResponse> response = new Response<>();
+        try {
+            EventResponse eventResponse = eventService.findByEventId(eventId, idToken);
+            response.setCodeStatus(ResponseCode.OK.value());
+            response.setData(eventResponse);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
     private JoinEventService joinEventService;
 
     @GetMapping()
@@ -50,8 +67,9 @@ public class EventController {
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
+
 
     @PutMapping(value = "/eventId/joint")
     public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest) {

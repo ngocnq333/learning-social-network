@@ -7,6 +7,11 @@ import com.solution.ntq.controller.response.EventResponse;
 
 import java.util.List;
 
+import com.solution.ntq.controller.response.EventResponse;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 /**
  * Declare event service
  *
@@ -18,4 +23,5 @@ import java.util.List;
 public interface EventService {
     List<EventResponse> getGroupEvent(int classId, long startDate, long endDate);
     void saveJoinForUser(JoinEventRequest joinEventRequest);
+    EventResponse findByEventId(int id,String idToken) throws GeneralSecurityException, IOException;
 }
