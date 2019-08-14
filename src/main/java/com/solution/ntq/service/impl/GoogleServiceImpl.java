@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * @author Nam_Phuong
@@ -94,7 +93,7 @@ public class GoogleServiceImpl implements GoogleService {
     public User getUserFormGoogle(String accessToken) {
         try {
             return googleUtils.getUserInfo(accessToken);
-        } catch (ParseException | IOException | NullPointerException ex) {
+        } catch (IOException | NullPointerException ex) {
             return null;
         }
     }

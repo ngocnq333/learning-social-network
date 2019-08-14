@@ -1,21 +1,18 @@
-package com.solution.ntq.controller.response;
+package com.solution.ntq.controller.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    String id;
-    String email;
+public class UserRequest {
+    @NotNull
     String name;
     String picture;
     String skype;
     String phone;
-    Date joinDate;
 }

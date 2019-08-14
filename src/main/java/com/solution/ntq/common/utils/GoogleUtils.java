@@ -19,10 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 
 
 /**
@@ -98,7 +95,7 @@ public class GoogleUtils {
         return node.textValue();
     }
 
-    public User getUserInfo(final String accessToken) throws IOException, ParseException {
+    public User getUserInfo(final String accessToken) throws IOException {
         User user = new User();
         String link = env.getProperty("google.link.get.user_info") + accessToken;
         String response = Request.Get(link).execute().returnContent().asString();
@@ -125,21 +122,6 @@ public class GoogleUtils {
             user.setName("");
         }
         try {
-            user.setGivenName(mapper.readTree(response).get("given_name").textValue());
-        } catch (NullPointerException ex) {
-            user.setGivenName("");
-        }
-        try {
-            user.setFamilyName(mapper.readTree(response).get("family_name").textValue());
-        } catch (NullPointerException ex) {
-            user.setFamilyName("");
-        }
-        try {
-            user.setLink(mapper.readTree(response).get("link").textValue());
-        } catch (NullPointerException ex) {
-            user.setLink("");
-        }
-        try {
             user.setPicture(mapper.readTree(response).get("picture").textValue());
         } catch (NullPointerException ex) {
             user.setPicture("");
@@ -153,17 +135,6 @@ public class GoogleUtils {
             user.setHd(mapper.readTree(response).get("hd").textValue());
         } catch (NullPointerException ex) {
             user.setHd("");
-        }
-        try {
-            user.setLocale(mapper.readTree(response).get("locale").textValue());
-        } catch (NullPointerException ex) {
-            user.setLocale("");
-        }
-        try {
-            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(mapper.readTree(response).get("date").textValue());
-            user.setDateOfBirth(date);
-        } catch (NullPointerException ex) {
-
         }
         return user;
     }
