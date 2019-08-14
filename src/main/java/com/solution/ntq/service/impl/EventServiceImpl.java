@@ -7,12 +7,10 @@ import com.solution.ntq.common.validator.Validator;
 import com.solution.ntq.controller.response.EventResponse;
 import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.common.utils.GoogleUtils;
-import com.solution.ntq.controller.response.EventResponse;
-import com.solution.ntq.repository.EventMemberRepository;
-import com.solution.ntq.repository.EventRepository;
+
 import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.base.EventMemberRepository;
-import com.solution.ntq.repository.base.EventRepository;
+
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.base.JoinEventRepository;
