@@ -3,6 +3,8 @@ package com.solution.ntq.service.impl;
 import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.utils.ConvertObject;
+import com.solution.ntq.common.utils.GoogleUtils;
+import com.solution.ntq.controller.request.ClazzRequest;
 import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
@@ -16,10 +18,14 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
+
 
 /**
  * @author Duc Anh
@@ -205,6 +211,29 @@ public class ClazzServiceImpl implements ClazzService {
             throw new IllegalAccessException("User not caption !");
         }
         clazzMemberRepository.deleteById(clazzMember.getId());
+    }
+
+    /**
+     *Update information of Clazz
+     */
+    @Override
+    public void updateClazz(String tokenId, ClazzRequest clazzRequest, int classId) throws GeneralSecurityException, IOException {
+            String userId = GoogleUtils.getUserIdByIdToken(tokenId);
+            if (!isCaptainClazz(userId, classId)) {
+                throw new InvalidRequestException("User is not captain !");
+            }
+            Clazz clazzOld = clazzRepository.findClazzById(classId);
+            clazzRepository.save(getClazzMapToClazzRequest(clazzRequest, clazzOld));
+    }
+
+    private Clazz getClazzMapToClazzRequest(ClazzRequest clazzRequest, Clazz clazzOld) {
+        Clazz newClazz = ConvertObject.mapper().convertValue(clazzRequest, Clazz.class);
+        newClazz.setId(clazzOld.getId());
+        newClazz.setStartDate(clazzOld.getStartDate());
+        newClazz.setEndDate(clazzOld.getEndDate());
+        newClazz.setContents(clazzOld.getContents());
+        newClazz.setClazzMembers(clazzOld.getClazzMembers());
+        return newClazz;
     }
 
 }

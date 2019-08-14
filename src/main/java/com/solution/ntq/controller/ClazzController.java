@@ -3,6 +3,7 @@ package com.solution.ntq.controller;
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.ClazzMemberRequest;
+import com.solution.ntq.controller.request.ClazzRequest;
 import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
 
@@ -109,6 +111,26 @@ public class ClazzController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     *Update information of Clazz
+     */
+    @PostMapping("/{classId}")
+    public ResponseEntity<Response<ClazzRequest>> updateClazz(@PathVariable("classId") int classId, @RequestHeader("id_token") String idToken, @Valid @RequestBody ClazzRequest clazzRequest) {
+         Response<ClazzRequest> response = new Response<>();
+         try {
+             clazzService.updateClazz(idToken, clazzRequest, classId);
+             response.setCodeStatus(ResponseCode.OK.value());
+             return new ResponseEntity<>(response, HttpStatus.OK);
+         } catch (InvalidRequestException e) {
+             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+             response.setMessage(e.getMessage());
+             return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+         } catch (Exception e) {
+             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+    }
+
     @DeleteMapping("/{classId}/users/{userId}")
     public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "userId")String userId,  @RequestHeader("id_token") String idToken){
         Response response = new Response();

@@ -24,7 +24,6 @@ public class Clazz {
     @JsonProperty(value = "classId")
     int id;
     String name;
-    String slug;
     String description;
     String thumbnail;
     String avatar;
