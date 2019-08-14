@@ -7,7 +7,7 @@ import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.response.ClazzResponse;
-import com.solution.ntq.repository.*;
+import com.solution.ntq.repository.base.*;
 import com.solution.ntq.repository.entities.Clazz;
 import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.repository.entities.Token;
@@ -17,8 +17,6 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

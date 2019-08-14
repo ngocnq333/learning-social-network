@@ -1,4 +1,4 @@
-package com.solution.ntq.repository;
+package com.solution.ntq.repository.base;
 
 import com.solution.ntq.repository.entities.JoinEvent;
 import org.springframework.data.jpa.repository.Query;

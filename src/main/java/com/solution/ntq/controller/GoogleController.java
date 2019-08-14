@@ -3,7 +3,7 @@ package com.solution.ntq.controller;
 import com.solution.ntq.controller.response.Response;
 
 
-import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.base.TokenRepository;
 
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.SignService;

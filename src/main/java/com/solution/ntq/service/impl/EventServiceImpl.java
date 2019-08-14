@@ -5,10 +5,10 @@ import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.common.validator.Validator;
 
 import com.solution.ntq.controller.response.EventResponse;
-import com.solution.ntq.repository.EventRepository;
+import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.controller.request.JoinEventRequest;
-import com.solution.ntq.repository.JoinEventRepository;
+import com.solution.ntq.repository.base.JoinEventRepository;
 import com.solution.ntq.repository.entities.JoinEvent;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.EventService;

@@ -1,11 +1,11 @@
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.common.utils.ConvertObject;
-import com.solution.ntq.repository.ClazzMemberRepository;
+import com.solution.ntq.repository.base.ClazzMemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.controller.response.UserResponse;
 import com.solution.ntq.repository.entities.User;
-import com.solution.ntq.repository.UserRepository;
+import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -2,8 +2,8 @@ package com.solution.ntq.service.impl;
 
 import com.solution.ntq.common.constant.GoogleLink;
 import com.solution.ntq.controller.response.Response;
-import com.solution.ntq.repository.UserRepository;
-import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.base.UserRepository;
+import com.solution.ntq.repository.base.TokenRepository;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.GoogleService;

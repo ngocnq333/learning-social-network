@@ -4,7 +4,7 @@ package com.solution.ntq.controller;
 import com.solution.ntq.common.constant.ResponseCode;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.controller.response.UserResponse;
-import com.solution.ntq.repository.TokenRepository;
+import com.solution.ntq.repository.base.TokenRepository;
 import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.UserService;

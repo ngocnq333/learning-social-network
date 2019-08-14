@@ -2,8 +2,8 @@ package com.solution.ntq.service.impl;
 
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.response.AttendanceEventResponse;
-import com.solution.ntq.repository.ClazzMemberRepository;
-import com.solution.ntq.repository.JoinEventRepository;
+import com.solution.ntq.repository.base.ClazzMemberRepository;
+import com.solution.ntq.repository.base.JoinEventRepository;
 import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.repository.entities.JoinEvent;
 import com.solution.ntq.service.base.JoinEventService;
