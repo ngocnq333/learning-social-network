@@ -118,7 +118,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String idToken) {
             String userId = userRepository.findUserByTokenIdToken(idToken).getId();
-            int classId = eventRepository.findAllById(eventId).getId();
+            int classId = eventRepository.findById(eventId).getId();
             if (!clazzService.isCaptainClazz(userId, classId)) {
                throw new InvalidRequestException("dont have role");
             }
