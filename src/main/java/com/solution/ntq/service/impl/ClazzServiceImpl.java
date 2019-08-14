@@ -4,6 +4,7 @@ import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.common.utils.GoogleUtils;
+import com.solution.ntq.common.utils.GoogleUtils;
 import com.solution.ntq.controller.request.ClazzRequest;
 import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
@@ -35,12 +36,13 @@ import java.util.stream.Collectors;
 @Service
 public class ClazzServiceImpl implements ClazzService {
 
-    public static final int FIRST_INDEX_OF_LIST = 0;
+    private static final int FIRST_INDEX_OF_LIST = 0;
     private ClazzRepository clazzRepository;
     private UserRepository userRepository;
     private ClazzMemberRepository clazzMemberRepository;
     private ContentRepository contentRepository;
     private TokenRepository tokenRepository;
+    private GoogleUtils googleUtils;
 
     @Override
     public void addClazz(Clazz clazz) {
@@ -69,7 +71,7 @@ public class ClazzServiceImpl implements ClazzService {
         }
         List<ClazzMember> clazzMembers = clazzMemberRepository.findByUserId(userId);
         List<Clazz> clazzList = clazzMembers.stream().map(ClazzMember::getClazz).collect(Collectors.toList());
-        return clazzList.stream().map(i -> getResponseMapByClazz(i)).collect(Collectors.toList());
+        return clazzList.stream().map(this::getResponseMapByClazz).collect(Collectors.toList());
     }
 
     @Override
@@ -130,12 +132,13 @@ public class ClazzServiceImpl implements ClazzService {
     public List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId) {
         List<ClazzMember> listClazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainIsNot(clazzId);
         List<ClazzMemberResponse> listResponse = new ArrayList<>();
+        ClazzMemberResponse clazzMemberCaptain = convertToResponse(clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId));
         if (listClazzMember == null || listClazzMember.isEmpty()){
+            listResponse.add(FIRST_INDEX_OF_LIST,clazzMemberCaptain);
             return listResponse;
         }
 
         listClazzMember.forEach( clazzMember -> listResponse.add(convertToResponse(clazzMember)));
-        ClazzMemberResponse clazzMemberCaptain = convertToResponse(clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId));
         listResponse.add(FIRST_INDEX_OF_LIST,clazzMemberCaptain);
         return listResponse;
     }
@@ -152,18 +155,31 @@ public class ClazzServiceImpl implements ClazzService {
         return response;
     }
 
-    private boolean isIllegalParamsAddMember(String userId, String userIdAdd, int classId) {
-        boolean checkUserIdNull = StringUtils.isBlank(userId);
-        boolean checkUserIAdddNull = StringUtils.isBlank(userId);
-        if (checkUserIAdddNull || checkUserIdNull){
-            return true;
-        }
 
-        User checkUserExist = userRepository.findById(userId);
-        User checkUserAddExist = userRepository.findById(userIdAdd);
-        ClazzMember clazzMemberContainUserIdAdd = clazzMemberRepository.findByClazzIdAndUserId(classId,userIdAdd);
-        Clazz checkClassExist = clazzRepository.findClazzById(classId);
-        return (  checkUserExist == null || checkUserAddExist == null || checkClassExist == null || clazzMemberContainUserIdAdd != null);
+
+    private void validatorParamsAddMember( String userIdAdd, int classId, String idToken) throws GeneralSecurityException, IOException, IllegalAccessException {
+        User userCaptain = getUserByIdToken(idToken);
+        checkUserIsCaptain(userCaptain.getId(),classId);
+        User userAdd = userRepository.findById(userIdAdd);
+        if (userAdd == null){
+            throw new InvalidRequestException("User ID illegal !");
+        }
+    }
+
+    private User getUserByIdToken(String idToken) throws GeneralSecurityException, IOException {
+        String userId = googleUtils.getUserIdByIdToken(idToken);
+        User user = userRepository.findById(userId);
+        if (user == null){
+            throw new InvalidRequestException("IdToken  illegal !");
+        }
+        return user;
+    }
+
+    private void checkUserIsCaptain(String userId, int clazzId) throws IllegalAccessException {
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
+        if (!userId.equals(clazzMember.getUser().getId())){
+            throw new IllegalAccessException("User not is caption of class not enough permission");
+        }
     }
 
     @Override
@@ -173,21 +189,14 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId) {
-        if (isIllegalParamsAddMember(memberRequest.getUserId(), memberRequest.getUserIdAdd(),classId)){
-            return null;
-        }
+    public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId, String idToken) throws IllegalAccessException, GeneralSecurityException, IOException {
+        validatorParamsAddMember( memberRequest.getUserIdAdd(),classId,idToken);
         ClazzMember newClazzMember = new ClazzMember();
         User user = userRepository.findById(memberRequest.getUserIdAdd());
         newClazzMember.setUser(user);
-
-        if (checkUserIsCaptainOfClazz(memberRequest.getUserId(),classId)){
-            newClazzMember.setStatus(Status.JOINED.value());
-        }
-        else newClazzMember.setStatus(Status.APPROVE.value());
-
+        String status = checkUserIsCaptainOfClazz(memberRequest.getUserIdAdd(),classId) ? Status.JOINED.value() : Status.APPROVE.value();
+        newClazzMember.setStatus(status);
         newClazzMember.setJoinDate(new Date());
-
         newClazzMember.setClazz(clazzRepository.findClazzById(classId));
         newClazzMember.setCaptain(false);
         return convertToResponse(clazzMemberRepository.save(newClazzMember));

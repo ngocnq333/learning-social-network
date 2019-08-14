@@ -38,7 +38,7 @@ public class UserController {
     public ResponseEntity<Response<User>> getUserDetail(@RequestHeader("id_token") String idToken) {
         Token token = tokenRepository.findTokenByIdToken(idToken);
         User user = userService.getUserById(token.getUser().getId());
-        Response<User> response = new Response<>(HttpStatus.OK.value(),user);
+        Response<User> response = new Response<>(ResponseCode.OK.value(),user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -56,9 +56,9 @@ public class UserController {
     public Response getToken(@PathVariable("idUser") String idUser) {
         Token token = tokenRepository.findTokenByUserId(idUser);
         if (token == null) {
-            return new Response<>(HttpStatus.OK.value(), token);
+            return new Response<>(HttpStatus.OK.value(),null);
         } else {
-            return new Response<>(HttpStatus.NOT_FOUND.value(), null);
+            return new Response<>(HttpStatus.NOT_FOUND.value(), null,"not found");
         }
     }
     @GetMapping("/accounts")

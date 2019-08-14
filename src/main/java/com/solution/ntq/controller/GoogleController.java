@@ -33,7 +33,7 @@ public class GoogleController {
     @GetMapping(value = "/api/v1/google-link", produces = MediaType.APPLICATION_JSON_VALUE)
     public Response<String> signIn() {
         String linkGoogleApi = env.getProperty("url_google_api");
-        return new Response<>(HttpStatus.OK.value(), linkGoogleApi);
+        return new Response<>(HttpStatus.OK.value(), linkGoogleApi,null);
     }
 
     /**

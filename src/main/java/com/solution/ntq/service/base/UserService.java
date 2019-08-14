@@ -12,12 +12,10 @@ public interface UserService {
     User getUserById(String id);
 
     User getUserByTokenId(String id);
-    List<User> findAll();
 
+    List<User> findAll();
 
     boolean existsUser(String userId);
 
     List<UserResponse> findByEmailContains(String email);
-
-
 }

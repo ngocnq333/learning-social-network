@@ -68,13 +68,13 @@ public class SignServiceImpl implements SignService {
         try {
             Token token = tokenRepository.findTokenByUserId(userId);
             if (token == null) {
-                return new Response<>(HttpStatus.BAD_REQUEST.value(), null);
+                return new Response<>(HttpStatus.BAD_REQUEST.value(), null,"");
             } else {
                 tokenRepository.removeTokenById(token.getId());
-                return new Response<>(HttpStatus.OK.value(), "done");
+                return new Response<>(HttpStatus.OK.value(),null, "done");
             }
         } catch (Exception ex) {
-            return new Response<>(HttpStatus.NOT_FOUND.value(), ex.toString());
+            return new Response<>(HttpStatus.NOT_FOUND.value(),null, ex.toString());
         }
     }
 

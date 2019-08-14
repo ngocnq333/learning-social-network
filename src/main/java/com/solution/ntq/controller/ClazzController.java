@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.util.List;
 
@@ -54,7 +55,6 @@ public class ClazzController {
             response.setData(clazzResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
-
             response.setCodeStatus(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -79,11 +79,12 @@ public class ClazzController {
     }
 
     @PutMapping("/{classId}/users")
-    public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest , @PathVariable(value = "classId") int classId){
+    public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest , @PathVariable(value = "classId") int classId,
+                                                                        @RequestHeader(name = "id_token")String idToken){
         Response<ClazzMemberResponse> response = new Response<>();
         ClazzMemberResponse memberResponse ;
         try{
-            memberResponse = clazzService.addClazzMember(memberRequest,classId);
+            memberResponse = clazzService.addClazzMember(memberRequest,classId,idToken);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(memberResponse);
             return new ResponseEntity<>(response,HttpStatus.OK);
@@ -94,7 +95,7 @@ public class ClazzController {
     }
 
     @PostMapping("/{classId}/users/{userId}")
-    public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@RequestHeader("id_token") String idToken, @PathVariable("classId") int classId
+    public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@NotNull @RequestHeader("id_token") String idToken,@NotNull @PathVariable("classId") int classId
             , @PathVariable("userId") String userId) {
         Response<ClazzMemberRequest> response = new Response<>();
         try {

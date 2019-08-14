@@ -24,6 +24,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
+
     String title;
     String description;
     String document;
@@ -38,7 +39,7 @@ public class Event {
     @JoinColumn(name = "content_id")
     Content content;
     @JsonIgnore
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event",orphanRemoval = true)
     List<JoinEvent> joinEvents;
 }
 
