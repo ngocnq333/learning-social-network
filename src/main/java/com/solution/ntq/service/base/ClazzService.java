@@ -8,6 +8,7 @@ import com.solution.ntq.repository.entities.Clazz;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.text.ParseException;
 import java.util.List;
 /**
  * @author Duc Anh
@@ -23,7 +24,7 @@ public interface ClazzService {
 
     ClazzResponse getClassById(int clazzId,String tokenId);
 
-    List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId);
+    List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId,String status,String idToken) throws IllegalAccessException, GeneralSecurityException, IOException;
 
     boolean checkUserIsCaptainOfClazz(String userId, int classId);
 
@@ -33,7 +34,7 @@ public interface ClazzService {
 
     boolean isCaptainClazz(String userId, int clazzId);
 
-    void deleteMember(int clazzId, String idToken, String userId) throws IllegalAccessException;
+    void deleteMember(int clazzId, String idToken, String userIdDelete) throws IllegalAccessException, GeneralSecurityException, IOException, ParseException;
 
     void updateClazz(String tokenId, ClazzRequest clazzRequest, int clazzId) throws GeneralSecurityException, IOException;
 }
