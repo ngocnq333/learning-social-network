@@ -1,7 +1,6 @@
 package com.solution.ntq.service.base;
 
 import com.solution.ntq.controller.request.AttendanceRequest;
-import com.solution.ntq.controller.response.Response;
 
 
 import com.solution.ntq.controller.response.AttendanceResponse;
