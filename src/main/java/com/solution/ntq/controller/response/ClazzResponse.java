@@ -20,7 +20,6 @@ public class ClazzResponse {
     @JsonProperty(value = "classId")
     int id;
     String name;
-    String slug;
     String description;
     String thumbnail;
     Date startDate;

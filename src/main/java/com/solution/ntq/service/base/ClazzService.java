@@ -1,11 +1,13 @@
 package com.solution.ntq.service.base;
 
+import com.solution.ntq.controller.request.ClazzRequest;
 import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.repository.entities.Clazz;
 
-import java.text.ParseException;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 /**
  * @author Duc Anh
@@ -33,4 +35,6 @@ public interface ClazzService {
     boolean isCaptainClazz(String userId, int clazzId);
 
     void deleteMember(int clazzId, String idToken, String userId) throws IllegalAccessException;
+
+    void updateClazz(String tokenId, ClazzRequest clazzRequest, int clazzId) throws GeneralSecurityException, IOException;
 }
