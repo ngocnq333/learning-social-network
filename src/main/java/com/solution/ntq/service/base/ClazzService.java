@@ -19,7 +19,6 @@ public interface ClazzService {
 
     List<ClazzResponse> getClassByUser(String userId);
 
-
     ClazzResponse getClassById(int clazzId);
 
     ClazzResponse getClassById(int clazzId,String tokenId);
@@ -28,7 +27,7 @@ public interface ClazzService {
 
     boolean checkUserIsCaptainOfClazz(String userId, int classId);
 
-    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId);
+    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId, String idToken) throws IllegalAccessException, GeneralSecurityException, IOException;
 
     void updateCaptainForClass(int clazzId, String tokenId, String userId);
 

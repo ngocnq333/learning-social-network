@@ -5,19 +5,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
+
 /**
  * @author Ngoc Ngo Quy
  * @since  at 8/08/2019
  * @version 1.01
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
-
-import java.util.List;
-
-/**
- * @author Ngoc Ngo Quy
- * @version 1.01
- * @since at 8/08/2019
  */
 @org.springframework.stereotype.Repository
 public interface JoinEventRepository extends Repository<JoinEvent, Integer> {

@@ -12,11 +12,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import com.solution.ntq.controller.request.JoinEventRequest;
 
+import com.solution.ntq.controller.request.EventRequest;
+
+import javax.validation.Valid;
+
+import com.solution.ntq.controller.request.JoinEventRequest;
 
 /**
  * @author Ngoc Ngo Quy
@@ -29,6 +34,24 @@ import com.solution.ntq.controller.request.JoinEventRequest;
 @RequestMapping("/api/v1/events")
 public class EventController {
     private EventService eventService;
+
+    @PutMapping
+    public ResponseEntity<Response> createEvent(@Valid @RequestBody EventRequest eventRequest, @RequestHeader("id_token") String tokenId) {
+        Response response = new Response();
+        try {
+            eventService.addEvent(eventRequest, tokenId);
+            response.setCodeStatus(ResponseCode.OK.value());
+        } catch (InvalidRequestException ex) {
+            response.setMessage(ex.getMessage());
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     private JoinEventService joinEventService;
 
     @GetMapping("/{eventId}")
@@ -88,7 +111,6 @@ public class EventController {
     }
 
 
-
     @PutMapping(value = "/eventId/joint")
     public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest) {
         Response<String> response = new Response<>();
@@ -103,6 +125,24 @@ public class EventController {
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Response> deleteEvent(@RequestHeader("id_token") String idToken, @PathVariable(name = "eventId") int eventId) {
+        Response response = new Response();
+        try {
+            eventService.deleteEvent(eventId, idToken);
+            response.setCodeStatus(ResponseCode.OK.value());
+        } catch (IllegalAccessException ex) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{eventId}/attendances")
@@ -124,3 +164,4 @@ public class EventController {
         }
     }
 }
+
