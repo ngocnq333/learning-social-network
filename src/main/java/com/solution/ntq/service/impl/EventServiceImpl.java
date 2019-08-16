@@ -1,6 +1,7 @@
 package com.solution.ntq.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solution.ntq.common.constant.Constant;
 import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.common.utils.GoogleUtils;
 import com.solution.ntq.controller.request.EventRequest;
@@ -47,12 +48,8 @@ public class EventServiceImpl implements EventService {
     private ContentRepository contentRepository;
     private UserRepository userRepository;
     private JoinEventRepository joinEventRepository;
-    private static final int MILLISECONDS_OF_DAY = 86400000;
-    private static final int ONE_HOUR = 3600000;
-    private static final int ONE_MINUTE = 60000;
-    private static final long ONE_SECOND = 1000;
-    private static final int MIN_DURATION = 25 * ONE_MINUTE;
-    private static final int MAX_DURATION = MILLISECONDS_OF_DAY * 2;
+    private static final long MIN_DURATION = 25 * Constant.ONE_MINUTE;
+    private static final long MAX_DURATION = Constant.MILLISECONDS_OF_DAY * 2;
     private static final int EVENT_ID_DEFAULT = 0;
 
     private Event convertRequestToEvent(EventRequest eventRequest, String idToken) throws GeneralSecurityException, IOException, IllegalAccessException {
@@ -88,6 +85,19 @@ public class EventServiceImpl implements EventService {
             throw new InvalidRequestException("Have a duplicate event in class !");
         }
     }
+    private boolean durationEventRequestInvalid(EventRequest eventRequest) {
+        long durationToMillisecond = getTotalMillisecondOfEvent(0, eventRequest.getDuration());
+        return ((MIN_DURATION > durationToMillisecond) || (durationToMillisecond > MAX_DURATION));
+    }
+    private long getTotalMillisecondOfEvent(long startDate, float duration) {
+        long durationToMillisecond = 0;
+        if (duration != 0) {
+            durationToMillisecond = (long) (duration * Constant.ONE_HOUR);
+        }
+        long total = startDate + durationToMillisecond;
+        //rounding 1 second
+        return total - (total % Constant.ONE_SECOND);
+    }
 
     private Content getContentByContentId(EventRequest eventRequest) {
         Content content = contentRepository.findContentById(eventRequest.getContentId());
@@ -98,9 +108,9 @@ public class EventServiceImpl implements EventService {
     }
 
     private boolean checkEventRequestTimeInValid(EventRequest eventRequest, int eventId) {
-        java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - MILLISECONDS_OF_DAY * 2);
-        java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + MILLISECONDS_OF_DAY * 2);
-        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
+        java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * 2);
+        java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * 2);
+            List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
         if (duplicateEvents.isEmpty()) {
             return false;
         }
