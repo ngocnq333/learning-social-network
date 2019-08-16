@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.text.ParseException;
 import java.util.List;
 
 @AllArgsConstructor
@@ -82,7 +81,8 @@ public class ClazzController {
     }
 
     @PutMapping("/{classId}/users")
-    public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest , @PathVariable(value = "classId") int classId,
+    public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest ,
+                                                                        @PathVariable(value = "classId") int classId,
                                                                         @RequestHeader(name = "id_token")String idToken){
         Response<ClazzMemberResponse> response = new Response<>();
         ClazzMemberResponse memberResponse ;
@@ -138,11 +138,11 @@ public class ClazzController {
         }
     }
 
-    @DeleteMapping("/{classId}/users/{userId}")
-    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "userId")String userIdDelete,  @RequestHeader("id_token") String idToken){
+    @DeleteMapping("/{classId}/users/{memberId}")
+    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId")int memberId,  @RequestHeader("id_token") String idToken){
         Response response = new Response();
         try {
-            clazzService.deleteMember(clazzId,idToken,userIdDelete);
+            clazzService.deleteMember(clazzId,idToken,memberId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalAccessException ex) {
@@ -175,5 +175,22 @@ public class ClazzController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+    @PostMapping("/{classId}/{memberId}/status/JOINED")
+    public ResponseEntity<Response<ClazzMemberResponse>> updateStatusMember(@RequestHeader("id_token")String idToken,
+                                                                            @PathVariable("classId")int classId,
+                                                                            @PathVariable("memberId")int memberId){
+        Response<ClazzMemberResponse> response = new Response<>();
+        try{
+            response.setData(clazzService.updateStatusMember(idToken , classId , memberId));
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } catch (InvalidRequestException ex){
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+        } catch (Exception ex){
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
