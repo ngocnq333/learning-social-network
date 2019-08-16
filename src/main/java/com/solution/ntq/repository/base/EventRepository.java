@@ -24,6 +24,11 @@ public interface EventRepository extends Repository<Event,Integer> {
 
     @Query(value = "SELECT * FROM event e WHERE e.clazz_id =?1 and e.start_date BETWEEN  ?2 AND ?3", nativeQuery = true)
     List<Event> getEventByClazzIdAndStartDate(int classId, Date startDate, Date endDate);
+    @Query(value = "SELECT * FROM event WHERE clazz_id = ?1  AND id IN (SELECT event_id FROM join_event) ORDER BY start_date DESC ", nativeQuery = true)
+    List<Event> findByClazzHaveAttendances(int classId);
+
+    @Query(value = "SELECT * FROM event WHERE clazz_id = ?1  AND id IN (SELECT event_id FROM join_event) AND title LIKE %?2% ORDER BY start_date DESC ", nativeQuery = true)
+    List<Event> findByIdClazzAndTitleHaveAttendances(int classId, String title);
     Event findById(int eventId);
     void deleteById(int eventId);
 }

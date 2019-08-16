@@ -22,5 +22,5 @@ public interface ContentService {
 
     boolean exitContent(int idContent);
 
-    List<ContentResponse> getContentsResponseSorted(int classId, boolean sort, String title);
+    List<ContentResponse> getContentsResponseSorted(int classId);
 }

@@ -30,6 +30,7 @@ public class Attendance {
     @ManyToOne
     @JoinColumn(name = "content_id")
     Content content;
+    @JsonProperty(value = "isAttendance")
     boolean isAttendance;
 
 }

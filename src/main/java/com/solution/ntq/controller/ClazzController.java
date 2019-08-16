@@ -8,6 +8,7 @@ import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
 import com.solution.ntq.controller.response.Response;
+import com.solution.ntq.service.base.AttendanceService;
 import com.solution.ntq.service.base.ClazzService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequestMapping("/api/v1/classes")
 public class ClazzController {
     private ClazzService clazzService;
+    private AttendanceService attendanceService;
 
 
     /**
@@ -38,26 +40,27 @@ public class ClazzController {
      */
 
     @GetMapping
-    public ResponseEntity<Response<List<ClazzResponse>>> getListClassByUserId( @RequestParam(value = "userId",defaultValue = "")  String userId) {
+    public ResponseEntity<Response<List<ClazzResponse>>> getListClassByUserId(@RequestParam(value = "userId", defaultValue = "") String userId) {
         Response<List<ClazzResponse>> response = new Response<>();
         response.setCodeStatus(HttpStatus.OK.value());
         response.setData(clazzService.getClassByUser(userId));
-        return  new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{classId}")
     public ResponseEntity<Response<ClazzResponse>> getClassById(@PathVariable("classId") int clazzId, @RequestHeader("id_token") String tokenId) {
         Response<ClazzResponse> response = new Response<>();
         try {
-
             ClazzResponse clazzResponse = clazzService.getClassById(clazzId, tokenId);
             response.setCodeStatus(HttpStatus.OK.value());
             response.setData(clazzResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
+            response.setMessage(e.getMessage());
             response.setCodeStatus(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -65,16 +68,15 @@ public class ClazzController {
 
 
     @GetMapping("/{classId}/users")
-    public ResponseEntity<Response<List<ClazzMemberResponse>>> getListMemberOfClazz(@PathVariable(value = "classId") int classId){
+    public ResponseEntity<Response<List<ClazzMemberResponse>>> getListMemberOfClazz(@PathVariable(value = "classId") int classId) {
         Response<List<ClazzMemberResponse>> response = new Response<>();
         try {
             List<ClazzMemberResponse> clazzMemberResponseList = clazzService.findAllMemberByClazzId(classId);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(clazzMemberResponseList);
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        }
-        catch (Exception ex){
-            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -87,10 +89,9 @@ public class ClazzController {
             memberResponse = clazzService.addClazzMember(memberRequest,classId,idToken);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(memberResponse);
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        }
-        catch (Exception ex){
-            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -114,39 +115,60 @@ public class ClazzController {
     }
 
     /**
-     *Update information of Clazz
+     * Update information of Clazz
      */
     @PostMapping("/{classId}")
     public ResponseEntity<Response<ClazzRequest>> updateClazz(@PathVariable("classId") int classId, @RequestHeader("id_token") String idToken, @Valid @RequestBody ClazzRequest clazzRequest) {
-         Response<ClazzRequest> response = new Response<>();
-         try {
-             clazzService.updateClazz(idToken, clazzRequest, classId);
-             response.setCodeStatus(ResponseCode.OK.value());
-             return new ResponseEntity<>(response, HttpStatus.OK);
-         } catch (InvalidRequestException e) {
-             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-             response.setMessage(e.getMessage());
-             return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-         } catch (Exception e) {
-             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-         }
+        Response<ClazzRequest> response = new Response<>();
+        try {
+            clazzService.updateClazz(idToken, clazzRequest, classId);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{classId}/users/{userId}")
-    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "userId")String userId,  @RequestHeader("id_token") String idToken){
+    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "userId") String userId, @RequestHeader("id_token") String idToken) {
         Response response = new Response();
         try {
-            clazzService.deleteMember(clazzId,idToken,userId);
+            clazzService.deleteMember(clazzId, idToken, userId);
             response.setCodeStatus(ResponseCode.OK.value());
-        } catch (IllegalAccessException ex){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalAccessException ex) {
             response.setMessage(ex.getMessage());
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-        } catch (Exception ex){
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
             response.setMessage(ex.getMessage());
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+
+    @GetMapping("{classId}/attendances")
+    public ResponseEntity<Response<List>> getListContentAttendanceByClass(@PathVariable("classId") int classId
+                                                                    ,@RequestParam(value = "title",defaultValue = "") String title
+                                                                    ,@RequestParam(value = "type",defaultValue = "content")String type) {
+        Response<List> response = new Response<>();
+        try {
+            List attendanceResponseList = attendanceService.getListAttendanceByClassId(classId, title, type);
+            response.setCodeStatus(HttpStatus.OK.value());
+            response.setData(attendanceResponseList);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

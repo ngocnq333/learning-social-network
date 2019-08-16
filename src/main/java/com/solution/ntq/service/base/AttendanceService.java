@@ -1,10 +1,7 @@
 package com.solution.ntq.service.base;
 
 import com.solution.ntq.controller.request.AttendanceRequest;
-
-
-import com.solution.ntq.controller.response.AttendanceResponse;
-
+import com.solution.ntq.controller.response.AttendanceContentResponse;
 
 import java.util.List;
 
@@ -14,6 +11,8 @@ import java.util.List;
  * @since 2019/07/31
  */
 public interface AttendanceService {
-    List<AttendanceResponse> getListAttendance (int contentId);
+    List<AttendanceContentResponse> getListAttendance (int contentId);
     void saveAttendanceGroup(AttendanceRequest attendanceGroupRequest);
+    List getListAttendanceByClassId(int classId, String title,String type);
+
 }
