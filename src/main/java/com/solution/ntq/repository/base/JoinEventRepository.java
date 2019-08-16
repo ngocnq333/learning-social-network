@@ -22,11 +22,8 @@ import java.util.List;
 @org.springframework.stereotype.Repository
 public interface JoinEventRepository extends Repository<JoinEvent, Integer> {
     void save(JoinEvent joinEvent);
-
     @Query(value = "SELECT * FROM join_event e WHERE e.event_id = ?1 and e.is_joined = true", nativeQuery = true)
     List<JoinEvent> getJoinEventsByEventIdAndJoinedTrue(int eventId);
-
     JoinEvent getJoinEventsById(int id);
 
-    void save(JoinEvent joinEvent);
 }

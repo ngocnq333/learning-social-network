@@ -40,8 +40,6 @@ public class GoogleUtils {
     /**
      * Get token form google with a code
      */
-    private static HttpTransport httpTransport = new NetHttpTransport();
-    private static JsonFactory jacksonFactory = new JacksonFactory();
 
     private Environment env;
 
@@ -170,18 +168,4 @@ public class GoogleUtils {
         return user;
     }
 
-    public String getUserIdByIdToken(String idTokenRequest) throws GeneralSecurityException, IOException {
-        if (idTokenRequest == null) {
-            throw new InvalidRequestException("Access deny");
-        }
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(httpTransport, jacksonFactory)
-                .setAudience(Collections.singletonList(GoogleLink.CLIENT_ID))
-                .build();
-        GoogleIdToken idToken = verifier.verify(idTokenRequest);
-        if (idToken == null) {
-            throw new InvalidRequestException("Access deny");
-        }
-        GoogleIdToken.Payload payload = idToken.getPayload();
-        return payload.getSubject();
-    }
 }
