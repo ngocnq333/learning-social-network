@@ -1,6 +1,7 @@
 package com.solution.ntq.service.impl;
 
 import com.solution.ntq.common.constant.GoogleLink;
+import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.repository.base.TokenRepository;
@@ -8,12 +9,16 @@ import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.GoogleService;
 import com.solution.ntq.service.base.SignService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+
 
 /**
  * @author Nam_Phuong
@@ -27,6 +32,7 @@ public class SignServiceImpl implements SignService {
     private UserRepository iUserRepository;
     private GoogleService iGoogleService;
     private TokenRepository tokenRepository;
+    private Environment env;
 
     /**
      * Sign up user to application
@@ -48,11 +54,13 @@ public class SignServiceImpl implements SignService {
                 if (!isSignUp(idUser)) {
                     signUpUser(token.getUser());
                 }
+                String idToken = createJwtToken(idUser);
+                token.setIdToken(idToken);
                 token.setTime(new Date());
                 tokenRepository.save(token);
                 return token;
-            } catch (InvalidDataAccessApiUsageException invalidData) {
-                throw invalidData;
+            } catch (InvalidRequestException ex) {
+                throw new InvalidRequestException(ex.getMessage());
             }
         }
         return null;
@@ -129,4 +137,11 @@ public class SignServiceImpl implements SignService {
         return (GoogleLink.NTQ_EMAIL_FORM.equalsIgnoreCase(userEmail));
     }
 
+    private String createJwtToken(String userId) {
+        return  Jwts.builder()
+                .setSubject(userId)
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(env.getProperty("JWT_EXPIRATIONTIME"))))
+                .signWith(SignatureAlgorithm.HS512, env.getProperty("JWT_SECRET"))
+                .compact();
+    }
 }
