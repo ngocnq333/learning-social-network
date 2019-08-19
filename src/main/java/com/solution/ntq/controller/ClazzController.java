@@ -139,7 +139,7 @@ public class ClazzController {
     }
 
     @DeleteMapping("/{classId}/members/{memberId}")
-    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId")String memberId,  @RequestHeader("id_token") String idToken){
+    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId")int memberId,  @RequestHeader("id_token") String idToken){
         Response response = new Response();
         try {
             clazzService.deleteMember(clazzId,idToken,memberId);
