@@ -117,12 +117,14 @@ public class ContentController {
     }
 
 
+
     @GetMapping
-    public ResponseEntity<Response> getListContentsAttendance(@RequestParam(value = "classId", defaultValue = Constant.CLASS_ID_DEFAULT) int clazzId) {
+    public ResponseEntity<Response> getListContent(@RequestParam(value = "classId", defaultValue = Constant.CLASS_ID_DEFAULT) int clazzId,
+                                                   @RequestParam(value = "status",defaultValue = "")String status) {
 
         try {
             Response<List<ContentResponse>> response = new Response<>();
-            List<ContentResponse> contentsSortedGroup = contentService.getContentsResponseSorted(clazzId);
+            List<ContentResponse> contentsSortedGroup = contentService.getContentsResponseSorted(clazzId,status);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(contentsSortedGroup);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -131,6 +133,7 @@ public class ContentController {
         }
     }
 
+
     @DeleteMapping("/{contentId}")
     public ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
         Response<Response> response = new Response<>();
@@ -138,6 +141,19 @@ public class ContentController {
         response.setCodeStatus(HttpStatus.OK.value());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("/{contentId}/approve")
+    public ResponseEntity<Response> approveContent(@PathVariable("contentId") int contentId) {
+        Response<Response> response = new Response<>();
+        try {
+            contentService.approveContent(contentId);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
     }
 
 
