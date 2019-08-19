@@ -105,12 +105,15 @@ public class EventServiceImpl implements EventService {
             return false;
         }
         for (Event event : duplicateEvents) {
-            long eventMillisecond = event.getStartDate().getTime();
-            long requestMillisecond = eventRequest.getStartDate().getTime();
-            long currentEvent = getTotalMillisecondOfEvent(eventMillisecond, event.getDuration());
-            long requestEvent = getTotalMillisecondOfEvent(requestMillisecond, eventRequest.getDuration());
-            //   start date < ( new events start date + duration) > (start date + duration) of all events created
-            if ((requestEvent >= event.getStartDate().getTime()) && (requestEvent <= currentEvent)) {
+            long startEventMilli = event.getStartDate().getTime();
+            long startRequestMilli = eventRequest.getStartDate().getTime();
+            long endEventMilli = getTotalMillisecondOfEvent(startEventMilli, event.getDuration());
+            long endRequestMilli = getTotalMillisecondOfEvent(startRequestMilli, eventRequest.getDuration());
+            // start time of request < start time of old event OR start time  of request > end time of old event
+            // end time of request < start time of old event OR end time  of request > end time of old event
+            boolean condition1 = (startRequestMilli >= startEventMilli) && (startRequestMilli <= endEventMilli);
+            boolean condition2 = (endRequestMilli >= startEventMilli) && (endRequestMilli <= endEventMilli);
+            if ( condition1 || condition2 ) {
                 return true;
             }
         }
