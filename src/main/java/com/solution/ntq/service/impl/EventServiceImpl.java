@@ -81,22 +81,9 @@ public class EventServiceImpl implements EventService {
         if (durationEventRequestInvalid(eventRequest)) {
             throw new InvalidRequestException(" Event have duration illegal !");
         }
-        if (checkEventRequestTimeInValid(eventRequest, EVENT_ID_DEFAULT )) {
+        if (checkEventRequestTimeInValid(eventRequest, EVENT_ID_DEFAULT)) {
             throw new InvalidRequestException("Have a duplicate event in class !");
         }
-    }
-    private boolean durationEventRequestInvalid(EventRequest eventRequest) {
-        long durationToMillisecond = getTotalMillisecondOfEvent(0, eventRequest.getDuration());
-        return ((MIN_DURATION > durationToMillisecond) || (durationToMillisecond > MAX_DURATION));
-    }
-    private long getTotalMillisecondOfEvent(long startDate, float duration) {
-        long durationToMillisecond = 0;
-        if (duration != 0) {
-            durationToMillisecond = (long) (duration * Constant.ONE_HOUR);
-        }
-        long total = startDate + durationToMillisecond;
-        //rounding 1 second
-        return total - (total % Constant.ONE_SECOND);
     }
 
     private Content getContentByContentId(EventRequest eventRequest) {
@@ -110,7 +97,7 @@ public class EventServiceImpl implements EventService {
     private boolean checkEventRequestTimeInValid(EventRequest eventRequest, int eventId) {
         java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * 2);
         java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * 2);
-            List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
+        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
         if (duplicateEvents.isEmpty()) {
             return false;
         }
@@ -123,7 +110,7 @@ public class EventServiceImpl implements EventService {
             // end time of request < start time of old event OR end time  of request > end time of old event
             boolean condition1 = (startRequestMilli >= startEventMilli) && (startRequestMilli <= endEventMilli);
             boolean condition2 = (endRequestMilli >= startEventMilli) && (endRequestMilli <= endEventMilli);
-            if ( condition1 || condition2 ) {
+            if (condition1 || condition2) {
                 return true;
             }
         }
@@ -259,7 +246,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void updateEvent(String idToken, EventRequest eventRequest, int eventId) {
         Event eventOld = eventRepository.findById(eventId);
-        User captain =  userRepository.findUserByTokenIdToken(idToken);
+        User captain = userRepository.findUserByTokenIdToken(idToken);
 
         if (captain == null) {
             throw new InvalidRequestException("Account does not exist!");
@@ -274,7 +261,7 @@ public class EventServiceImpl implements EventService {
             throw new InvalidRequestException("User is not captain!");
         }
 
-        if (durationEventRequestInvalid(eventRequest)){
+        if (durationEventRequestInvalid(eventRequest)) {
             throw new InvalidRequestException(" Event have duration illegal !");
         }
 
@@ -305,10 +292,10 @@ public class EventServiceImpl implements EventService {
     private long getTotalMillisecondOfEvent(long startDate, float duration) {
         long durationToMillisecond = 0;
         if (duration != 0) {
-            durationToMillisecond = (long) (duration * ONE_HOUR);
+            durationToMillisecond = (long) (duration * Constant.ONE_HOUR);
         }
         long total = startDate + durationToMillisecond;
         //rounding 1 secondK
-        return total - (total % ONE_SECOND);
+        return total - (total % Constant.ONE_SECOND);
     }
 }

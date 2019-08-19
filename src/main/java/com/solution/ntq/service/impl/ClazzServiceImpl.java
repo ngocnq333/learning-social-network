@@ -17,12 +17,11 @@ import com.solution.ntq.service.base.ClazzService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -196,8 +195,8 @@ public class ClazzServiceImpl implements ClazzService {
         if (userAdd == null) {
             throw new InvalidRequestException("User ID illegal !");
         }
-        List<ClazzMember> duplicateMember = clazzMemberRepository.findByUserIdAndClazzId(userAdd.getId(),classId);
-        if (!(duplicateMember == null || duplicateMember.isEmpty())){
+        List<ClazzMember> duplicateMembers = clazzMemberRepository.findByUserIdAndClazzId(userAdd.getId(),classId);
+        if (!CollectionUtils.isEmpty(duplicateMembers)){
             throw new InvalidRequestException(" Duplicate member !");
         }
         ClazzMember newClazzMember = new ClazzMember();
