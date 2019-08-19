@@ -34,10 +34,10 @@ public class EventController {
     private EventService eventService;
 
     @PutMapping
-    public ResponseEntity<Response> createEvent(@Valid @RequestBody EventRequest eventRequest, @RequestHeader("id_token") String tokenId) {
+    public ResponseEntity<Response> createEvent(@Valid @RequestBody EventRequest eventRequest,@RequestAttribute("userId") String userId) {
         Response response = new Response();
         try {
-            eventService.addEvent(eventRequest, tokenId);
+            eventService.addEvent(eventRequest, userId);
             response.setCodeStatus(ResponseCode.OK.value());
         } catch (InvalidRequestException ex) {
             response.setMessage(ex.getMessage());
@@ -53,7 +53,7 @@ public class EventController {
     private JoinEventService joinEventService;
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<Response> getEventDetail(@PathVariable("eventId") int eventId, @RequestParam("userId") String userId) {
+    public ResponseEntity<Response> getEventDetail(@PathVariable("eventId") int eventId, @RequestAttribute("userId") String userId) {
         Response<EventResponse> response = new Response<>();
         try {
             EventResponse eventResponse = eventService.findByEventId(eventId, userId);
@@ -93,7 +93,7 @@ public class EventController {
     @PostMapping("/{eventId}/attendances")
     public ResponseEntity<Response<String>> takeAttendanceEvents(@RequestBody List<EventGroupRequest> eventGroupRequests,
                                                                  @PathVariable("eventId") int eventId,
-                                                                 @RequestParam("userId") String userId) {
+                                                                 @RequestAttribute("userId") String userId) {
         Response<String> response = new Response<>();
         try {
             eventService.takeAttendanceEvents(eventGroupRequests, eventId, userId);
@@ -126,10 +126,10 @@ public class EventController {
     }
 
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<Response> deleteEvent(@RequestHeader("id_token") String idToken, @PathVariable(name = "eventId") int eventId) {
+    public ResponseEntity<Response> deleteEvent(@RequestAttribute("userId") String userId, @PathVariable(name = "eventId") int eventId) {
         Response response = new Response();
         try {
-            eventService.deleteEvent(eventId, idToken);
+            eventService.deleteEvent(eventId, userId);
             response.setCodeStatus(ResponseCode.OK.value());
         } catch (IllegalAccessException ex) {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
@@ -146,7 +146,7 @@ public class EventController {
     @GetMapping("/{eventId}/attendances")
     public ResponseEntity<Response<List<AttendanceEventResponse>>> getListAttendanceEvent(@PathVariable("eventId") int eventId,
                                                                                           @RequestParam(value = "classId", defaultValue = "") int classId,
-                                                                                          @RequestParam(value = "userId", defaultValue = "") String userId) {
+                                                                                          @RequestAttribute(value = "userId") String userId) {
         Response<List<AttendanceEventResponse>> response = new Response<>();
         try {
             List<AttendanceEventResponse> attendanceResponseListEvent = joinEventService.getListJointEvent(eventId, classId, userId);
@@ -167,10 +167,10 @@ public class EventController {
      */
 
     @PostMapping("/{eventId}")
-    public ResponseEntity<Response<EventRequest>> updateEvent(@RequestHeader("id_token") String idToken, @Valid @RequestBody EventRequest eventRequest, @PathVariable("eventId") int eventId) {
+    public ResponseEntity<Response<EventRequest>> updateEvent(@RequestAttribute("userId") String userId, @Valid @RequestBody EventRequest eventRequest, @PathVariable("eventId") int eventId) {
         Response<EventRequest> response = new Response<>();
         try {
-            eventService.updateEvent(idToken, eventRequest, eventId);
+            eventService.updateEvent(userId, eventRequest, eventId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response,HttpStatus.OK);
         } catch (InvalidRequestException e) {

@@ -53,9 +53,9 @@ public class EventServiceImpl implements EventService {
     private static final long MAX_DURATION = Constant.MILLISECONDS_OF_DAY * 2;
     private static final int EVENT_ID_DEFAULT = 0;
 
-    private Event convertRequestToEvent(EventRequest eventRequest, String idToken) throws GeneralSecurityException, IOException, IllegalAccessException {
-        validateRequest(eventRequest, idToken);
-        User user = userRepository.findUserByTokenIdToken(idToken);
+    private Event convertRequestToEvent(EventRequest eventRequest, String userId)throws IllegalAccessException {
+        validateRequest(eventRequest, userId);
+        User user = userRepository.findById(userId);
         Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
 
         ObjectMapper mapper = ConvertObject.mapper();
@@ -66,13 +66,13 @@ public class EventServiceImpl implements EventService {
         return event;
     }
 
-    private void validateRequest(EventRequest eventRequest, String idToken) throws GeneralSecurityException, IOException, IllegalAccessException {
-        String userExecuteId = GoogleUtils.getUserIdByIdToken(idToken);
+    private void validateRequest(EventRequest eventRequest, String userId) throws IllegalAccessException {
+
         Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
         if (clazz == null) {
             throw new InvalidRequestException("ClassId  illegal !");
         }
-        checkUserIsCaptain(userExecuteId, clazz.getId());
+        checkUserIsCaptain(userId, clazz.getId());
         if (eventRequest.getStartDate().before(new java.util.Date())) {
             throw new InvalidRequestException("Start Date illegal !");
         }
@@ -119,9 +119,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void addEvent(EventRequest eventRequest, String idToken) throws
-            GeneralSecurityException, IOException, IllegalAccessException {
-        Event event = convertRequestToEvent(eventRequest, idToken);
+    public void addEvent(EventRequest eventRequest, String userId) throws IllegalAccessException {
+        Event event = convertRequestToEvent(eventRequest, userId);
         eventRepository.save(event);
     }
 
@@ -199,12 +198,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void deleteEvent(int eventId, String idToken) throws IllegalAccessException {
+    public void deleteEvent(int eventId, String userId) throws IllegalAccessException {
         Event event = eventRepository.findById(eventId);
         if (event == null) {
             throw new IllegalAccessException("Event Id illegal");
         }
-        User user = userRepository.findUserByTokenIdToken(idToken);
+        User user = userRepository.findById(userId);
         checkUserIsCaptain(user.getId(), event.getClazz().getId());
         eventRepository.deleteById(eventId);
     }
@@ -237,14 +236,13 @@ public class EventServiceImpl implements EventService {
                 }
         );
     }
-
     /**
      * Update event
      */
     @Override
-    public void updateEvent(String idToken, EventRequest eventRequest, int eventId) {
+    public void updateEvent(String userId, EventRequest eventRequest, int eventId) {
         Event eventOld = eventRepository.findById(eventId);
-        User captain = userRepository.findUserByTokenIdToken(idToken);
+        User captain = userRepository.findById(userId);
 
         if (captain == null) {
             throw new InvalidRequestException("Account does not exist!");
