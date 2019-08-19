@@ -19,14 +19,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * @author Nam truong
+ * @version 1.0.1
+ * @since 19/Aug/2019
+ */
 @AllArgsConstructor
 @RestController
 @CrossOrigin
-
-/**
-  @version 1.01
- * @author Duc Anh
- */
 @RequestMapping("/api/v1/classes")
 public class ClazzController {
     private ClazzService clazzService;
@@ -35,22 +35,22 @@ public class ClazzController {
     @GetMapping
     public ResponseEntity<Response<List<ClazzResponse>>> getListClassByUserId(@RequestParam(value = "userId", defaultValue = "") String userId) {
         Response<List<ClazzResponse>> response = new Response<>();
-        response.setCodeStatus(HttpStatus.OK.value());
+        response.setCodeStatus(ResponseCode.OK.value());
         response.setData(clazzService.getClassByUser(userId));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{classId}")
-    public ResponseEntity<Response<ClazzResponse>> getClassById(@PathVariable("classId") int clazzId, @RequestHeader("id_token") String tokenId) {
+    public ResponseEntity<Response<ClazzResponse>> getClassById(@PathVariable("classId") int clazzId, @RequestAttribute("userId") String idCurrentUser) {
         Response<ClazzResponse> response = new Response<>();
         try {
-            ClazzResponse clazzResponse = clazzService.getClassById(clazzId, tokenId);
-            response.setCodeStatus(HttpStatus.OK.value());
+            ClazzResponse clazzResponse = clazzService.getClassById(clazzId, idCurrentUser);
+            response.setCodeStatus(ResponseCode.OK.value());
             response.setData(clazzResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
             response.setMessage(e.getMessage());
-            response.setCodeStatus(HttpStatus.BAD_REQUEST.value());
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
 
@@ -61,51 +61,51 @@ public class ClazzController {
 
 
     @GetMapping("/{classId}/members")
-    public ResponseEntity<Response<List<ClazzMemberResponse>>> getListMemberOfClazz(@RequestHeader("id_token")String idToken,@PathVariable(value = "classId") int classId,
-                                                                                    @RequestParam(name = "status",defaultValue = "") String status){
+    public ResponseEntity<Response<List<ClazzMemberResponse>>> getListMemberOfClazz(@PathVariable(value = "classId") int classId,
+                                                                                    @RequestParam(name = "status", defaultValue = "") String status) {
         Response<List<ClazzMemberResponse>> response = new Response<>();
         try {
-            List<ClazzMemberResponse> clazzMemberResponseList = clazzService.findAllMemberByClazzId(classId,status,idToken);
+            List<ClazzMemberResponse> clazzMemberResponseList = clazzService.findAllMemberByClazzId(classId, status);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(clazzMemberResponseList);
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        } catch (InvalidRequestException ex){
-            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-            response.setMessage(ex.getMessage());
-            return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
-        } catch (Exception ex){
-            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
-            response.setMessage(ex.getMessage());
-            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("/{classId}/users")
-    public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest ,
-                                                                        @PathVariable(value = "classId") int classId,
-                                                                        @RequestHeader(name = "id_token")String idToken){
-        Response<ClazzMemberResponse> response = new Response<>();
-        ClazzMemberResponse memberResponse ;
-        try{
-            memberResponse = clazzService.addClazzMember(memberRequest,classId,idToken);
-            response.setCodeStatus(ResponseCode.OK.value());
-            response.setData(memberResponse);
-            return new ResponseEntity<>(response,HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             response.setMessage(ex.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception ex){
-            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{classId}/users")
+    public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest,
+                                                                        @PathVariable(value = "classId") int classId,
+                                                                        @RequestAttribute("userId") String idCurrentUser) {
+        Response<ClazzMemberResponse> response = new Response<>();
+        ClazzMemberResponse memberResponse;
+        try {
+            memberResponse = clazzService.addClazzMember(memberRequest, classId, idCurrentUser);
+            response.setCodeStatus(ResponseCode.OK.value());
+            response.setData(memberResponse);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException ex) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping("/{classId}/users/{userId}")
-    public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@NotNull @RequestHeader("id_token") String idToken,@NotNull @PathVariable("classId") int classId
-            , @PathVariable("userId") String userId) {
+    public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@RequestAttribute("userId") String idCurrentUser, @NotNull @PathVariable("classId") int classId
+            , @PathVariable("userId") String userIdUpdate) {
         Response<ClazzMemberRequest> response = new Response<>();
         try {
-            clazzService.updateCaptainForClass(classId, idToken, userId);
+            clazzService.updateCaptainForClass(classId, idCurrentUser, userIdUpdate);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
@@ -123,10 +123,10 @@ public class ClazzController {
      * Update information of Clazz
      */
     @PostMapping("/{classId}")
-    public ResponseEntity<Response<ClazzRequest>> updateClazz(@PathVariable("classId") int classId, @RequestHeader("id_token") String idToken, @Valid @RequestBody ClazzRequest clazzRequest) {
+    public ResponseEntity<Response<ClazzRequest>> updateClazz(@PathVariable("classId") int classId, @RequestAttribute("userId") String idCurrentUser, @Valid @RequestBody ClazzRequest clazzRequest) {
         Response<ClazzRequest> response = new Response<>();
         try {
-            clazzService.updateClazz(idToken, clazzRequest, classId);
+            clazzService.updateClazz(idCurrentUser, clazzRequest, classId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
@@ -139,10 +139,10 @@ public class ClazzController {
     }
 
     @DeleteMapping("/{classId}/members/{memberId}")
-    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId")String memberId,  @RequestHeader("id_token") String idToken){
+    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId") String memberId, @RequestAttribute("userId") String userId) {
         Response response = new Response();
         try {
-            clazzService.deleteMember(clazzId,idToken,memberId);
+            clazzService.deleteMember(clazzId, userId, memberId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalAccessException ex) {
@@ -159,8 +159,8 @@ public class ClazzController {
 
     @GetMapping("{classId}/attendances")
     public ResponseEntity<Response<List>> getListContentAttendanceByClass(@PathVariable("classId") int classId
-                                                                    ,@RequestParam(value = "title",defaultValue = "") String title
-                                                                    ,@RequestParam(value = "type",defaultValue = "content")String type) {
+            , @RequestParam(value = "title", defaultValue = "") String title
+            , @RequestParam(value = "type", defaultValue = "content") String type) {
         Response<List> response = new Response<>();
         try {
             List attendanceResponseList = attendanceService.getListAttendanceByClassId(classId, title, type);
@@ -176,21 +176,22 @@ public class ClazzController {
         }
 
     }
+
     @PostMapping("/{classId}/members/{memberId}/status/JOINED")
-    public ResponseEntity<Response<ClazzMemberResponse>> updateStatusMember(@RequestHeader("id_token")String idToken,
-                                                                            @PathVariable("classId")int classId,
-                                                                            @PathVariable("memberId")String memberId){
+    public ResponseEntity<Response<ClazzMemberResponse>> updateStatusMember(@RequestAttribute("userId") String idCurrentUser,
+                                                                            @PathVariable("classId") int classId,
+                                                                            @PathVariable("memberId") String memberId) {
         Response<ClazzMemberResponse> response = new Response<>();
-        try{
-            response.setData(clazzService.updateStatusMember(idToken , classId , memberId));
+        try {
+            response.setData(clazzService.updateStatusMember(idCurrentUser, classId, memberId));
             response.setCodeStatus(ResponseCode.OK.value());
-            return new ResponseEntity<>(response,HttpStatus.OK);
-        } catch (InvalidRequestException ex){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException ex) {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
-            return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
-        } catch (Exception ex){
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
-            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
