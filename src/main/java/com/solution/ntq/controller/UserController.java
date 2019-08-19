@@ -2,6 +2,8 @@ package com.solution.ntq.controller;
 
 
 import com.solution.ntq.common.constant.ResponseCode;
+import com.solution.ntq.common.exception.InvalidRequestException;
+import com.solution.ntq.controller.request.UserRequest;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.controller.response.UserResponse;
 import com.solution.ntq.repository.base.TokenRepository;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -46,11 +49,42 @@ public class UserController {
      * Get an user detail
      */
     @GetMapping("/users/{userId}")
-    public ResponseEntity<Response<User>> getUserDetails(@PathVariable("userId") String userId) {
-        User user = userService.getUserById(userId);
-        Response<User> response = new Response<>(HttpStatus.OK.value(),user);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Response<UserResponse>> getUserDetails(@PathVariable("userId") String userId) {
+        Response<UserResponse> response = new Response<>();
+        try {
+            UserResponse userResponse = userService.getUserResponseById(userId);
+            response.setData(userResponse);
+            response.setCodeStatus(ResponseCode.OK.value());
+             return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setMessage(e.getMessage());
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+    /**
+     *Update information of user
+     */
+    @PostMapping("/users/{userId}")
+    public ResponseEntity<Response<UserRequest>> updateUser(@PathVariable("userId") String userId, @RequestHeader("id_token") String tokenId, @Valid @RequestBody UserRequest userRequest) {
+        Response<UserRequest> response = new Response<>();
+        try {
+            userService.updateUser(tokenId, userRequest, userId);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException e) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @GetMapping("/Token/{idUser}")
     public Response getToken(@PathVariable("idUser") String idUser) {
