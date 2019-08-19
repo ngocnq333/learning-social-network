@@ -53,10 +53,10 @@ public class EventController {
     private JoinEventService joinEventService;
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<Response> getEventDetail(@PathVariable("eventId") int eventId, @RequestHeader("id_token") String idToken) {
+    public ResponseEntity<Response> getEventDetail(@PathVariable("eventId") int eventId, @RequestParam("userId") String userId) {
         Response<EventResponse> response = new Response<>();
         try {
-            EventResponse eventResponse = eventService.findByEventId(eventId, idToken);
+            EventResponse eventResponse = eventService.findByEventId(eventId, userId);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(eventResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -93,10 +93,10 @@ public class EventController {
     @PostMapping("/{eventId}/attendances")
     public ResponseEntity<Response<String>> takeAttendanceEvents(@RequestBody List<EventGroupRequest> eventGroupRequests,
                                                                  @PathVariable("eventId") int eventId,
-                                                                 @RequestHeader("id_token") String idToken) {
+                                                                 @RequestParam("userId") String userId) {
         Response<String> response = new Response<>();
         try {
-            eventService.takeAttendanceEvents(eventGroupRequests, eventId, idToken);
+            eventService.takeAttendanceEvents(eventGroupRequests, eventId, userId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (InvalidRequestException ex) {
@@ -109,8 +109,8 @@ public class EventController {
     }
 
 
-    @PutMapping(value = "/eventId/joint")
-    public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest) {
+    @PutMapping(value = "/{eventId}/join")
+    public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest,@PathVariable("eventId") int eventId) {
         Response<String> response = new Response<>();
         try {
             eventService.saveJoinForUser(joinEventRequest);

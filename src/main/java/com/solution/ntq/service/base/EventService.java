@@ -26,10 +26,10 @@ public interface EventService {
     List<EventResponse> getGroupEvent(int classId, long startDate, long endDate);
     void saveJoinForUser(JoinEventRequest joinEventRequest);
 
-    void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String idToken) throws IllegalAccessException;
+    void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String userId) throws IllegalAccessException;
 
-    EventResponse findByEventId(int id,String idToken) throws GeneralSecurityException, IOException;
-    void deleteEvent(int eventId, String idToken) throws IllegalAccessException;
+    EventResponse findByEventId(int id,String userId) throws GeneralSecurityException, IOException;
+    void deleteEvent(int eventId, String userId) throws IllegalAccessException;
 
-    void updateEvent(String idToken, EventRequest eventRequest, int eventId);
+    void updateEvent(String userId, EventRequest eventRequest, int eventId);
 }

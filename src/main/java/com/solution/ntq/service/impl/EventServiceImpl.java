@@ -133,15 +133,12 @@ public class EventServiceImpl implements EventService {
 
     private EventMemberRepository eventMemberRepository;
 
-    public EventResponse findByEventId(int eventId, String idToken) throws
-            GeneralSecurityException, IOException {
+    public EventResponse findByEventId(int eventId, String userId) {
         Event event = eventRepository.findById(eventId);
         if (event == null) {
             throw new InvalidRequestException("Not find this event!");
         }
         EventResponse eventResponse = eventMapper(event);
-        String userId = GoogleUtils.getUserIdByIdToken(idToken);
-
         JoinEvent joinEvent = eventMemberRepository.findByUserIdAndEventId(userId, eventId);
         eventResponse.setStatus(getStatus(joinEvent));
         return eventResponse;
@@ -221,8 +218,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String
-            idToken) throws IllegalAccessException {
-        String userId = userRepository.findUserByTokenIdToken(idToken).getId();
+            userId) throws IllegalAccessException {
+
         int classId = eventRepository.findById(eventId).getId();
         checkUserIsCaptain(userId, classId);
         saveAttendance(eventGroupRequests);
@@ -230,7 +227,7 @@ public class EventServiceImpl implements EventService {
 
     private void saveAttendance(List<EventGroupRequest> eventGroupRequests) {
         eventGroupRequests.forEach(eventGroupRequest -> {
-                    int idAttendanceNew = eventGroupRequest.getId();
+       int idAttendanceNew = eventGroupRequest.getId();
                     JoinEvent joinEvent = joinEventRepository.getJoinEventsById(idAttendanceNew);
                     if (joinEvent == null) {
                         throw new InvalidRequestException("user or content invalid ");
