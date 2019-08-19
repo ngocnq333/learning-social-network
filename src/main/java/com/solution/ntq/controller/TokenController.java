@@ -33,7 +33,7 @@ public class TokenController {
         }catch (InvalidRequestException ex) {
             return ("redirect:http://localhost:4200/login?status="+ "mailInvalid");
         }catch (Exception ex) {
-            return ("redirect:http://localhost:4200/login?status"+ "fale");
+            return ("redirect:http://localhost:4200/login?status"+ "false");
         }
     }
 

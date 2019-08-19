@@ -10,7 +10,6 @@ import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,17 +52,12 @@ public class UserServiceImpl implements UserService {
      *Update information of User
      */
     @Override
-    public void updateUser(String tokenId, UserRequest userRequest, String userId) {
-        User user = userRepository.findUserByTokenIdToken(tokenId);
-
-        if (user == null) {
-            throw new InvalidRequestException("Account does not exits");
-        }
-
-        if (!user.getId().equals(userId) ) {
+    public void updateUser(String idCurrentUser, UserRequest userRequest, String userIdUpdate) {
+        if (!idCurrentUser.equals(userIdUpdate) ) {
             throw new InvalidRequestException("Invalid information !");
         }
-        user = convertUserRequestToUser(userRequest, user);
+        User userOld = userRepository.findById(idCurrentUser);
+        User user = convertUserRequestToUser(userRequest, userOld);
         userRepository.save(user);
     }
 
@@ -81,17 +75,6 @@ public class UserServiceImpl implements UserService {
         return newUser;
     }
 
-    /**
-     * Get an user with id
-     */
-    public User getUserByTokenId(String id) {
-        try {
-            return userRepository.findUserByTokenIdToken(id);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     @Override
     public List<UserResponse> findByEmailContains(String email) {
         List<User> users = userRepository.findByEmailContains(email);
@@ -104,12 +87,4 @@ public class UserServiceImpl implements UserService {
         return mapper.convertValue(user,UserResponse.class);
     }
 
-    @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-    @Override
-    public boolean existsUser(String userId) {
-        return userRepository.existsById(userId);
-    }
 }

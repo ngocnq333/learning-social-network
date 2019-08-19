@@ -13,7 +13,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +68,6 @@ public class SignServiceImpl implements SignService {
     /**
      * Sign out application
      *
-     * @return
      */
     @Override
     public Response<String> signOut(String userId) {
@@ -131,7 +129,7 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * Verify mail ntq with mail gmail
+     * Verify mail ntq with mail
      */
     private boolean isNTQMail(String userEmail) {
         return (GoogleLink.NTQ_EMAIL_FORM.equalsIgnoreCase(userEmail));
