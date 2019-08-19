@@ -10,8 +10,6 @@ import com.solution.ntq.controller.response.EventResponse;
 import java.text.ParseException;
 import java.util.List;
 
-import com.solution.ntq.controller.response.EventResponse;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -32,4 +30,6 @@ public interface EventService {
 
     EventResponse findByEventId(int id,String idToken) throws GeneralSecurityException, IOException;
     void deleteEvent(int eventId, String idToken) throws IllegalAccessException;
+
+    void updateEvent(String idToken, EventRequest eventRequest, int eventId);
 }

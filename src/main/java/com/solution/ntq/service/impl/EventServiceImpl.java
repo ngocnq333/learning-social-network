@@ -9,19 +9,19 @@ import com.solution.ntq.repository.base.*;
 import com.solution.ntq.repository.entities.*;
 import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.validator.Validator;
-
 import com.solution.ntq.controller.request.EventGroupRequest;
 import com.solution.ntq.controller.response.EventResponse;
+import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.base.EventMemberRepository;
 
 import com.solution.ntq.repository.entities.Event;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.base.JoinEventRepository;
 import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.repository.entities.JoinEvent;
-import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.EventService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -51,6 +51,7 @@ public class EventServiceImpl implements EventService {
     private JoinEventRepository joinEventRepository;
     private static final long MIN_DURATION = 25 * Constant.ONE_MINUTE;
     private static final long MAX_DURATION = Constant.MILLISECONDS_OF_DAY * 2;
+    private static final int EVENT_ID_DEFAULT = 0;
 
     private Event convertRequestToEvent(EventRequest eventRequest, String idToken) throws GeneralSecurityException, IOException, IllegalAccessException {
         validateRequest(eventRequest, idToken);
@@ -81,23 +82,9 @@ public class EventServiceImpl implements EventService {
         if (durationEventRequestInvalid(eventRequest)) {
             throw new InvalidRequestException(" Event have duration illegal !");
         }
-        if (checkEventRequestTimeInValid(eventRequest)) {
+        if (checkEventRequestTimeInValid(eventRequest, EVENT_ID_DEFAULT)) {
             throw new InvalidRequestException("Have a duplicate event in class !");
         }
-    }
-
-    private boolean durationEventRequestInvalid(EventRequest eventRequest) {
-        long durationToMillisecond = getTotalMillisecondOfEvent(0, eventRequest.getDuration());
-        return ((MIN_DURATION > durationToMillisecond) || (durationToMillisecond > MAX_DURATION));
-    }
-    private long getTotalMillisecondOfEvent(long startDate, float duration) {
-        long durationToMillisecond = 0;
-        if (duration != 0) {
-            durationToMillisecond = (long) (duration * Constant.ONE_HOUR);
-        }
-        long total = startDate + durationToMillisecond;
-        //rounding 1 second
-        return total - (total % Constant.ONE_SECOND);
     }
 
     private Content getContentByContentId(EventRequest eventRequest) {
@@ -108,20 +95,23 @@ public class EventServiceImpl implements EventService {
         return content;
     }
 
-    private boolean checkEventRequestTimeInValid(EventRequest eventRequest) {
+    private boolean checkEventRequestTimeInValid(EventRequest eventRequest, int eventId) {
         java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * 2);
         java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * 2);
-        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDate(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay);
+        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
         if (duplicateEvents.isEmpty()) {
             return false;
         }
         for (Event event : duplicateEvents) {
-            long eventMillisecond = event.getStartDate().getTime();
-            long requestMillisecond = eventRequest.getStartDate().getTime();
-            long currentEvent = getTotalMillisecondOfEvent(eventMillisecond, event.getDuration());
-            long requestEvent = getTotalMillisecondOfEvent(requestMillisecond, eventRequest.getDuration());
-            //   start date < ( new events start date + duration) > (start date + duration) of all events created
-            if ((requestEvent >= event.getStartDate().getTime()) && (requestEvent <= currentEvent)) {
+            long startEventMilli = event.getStartDate().getTime();
+            long startRequestMilli = eventRequest.getStartDate().getTime();
+            long endEventMilli = getTotalMillisecondOfEvent(startEventMilli, event.getDuration());
+            long endRequestMilli = getTotalMillisecondOfEvent(startRequestMilli, eventRequest.getDuration());
+            // start time of request < start time of old event OR start time  of request > end time of old event
+            // end time of request < start time of old event OR end time  of request > end time of old event
+            boolean condition1 = (startRequestMilli >= startEventMilli) && (startRequestMilli <= endEventMilli);
+            boolean condition2 = (endRequestMilli >= startEventMilli) && (endRequestMilli <= endEventMilli);
+            if (condition1 || condition2) {
                 return true;
             }
         }
@@ -174,6 +164,7 @@ public class EventServiceImpl implements EventService {
         List<Event> groupEvent = eventRepository.getEventByClazzIdAndStartDate(classId, new Date(startDate), new Date(endDate));
         return convertEventToEventResponse(groupEvent);
     }
+
 
     private List<EventResponse> convertEventToEventResponse(List<Event> events) {
         List<EventResponse> eventResponses = new ArrayList<>();
@@ -248,5 +239,64 @@ public class EventServiceImpl implements EventService {
                     joinEventRepository.save(joinEvent);
                 }
         );
+    }
+
+    /**
+     * Update event
+     */
+    @Override
+    public void updateEvent(String idToken, EventRequest eventRequest, int eventId) {
+        Event eventOld = eventRepository.findById(eventId);
+        User captain = userRepository.findUserByTokenIdToken(idToken);
+
+        if (captain == null) {
+            throw new InvalidRequestException("Account does not exist!");
+        }
+
+        if (eventOld == null) {
+            throw new InvalidRequestException("Invalid information!");
+        }
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndUserId(eventOld.getClazz().getId(), captain.getId());
+
+        if (clazzMember == null || !clazzMember.isCaptain()) {
+            throw new InvalidRequestException("User is not captain!");
+        }
+
+        if (durationEventRequestInvalid(eventRequest)) {
+            throw new InvalidRequestException(" Event have duration illegal !");
+        }
+
+        if (checkEventRequestTimeInValid(eventRequest, eventId)) {
+            throw new InvalidRequestException("Have a duplicate event in class !");
+        }
+        Event event = getEventMapper(eventRequest, eventOld);
+        eventRepository.save(event);
+    }
+
+    private Event getEventMapper(EventRequest eventRequest, Event eventOld) {
+        Event eventNew;
+        eventNew = ConvertObject.mapper().convertValue(eventRequest, Event.class);
+        eventNew.setId(eventOld.getId());
+        eventNew.setClazz(eventOld.getClazz());
+        eventNew.setJoinEvents(eventOld.getJoinEvents());
+        eventNew.setContent(eventOld.getContent());
+        eventNew.setAuthor(eventOld.getAuthor());
+        return eventNew;
+    }
+
+    private boolean durationEventRequestInvalid(EventRequest eventRequest) {
+        long durationToMillisecond = getTotalMillisecondOfEvent(0, eventRequest.getDuration());
+        return ((MIN_DURATION > durationToMillisecond) || (durationToMillisecond > MAX_DURATION));
+    }
+
+
+    private long getTotalMillisecondOfEvent(long startDate, float duration) {
+        long durationToMillisecond = 0;
+        if (duration != 0) {
+            durationToMillisecond = (long) (duration * Constant.ONE_HOUR);
+        }
+        long total = startDate + durationToMillisecond;
+        //rounding 1 secondK
+        return total - (total % Constant.ONE_SECOND);
     }
 }

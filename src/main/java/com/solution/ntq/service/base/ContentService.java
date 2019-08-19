@@ -22,5 +22,7 @@ public interface ContentService {
 
     boolean exitContent(int idContent);
 
-    List<ContentResponse> getContentsResponseSorted(int classId);
+    List<ContentResponse> getContentsResponseSorted(int classId,String title);
+
+    void approveContent(int contentId);
 }

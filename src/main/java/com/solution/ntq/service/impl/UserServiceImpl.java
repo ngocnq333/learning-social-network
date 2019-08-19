@@ -1,7 +1,8 @@
 package com.solution.ntq.service.impl;
 
+import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.utils.ConvertObject;
-import com.solution.ntq.repository.base.ClazzMemberRepository;
+import com.solution.ntq.controller.request.UserRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.controller.response.UserResponse;
 import com.solution.ntq.repository.entities.User;
@@ -22,7 +23,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-    private ClazzMemberRepository clazzMemberRepository;
     private UserRepository userRepository;
 
     /**
@@ -35,6 +35,52 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
+
+    /**
+     *Get information of User by id
+     */
+    @Override
+    public UserResponse getUserResponseById(String userId) {
+        User user = userRepository.findById(userId);
+
+        if (user == null) {
+            return null;
+        }
+        return convertUserToUserResponse(user);
+    }
+
+    /**
+     *Update information of User
+     */
+    @Override
+    public void updateUser(String tokenId, UserRequest userRequest, String userId) {
+        User user = userRepository.findUserByTokenIdToken(tokenId);
+
+        if (user == null) {
+            throw new InvalidRequestException("Account does not exits");
+        }
+
+        if (!user.getId().equals(userId) ) {
+            throw new InvalidRequestException("Invalid information !");
+        }
+        user = convertUserRequestToUser(userRequest, user);
+        userRepository.save(user);
+    }
+
+    private User convertUserRequestToUser(UserRequest userRequest, User userOld) {
+        ObjectMapper mapper = ConvertObject.mapper();
+        User newUser = mapper.convertValue(userRequest,User.class);
+        newUser.setId(userOld.getId());
+        newUser.setEmail(userOld.getEmail());
+        newUser.setJoinDate(userOld.getJoinDate());
+        newUser.setHd(userOld.getHd());
+        newUser.setToken(userOld.getToken());
+        newUser.setJoinEvents(userOld.getJoinEvents());
+        newUser.setClazzMembers(userOld.getClazzMembers());
+        newUser.setAttendances(userOld.getAttendances());
+        return newUser;
+    }
+
     /**
      * Get an user with id
      */

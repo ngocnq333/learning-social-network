@@ -28,14 +28,11 @@ public class User {
     String email;
     boolean verifiedEmail;
     String name;
-    String givenName;
-    String familyName;
-    String link;
     String picture;
     String skype;
     String hd;
-    String locale;
-    Date dateOfBirth;
+    String phone;
+    Date joinDate;
     @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     Token token;
@@ -49,5 +46,4 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     List<JoinEvent> joinEvents;
-
 }

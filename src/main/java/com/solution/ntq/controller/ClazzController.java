@@ -138,7 +138,7 @@ public class ClazzController {
         }
     }
 
-    @DeleteMapping("/{classId}/users/{memberId}")
+    @DeleteMapping("/{classId}/members/{memberId}")
     public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId")int memberId,  @RequestHeader("id_token") String idToken){
         Response response = new Response();
         try {
@@ -176,7 +176,7 @@ public class ClazzController {
         }
 
     }
-    @PostMapping("/{classId}/{memberId}/status/JOINED")
+    @PostMapping("/{classId}/members/{memberId}/status/JOINED")
     public ResponseEntity<Response<ClazzMemberResponse>> updateStatusMember(@RequestHeader("id_token")String idToken,
                                                                             @PathVariable("classId")int classId,
                                                                             @PathVariable("memberId")int memberId){
