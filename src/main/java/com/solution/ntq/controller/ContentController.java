@@ -62,11 +62,11 @@ public class ContentController {
     }
 
     @PutMapping
-    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestHeader("id_token") String idToken, @Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestAttribute("userId") String userId, @Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
-            contentService.addContent(contentRequest, idToken);
+            contentService.addContent(contentRequest, userId);
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -76,9 +76,7 @@ public class ContentController {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
-        catch (Exception e)
-        {
-
+        catch (Exception e) {
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,11 +85,11 @@ public class ContentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestHeader("id_token") String idToken, @Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestAttribute("userId") String userId, @Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
-            contentService.updateContent(contentRequest, idToken);
+            contentService.updateContent(contentRequest, userId);
             response.setData(contentRequest);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -152,7 +150,6 @@ public class ContentController {
         } catch (Exception ex) {
             response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 

@@ -7,10 +7,13 @@ import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
-import com.solution.ntq.repository.base.*;
+import com.solution.ntq.repository.base.ClazzMemberRepository;
+import com.solution.ntq.repository.base.ClazzRepository;
+import com.solution.ntq.repository.base.ContentRepository;
+import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.repository.entities.Clazz;
+import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.repository.entities.Content;
-import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,21 +28,17 @@ public class ContentServiceImpl implements ContentService {
     private ContentRepository contentRepository;
     private ClazzRepository clazzRepository;
     private UserRepository userRepository;
-    private TokenRepository tokenRepository;
     private ClazzMemberRepository clazzMemberRepository;
 
     @Override
-    public void addContent(ContentRequest contentRequest, String idToken) {
+    public void addContent(ContentRequest contentRequest, String userId) {
         if (!isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
         }
             Content content;
-            Token token = tokenRepository.findTokenByIdToken(idToken);
-            String userId = token.getUser().getId();
             content = ConvertObject.mapper().convertValue(contentRequest, Content.class);
             Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
             content.setClazz(clazz);
-
             String captainId = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(contentRequest.getClassId()).getUser().getId();
             if (userRepository.findById(userId).getId().equals(captainId)) {
                 content.setApprove(true);
@@ -48,18 +47,22 @@ public class ContentServiceImpl implements ContentService {
             content.setDone(false);
             content.setAuthorId(userId);
             content.setThumbnail(clazz.getThumbnail());
-            content.setAvatar(token.getUser().getPicture());
+            content.setAvatar(userRepository.findById(userId).getPicture());
             contentRepository.save(content);
     }
 
     @Override
-    public void updateContent(ContentRequest contentRequest, String idToken) {
+    public void updateContent(ContentRequest contentRequest, String userId) {
         if (!isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
         }
+            ClazzMember captainOfClass=clazzMemberRepository.findByClazzIdAndIsCaptainTrue(contentRequest.getClassId());
             Content content = new Content();
             content.setId(contentRequest.getId());
             Content contentOrigin=contentRepository.findContentById(content.getId());
+        if(!captainOfClass.getUser().getId().equals(userId) || !contentOrigin.getAuthorId().equals(userId)) {
+            throw new InvalidRequestException("Don't have permission !");
+        }
             Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
             content = ConvertObject.mapper().convertValue(contentRequest, Content.class);
             content.setTimePost(new Date());
@@ -79,10 +82,8 @@ public class ContentServiceImpl implements ContentService {
 
     @Override
     public ContentResponse getContentById(int contentId) {
-
         Content content = contentRepository.findContentById(contentId);
         return getContentResponseMapContent(content);
-
     }
 
     private void updateStatusContents(List<Content> contentList) {
@@ -132,7 +133,6 @@ public class ContentServiceImpl implements ContentService {
         }
         contentList = contentRepository.findContentApproveByIdClazz(classId);
         updateStatusContents(contentList);
-
         return getListContentResponse(contentList);
     }
 
@@ -145,7 +145,6 @@ public class ContentServiceImpl implements ContentService {
         if (contentRequest.getEndDate().before(contentRequest.getStartDate())) {
             throw new InvalidRequestException("End date must after start date !");
         }
-
         return !(!contentRequest.getLevel().equalsIgnoreCase(Level.BEGINNER.value()) && !contentRequest.getLevel().equalsIgnoreCase(Level.INTERMEDISE.value())
                 && !contentRequest.getLevel().equalsIgnoreCase(Level.EXPERT.value()));
     }
