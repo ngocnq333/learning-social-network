@@ -22,14 +22,14 @@ import java.security.GeneralSecurityException;
  */
 
 public interface EventService {
-    void addEvent(EventRequest event, String idToken) throws IllegalAccessException, ParseException, GeneralSecurityException, IOException;
+    void addEvent(EventRequest event, String userId) throws IllegalAccessException, ParseException;
     List<EventResponse> getGroupEvent(int classId, long startDate, long endDate);
     void saveJoinForUser(JoinEventRequest joinEventRequest);
 
-    void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String idToken) throws IllegalAccessException;
+    void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String userId) throws IllegalAccessException;
 
-    EventResponse findByEventId(int id,String idToken) throws GeneralSecurityException, IOException;
-    void deleteEvent(int eventId, String idToken) throws IllegalAccessException;
+    EventResponse findByEventId(int id,String userId) ;
+    void deleteEvent(int eventId, String userId) throws IllegalAccessException;
 
-    void updateEvent(String idToken, EventRequest eventRequest, int eventId);
+    void updateEvent(String userId, EventRequest eventRequest, int eventId);
 }
