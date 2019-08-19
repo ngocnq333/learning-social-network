@@ -35,6 +35,7 @@ public class ClazzServiceImpl implements ClazzService {
     private UserRepository userRepository;
     private ClazzMemberRepository clazzMemberRepository;
     private ContentRepository contentRepository;
+    private EventRepository eventRepository;
 
     @Override
     public boolean isCaptainClazz(String userId, int clazzId) {
@@ -102,8 +103,8 @@ public class ClazzServiceImpl implements ClazzService {
         clazzResponse.setCaptainName(clazzMember.getUser().getName());
         clazzResponse.setCaptainId(clazzMember.getUser().getId());
         clazzResponse.setMembers(clazzMemberRepository.countAllByClazzId(clazz.getId()));
-        clazzResponse.setPendingItems(contentRepository.findAllByClazzIdAndIsApproveFalse(clazz.getId()).size());
-        clazzResponse.setEventNumber(1);
+        clazzResponse.setPendingItems(contentRepository.findAllByClazzIdAndIsApproveFalse(clazz.getId()).size()+clazzMemberRepository.countPedingMemberOfClazz(clazz.getId()));
+        clazzResponse.setEventNumber(eventRepository.countAllByClazzId(clazz.getId()));
         return clazzResponse;
     }
 

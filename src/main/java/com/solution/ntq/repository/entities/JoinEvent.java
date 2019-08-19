@@ -32,4 +32,5 @@ public class JoinEvent {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
+    boolean confirm;
 }

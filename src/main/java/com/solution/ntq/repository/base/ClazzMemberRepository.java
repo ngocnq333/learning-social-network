@@ -32,4 +32,6 @@ public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     @Query(value = "SELECT * FROM clazz_member WHERE clazz_id = ?1 AND user_id = ?2 AND is_captain = 1" ,nativeQuery = true)
     ClazzMember isCaptain(int classId, String userId) ;
     List<ClazzMember> findByUserIdAndClazzId(String userId, int clazzId);
+    @Query(value = " select count(*) FROM clazz_member WHERE clazz_id = ?1 AND status like 'WAITING_FOR_APPROVE'" ,nativeQuery = true)
+    int countPedingMemberOfClazz(int clazzId);
 }

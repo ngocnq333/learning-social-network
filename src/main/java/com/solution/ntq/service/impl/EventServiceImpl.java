@@ -3,7 +3,6 @@ package com.solution.ntq.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.common.constant.Constant;
 import com.solution.ntq.common.utils.ConvertObject;
-import com.solution.ntq.common.utils.GoogleUtils;
 import com.solution.ntq.controller.request.EventRequest;
 import com.solution.ntq.repository.base.*;
 import com.solution.ntq.repository.entities.*;
@@ -15,13 +14,13 @@ import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.base.EventMemberRepository;
-
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.base.JoinEventRepository;
 import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.repository.entities.JoinEvent;
+import com.solution.ntq.service.base.ClazzService;
 import com.solution.ntq.service.base.EventService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -48,6 +47,7 @@ public class EventServiceImpl implements EventService {
     private ClazzMemberRepository clazzMemberRepository;
     private ContentRepository contentRepository;
     private UserRepository userRepository;
+    ClazzService clazzService;
     private JoinEventRepository joinEventRepository;
     private static final long MIN_DURATION = 25 * Constant.ONE_MINUTE;
     private static final long MAX_DURATION = Constant.MILLISECONDS_OF_DAY * 2;
@@ -140,6 +140,7 @@ public class EventServiceImpl implements EventService {
         EventResponse eventResponse = eventMapper(event);
         JoinEvent joinEvent = eventMemberRepository.findByUserIdAndEventId(userId, eventId);
         eventResponse.setStatus(getStatus(joinEvent));
+        eventResponse.setId(eventId);
         return eventResponse;
     }
 
@@ -174,19 +175,34 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public void saveJoinForUser(JoinEventRequest joinEventRequest) {
+    public void memberJoinEvent(String userId,int eventId) {
         try {
-            JoinEvent joinEvent = joinEventMapper(joinEventRequest);
-            User user = new User();
-            user.setId(joinEventRequest.getUserId());
-            Event event = new Event();
-            event.setId(joinEventRequest.getEventId());
-            joinEvent.setUser(user);
-            joinEvent.setEvent(event);
+            JoinEvent joinEvent = new JoinEvent();
+            joinEvent.setJoined(true);
+            setPropertyForJoinEvent( userId, eventId,joinEvent);
             save(joinEvent);
         } catch (InvalidRequestException ex) {
             throw new InvalidRequestException(ex.getMessage());
         }
+    }
+    @Transactional
+    @Override
+    public void memberNotJoinEvent(String userId,int eventId) {
+        try {
+            JoinEvent joinEvent = new JoinEvent();
+            joinEvent.setJoined(false);
+            setPropertyForJoinEvent( userId, eventId,joinEvent);
+            save(joinEvent);
+        } catch (InvalidRequestException ex) {
+            throw new InvalidRequestException(ex.getMessage());
+        }
+    }
+    private void setPropertyForJoinEvent(String userId,int eventId,JoinEvent joinEvent)
+    {
+
+        joinEvent.setUser(userRepository.findById(userId));
+        joinEvent.setEvent(eventRepository.findById(eventId));
+        joinEvent.setAttendance(false);
     }
 
     private void save(JoinEvent joinEvent) {
@@ -219,9 +235,12 @@ public class EventServiceImpl implements EventService {
     public void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String
             userId) throws IllegalAccessException {
 
-        int classId = eventRepository.findById(eventId).getId();
-        checkUserIsCaptain(userId, classId);
+        int classId = clazzRepository.findClazzByEventId(eventId).getId();
+        if (!clazzMemberRepository.findByClazzIdAndIsCaptainTrue(classId).getUser().getId().equals(userId)) {
+            throw new InvalidRequestException("dont have role");
+        }
         saveAttendance(eventGroupRequests);
+
     }
 
     private void saveAttendance(List<EventGroupRequest> eventGroupRequests) {
@@ -231,6 +250,7 @@ public class EventServiceImpl implements EventService {
                     if (joinEvent == null) {
                         throw new InvalidRequestException("user or content invalid ");
                     }
+                    joinEvent.setConfirm(true);
                     joinEvent.setAttendance(eventGroupRequest.isAttendance());
                     joinEventRepository.save(joinEvent);
                 }
