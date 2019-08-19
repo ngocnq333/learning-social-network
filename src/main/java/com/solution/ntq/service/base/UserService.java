@@ -14,13 +14,7 @@ public interface UserService {
 
     UserResponse getUserResponseById(String userId);
 
-    User getUserByTokenId(String id);
-
-    List<User> findAll();
-
-    boolean existsUser(String userId);
-
     List<UserResponse> findByEmailContains(String email);
 
-    void updateUser(String tokenId, UserRequest userRequest, String userId);
+    void updateUser(String idCurrentUser, UserRequest userRequest, String userIdUpdate);
 }

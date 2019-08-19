@@ -1,11 +1,6 @@
 package com.solution.ntq.controller;
 
 import com.solution.ntq.controller.response.Response;
-
-
-import com.solution.ntq.repository.base.TokenRepository;
-
-import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.service.base.SignService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
@@ -25,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class GoogleController {
     private Environment env;
     private SignService signService;
-    private TokenRepository tokenRepository;
 
     /**
      * Login to application
@@ -40,8 +34,7 @@ public class GoogleController {
      * Logout application
      */
     @DeleteMapping("/api/v1/logout")
-    public Response<String> signOut(@RequestHeader("id_token") String idToken) {
-        Token token = tokenRepository.findTokenByIdToken(idToken);
-        return signService.signOut(token.getUser().getId());
+    public Response<String> signOut(@RequestAttribute("userId") String userId) {
+        return signService.signOut(userId);
     }
 }

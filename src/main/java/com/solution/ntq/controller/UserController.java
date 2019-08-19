@@ -7,7 +7,6 @@ import com.solution.ntq.controller.request.UserRequest;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.controller.response.UserResponse;
 import com.solution.ntq.repository.base.TokenRepository;
-import com.solution.ntq.repository.entities.Token;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -38,9 +36,8 @@ public class UserController {
      * Get an user detail
      */
     @GetMapping("/account")
-    public ResponseEntity<Response<User>> getUserDetail(@RequestHeader("id_token") String idToken) {
-        Token token = tokenRepository.findTokenByIdToken(idToken);
-        User user = userService.getUserById(token.getUser().getId());
+    public ResponseEntity<Response<User>> getUserDetail(@RequestAttribute("userId") String userId) {
+        User user = userService.getUserById(userId);
         Response<User> response = new Response<>(ResponseCode.OK.value(),user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -69,10 +66,10 @@ public class UserController {
      *Update information of user
      */
     @PostMapping("/users/{userId}")
-    public ResponseEntity<Response<UserRequest>> updateUser(@PathVariable("userId") String userId, @RequestHeader("id_token") String tokenId, @Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<Response<UserRequest>> updateUser(@PathVariable("userId") String userIdUpdate, @RequestAttribute("userId") String idCurrentUser, @Valid @RequestBody UserRequest userRequest) {
         Response<UserRequest> response = new Response<>();
         try {
-            userService.updateUser(tokenId, userRequest, userId);
+            userService.updateUser(idCurrentUser, userRequest, userIdUpdate);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
@@ -85,16 +82,6 @@ public class UserController {
         }
     }
 
-
-    @GetMapping("/Token/{idUser}")
-    public Response getToken(@PathVariable("idUser") String idUser) {
-        Token token = tokenRepository.findTokenByUserId(idUser);
-        if (token == null) {
-            return new Response<>(HttpStatus.OK.value(),null);
-        } else {
-            return new Response<>(HttpStatus.NOT_FOUND.value(), null,"not found");
-        }
-    }
     @GetMapping("/accounts")
     public ResponseEntity<Response<List<UserResponse>>> getListUsersHaveEmail(@RequestParam (value = "userEmail") String userEmail){
         Response<List<UserResponse>> response = new Response<>();
