@@ -212,16 +212,16 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public void deleteMember(int clazzId, String idToken, int memberId) throws IllegalAccessException, GeneralSecurityException, IOException {
+    public void deleteMember(int clazzId, String idToken, String memberId) throws IllegalAccessException, GeneralSecurityException, IOException {
         validatorParamsAddMember(clazzId, idToken);
         if (!checkUserIsCaptain(GoogleUtils.getUserIdByIdToken(idToken), clazzId)) {
             throw new IllegalAccessException("User not is caption of class not enough permission");
         }
-        ClazzMember clazzMember = clazzMemberRepository.findById(memberId);
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndUserId(clazzId,memberId);
         if (clazzMember == null ) {
             throw new IllegalAccessException("user not joined in class !");
         }
-        clazzMemberRepository.deleteById(memberId);
+        clazzMemberRepository.deleteById(clazzMember.getId());
     }
 
     /**
@@ -248,13 +248,13 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public ClazzMemberResponse updateStatusMember(String idToken, int classId, int memberId) throws GeneralSecurityException, IOException {
+    public ClazzMemberResponse updateStatusMember(String idToken, int classId, String memberId) throws GeneralSecurityException, IOException {
         String userExecute = GoogleUtils.getUserIdByIdToken(idToken);
         validatorParamsAddMember(classId,idToken);
         if (!checkUserIsCaptain(userExecute,classId)){
             throw new InvalidRequestException(" User not Captain !");
         }
-        ClazzMember currentMember = clazzMemberRepository.findById(memberId);
+        ClazzMember currentMember = clazzMemberRepository.findByClazzIdAndUserId(classId,memberId);
         if (currentMember == null ){
             throw new InvalidRequestException(" Member not exist !");
         }
