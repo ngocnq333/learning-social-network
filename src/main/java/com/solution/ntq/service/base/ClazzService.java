@@ -34,7 +34,9 @@ public interface ClazzService {
 
     boolean isCaptainClazz(String userId, int clazzId);
 
-    void deleteMember(int clazzId, String idToken, String userIdDelete) throws IllegalAccessException, GeneralSecurityException, IOException, ParseException;
+    void deleteMember(int clazzId, String idToken, String memberId) throws IllegalAccessException, GeneralSecurityException, IOException, ParseException;
 
     void updateClazz(String tokenId, ClazzRequest clazzRequest, int clazzId) throws GeneralSecurityException, IOException;
+
+    ClazzMemberResponse updateStatusMember(String idToken, int classId, String memberId) throws GeneralSecurityException, IOException;
 }

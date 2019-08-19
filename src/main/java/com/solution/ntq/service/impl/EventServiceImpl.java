@@ -1,6 +1,7 @@
 package com.solution.ntq.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solution.ntq.common.constant.Constant;
 import com.solution.ntq.common.utils.ConvertObject;
 import com.solution.ntq.common.utils.GoogleUtils;
 import com.solution.ntq.controller.request.EventRequest;
@@ -14,6 +15,7 @@ import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.common.constant.Status;
 import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.base.EventMemberRepository;
+
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.controller.request.JoinEventRequest;
@@ -47,12 +49,8 @@ public class EventServiceImpl implements EventService {
     private ContentRepository contentRepository;
     private UserRepository userRepository;
     private JoinEventRepository joinEventRepository;
-    private static final int MILLISECONDS_OF_DAY = 86400000;
-    private static final int ONE_HOUR = 3600000;
-    private static final int ONE_MINUTE = 60000;
-    private static final long ONE_SECOND = 1000;
-    private static final int MIN_DURATION = 25 * ONE_MINUTE;
-    private static final int MAX_DURATION = MILLISECONDS_OF_DAY * 2;
+    private static final long MIN_DURATION = 25 * Constant.ONE_MINUTE;
+    private static final long MAX_DURATION = Constant.MILLISECONDS_OF_DAY * 2;
     private static final int EVENT_ID_DEFAULT = 0;
 
     private Event convertRequestToEvent(EventRequest eventRequest, String idToken) throws GeneralSecurityException, IOException, IllegalAccessException {
@@ -84,7 +82,7 @@ public class EventServiceImpl implements EventService {
         if (durationEventRequestInvalid(eventRequest)) {
             throw new InvalidRequestException(" Event have duration illegal !");
         }
-        if (checkEventRequestTimeInValid(eventRequest, EVENT_ID_DEFAULT )) {
+        if (checkEventRequestTimeInValid(eventRequest, EVENT_ID_DEFAULT)) {
             throw new InvalidRequestException("Have a duplicate event in class !");
         }
     }
@@ -98,8 +96,8 @@ public class EventServiceImpl implements EventService {
     }
 
     private boolean checkEventRequestTimeInValid(EventRequest eventRequest, int eventId) {
-        java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - MILLISECONDS_OF_DAY * 2);
-        java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + MILLISECONDS_OF_DAY * 2);
+        java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * 2);
+        java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * 2);
         List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
         if (duplicateEvents.isEmpty()) {
             return false;
@@ -113,7 +111,7 @@ public class EventServiceImpl implements EventService {
             // end time of request < start time of old event OR end time  of request > end time of old event
             boolean condition1 = (startRequestMilli >= startEventMilli) && (startRequestMilli <= endEventMilli);
             boolean condition2 = (endRequestMilli >= startEventMilli) && (endRequestMilli <= endEventMilli);
-            if ( condition1 || condition2 ) {
+            if (condition1 || condition2) {
                 return true;
             }
         }
@@ -249,7 +247,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void updateEvent(String idToken, EventRequest eventRequest, int eventId) {
         Event eventOld = eventRepository.findById(eventId);
-        User captain =  userRepository.findUserByTokenIdToken(idToken);
+        User captain = userRepository.findUserByTokenIdToken(idToken);
 
         if (captain == null) {
             throw new InvalidRequestException("Account does not exist!");
@@ -264,7 +262,7 @@ public class EventServiceImpl implements EventService {
             throw new InvalidRequestException("User is not captain!");
         }
 
-        if (durationEventRequestInvalid(eventRequest)){
+        if (durationEventRequestInvalid(eventRequest)) {
             throw new InvalidRequestException(" Event have duration illegal !");
         }
 
@@ -295,10 +293,10 @@ public class EventServiceImpl implements EventService {
     private long getTotalMillisecondOfEvent(long startDate, float duration) {
         long durationToMillisecond = 0;
         if (duration != 0) {
-            durationToMillisecond = (long) (duration * ONE_HOUR);
+            durationToMillisecond = (long) (duration * Constant.ONE_HOUR);
         }
         long total = startDate + durationToMillisecond;
         //rounding 1 secondK
-        return total - (total % ONE_SECOND);
+        return total - (total % Constant.ONE_SECOND);
     }
 }

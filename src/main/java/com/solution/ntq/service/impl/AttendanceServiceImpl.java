@@ -46,6 +46,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     private ContentRepository contentRepository;
     private ClazzService clazzService;
     private JoinEventRepository joinEventRepository;
+
     @Override
     @Transactional
     public void saveAttendanceGroup(AttendanceRequest attendanceRequest) {
@@ -77,6 +78,7 @@ public class AttendanceServiceImpl implements AttendanceService {
                 }
         );
     }
+
     @NotNull
     private Attendance mappingAttendance(String userId, int contentId, boolean isAttendance) {
         Attendance attendance = new Attendance();
@@ -136,10 +138,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private List<AttendanceContentResponse> getListAttendanceContentByClassId(int classId, String title) {
         List<AttendanceContentResponse> attendanceContentResponses = new ArrayList<>();
-        List<Content> contents=contentRepository.findContentByClazzHaveAttendances(classId);
+        List<Content> contents = contentRepository.findContentByClazzHaveAttendances(classId);
 
         if (!StringUtils.isBlank(title)) {
-            contents = contentRepository.findByIdClazzAndTitleHaveAttendances(classId,title);
+            contents = contentRepository.findByIdClazzAndTitleHaveAttendances(classId, title);
 
         }
         for (Content content : contents) {
@@ -152,9 +154,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private List getListAttendanceEventByClassId(int classId, String title) {
         List<AttendanceEventResponse> attendanceEventResponses = new ArrayList<>();
-        List<Event> events=eventRepository.findByClazzHaveAttendances(classId);
+        List<Event> events = eventRepository.findByClazzHaveAttendances(classId);
         if (!StringUtils.isBlank(title)) {
-            events = eventRepository.findByIdClazzAndTitleHaveAttendances(classId,title);
+            events = eventRepository.findByIdClazzAndTitleHaveAttendances(classId, title);
         }
         for (Event event : events) {
             List<JoinEvent> attendances = joinEventRepository.findByEventId(event.getId());
@@ -177,12 +179,11 @@ public class AttendanceServiceImpl implements AttendanceService {
         attendanceEventResponse.setEventTitle(joinEvent.getEvent().getTitle());
         return attendanceEventResponse;
     }
+
     @Override
     public List getListAttendanceByClassId(int classId, String title, String type) {
         return type.equals("CONTENT") ? getListAttendanceContentByClassId(classId, title) : getListAttendanceEventByClassId(classId, title);
     }
-
-
 
 
 }
