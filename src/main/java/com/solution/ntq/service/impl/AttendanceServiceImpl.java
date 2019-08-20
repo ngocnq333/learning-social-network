@@ -10,13 +10,6 @@ import com.solution.ntq.controller.response.AttendanceContentResponse;
 import com.solution.ntq.controller.response.AttendanceEventResponse;
 import com.solution.ntq.repository.base.*;
 import com.solution.ntq.repository.entities.*;
-import com.solution.ntq.repository.base.AttendanceRepository;
-import com.solution.ntq.repository.base.ClazzMemberRepository;
-import com.solution.ntq.repository.base.ContentRepository;
-import com.solution.ntq.repository.entities.Attendance;
-import com.solution.ntq.repository.entities.ClazzMember;
-import com.solution.ntq.repository.entities.User;
-import com.solution.ntq.repository.entities.Content;
 import com.solution.ntq.service.base.AttendanceService;
 import com.solution.ntq.service.base.ClazzService;
 import com.solution.ntq.service.base.UserService;
@@ -29,8 +22,6 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-
 /**
  * @author Nam_Phuong
  * @version 1.01
@@ -63,31 +54,34 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private void saveAttendance(List<AttendanceGroupRequest> attendanceGroup) {
         attendanceGroup.forEach(attendance -> {
+                    Attendance attendanceMember = mappingAttendance(attendance);
                     if (Validator.isTakeAttendance(attendance)) {
                         int idAttendance = attendance.getId();
-                        Attendance attendanceUpdate = attendanceRepository.findAllById(idAttendance);
-                        if (attendanceUpdate == null) {
-                            throw new InvalidRequestException("user or content invalid ");
+                        attendanceMember = attendanceRepository.findAllById(idAttendance);
+                        if (attendanceMember == null) {
+                            throw new InvalidRequestException("User or content invalid ");
                         }
-                        attendanceUpdate.setAttendance(attendance.isAttendance());
-                        attendanceRepository.save(attendanceUpdate);
-                    } else if (attendance.isAttendance()) {
-                        Attendance attendanceCreate = mappingAttendance(attendance.getUserId(), attendance.getContentId(), attendance.isAttendance());
-                        attendanceRepository.save(attendanceCreate);
+                        attendanceMember.setNote(attendance.getNote());
+                        attendanceMember.setAttendance(attendance.isAttendance());
                     }
+                    attendanceRepository.save(attendanceMember);
                 }
+
         );
     }
 
     @NotNull
-    private Attendance mappingAttendance(String userId, int contentId, boolean isAttendance) {
+    private Attendance mappingAttendance(AttendanceGroupRequest attendanceRequest) {
         Attendance attendance = new Attendance();
-        User user = userService.getUserById(userId);
-        Content content = contentRepository.findContentById(contentId);
+        User user = userService.getUserById(attendanceRequest.getUserId());
+        Content content = contentRepository.findContentById(attendanceRequest.getContentId());
         attendance.setUser(user);
         attendance.setContent(content);
-        attendance.setAttendance(isAttendance);
+        attendance.setAttendance(attendanceRequest.isAttendance());
+        attendance.setNote(attendanceRequest.getNote());
         return attendance;
+
+
     }
 
     /**
@@ -182,7 +176,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List getListAttendanceByClassId(int classId, String title, String type) {
-        return type.equals("CONTENT") ? getListAttendanceContentByClassId(classId, title) : getListAttendanceEventByClassId(classId, title);
+        return ("CONTENT").equals(type) ? getListAttendanceContentByClassId(classId, title) : getListAttendanceEventByClassId(classId, title);
     }
 
 

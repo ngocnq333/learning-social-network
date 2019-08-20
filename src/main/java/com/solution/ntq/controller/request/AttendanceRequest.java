@@ -22,4 +22,5 @@ public class AttendanceRequest {
     private int clazzId;
     @NotNull
     private List<AttendanceGroupRequest> attendanceGroupRequests;
+    private String note;
 }

@@ -32,5 +32,6 @@ public class Attendance {
     Content content;
     @JsonProperty(value = "isAttendance")
     boolean isAttendance;
+    String note;
 
 }

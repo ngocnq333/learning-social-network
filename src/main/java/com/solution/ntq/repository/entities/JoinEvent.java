@@ -33,4 +33,5 @@ public class JoinEvent {
     @JoinColumn(name = "user_id")
     User user;
     boolean confirm;
+    String note;
 }

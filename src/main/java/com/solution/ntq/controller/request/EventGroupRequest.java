@@ -28,4 +28,5 @@ public class EventGroupRequest {
     @NotNull
     @JsonProperty(value = "memberId")
     String userId;
+    String note;
 }

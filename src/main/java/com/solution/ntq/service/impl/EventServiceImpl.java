@@ -250,6 +250,7 @@ public class EventServiceImpl implements EventService {
                     if (joinEvent == null) {
                         throw new InvalidRequestException("user or content invalid ");
                     }
+                    joinEvent.setNote(eventGroupRequest.getNote());
                     joinEvent.setConfirm(true);
                     joinEvent.setAttendance(eventGroupRequest.isAttendance());
                     joinEventRepository.save(joinEvent);

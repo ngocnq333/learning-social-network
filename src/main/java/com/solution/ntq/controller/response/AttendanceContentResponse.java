@@ -18,5 +18,6 @@ public class AttendanceContentResponse {
     @JsonProperty(value = "isAttendance")
     boolean isAttendance;
     String contentTitle;
+    String note;
 
 }

@@ -51,6 +51,7 @@ public class JoinEventServiceImpl implements JoinEventService {
         attendanceEventResponse.setUserName(joinEvent.getUser().getName());
         attendanceEventResponse.setEmail(joinEvent.getUser().getEmail());
         attendanceEventResponse.setPicture(joinEvent.getUser().getPicture());
+        attendanceEventResponse.setNote(joinEvent.getNote());
         return attendanceEventResponse;
     }
 

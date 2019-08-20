@@ -23,4 +23,5 @@ public class AttendanceEventResponse {
     String picture;
     String email;
     String eventTitle;
+    String note;
 }

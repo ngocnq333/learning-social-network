@@ -21,4 +21,5 @@ public class AttendanceGroupRequest {
     private String userId;
     @JsonProperty(value = "isAttendance")
     private boolean isAttendance;
+    private String note;
 }
