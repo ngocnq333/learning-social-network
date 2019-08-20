@@ -15,8 +15,6 @@ public interface TokenRepository extends org.springframework.data.repository.Rep
 
     void save(Token token);
 
-    Token findTokenByIdToken(String id);
-
     Token findTokenByUserId(String idUser);
 
     @Transactional

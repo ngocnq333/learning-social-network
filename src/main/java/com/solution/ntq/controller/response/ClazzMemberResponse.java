@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * @author Manh
  */
-
+@NoArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class ClazzMemberResponse {
     String name;
     String email;
     String avatar;
-    private String skype;
+    String skype;
     @JsonProperty(value = "isCaptain")
     boolean isCaptain;
     Date joinDate;

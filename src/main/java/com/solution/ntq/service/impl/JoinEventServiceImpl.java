@@ -42,7 +42,7 @@ public class JoinEventServiceImpl implements JoinEventService {
         return groupAttendanceResponse;
     }
 
-    private AttendanceEventResponse eventResponseMapper(JoinEvent joinEvent) {
+    private static AttendanceEventResponse eventResponseMapper(JoinEvent joinEvent) {
         AttendanceEventResponse attendanceEventResponse = new AttendanceEventResponse();
         attendanceEventResponse.setId(joinEvent.getId());
         attendanceEventResponse.setEventId(joinEvent.getEvent().getId());
@@ -58,7 +58,7 @@ public class JoinEventServiceImpl implements JoinEventService {
     private boolean isCaptain(int clazzId, String userId) {
         ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
         if (clazzMember == null || StringUtils.isEmpty(userId)) {
-            throw new InvalidRequestException("userIdError");
+            throw new InvalidRequestException("User Id Error");
         }
         String userIdCaptain = clazzMember.getUser().getId();
         return userId.equals(userIdCaptain);

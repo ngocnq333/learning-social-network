@@ -3,7 +3,7 @@ package com.solution.ntq.common.utils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ConvertObject {
+public final class ConvertObject {
     private ConvertObject(){}
     public static ObjectMapper mapper(){
         ObjectMapper mapper = new ObjectMapper();

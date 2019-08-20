@@ -16,7 +16,6 @@ import com.solution.ntq.repository.base.EventRepository;
 import com.solution.ntq.repository.base.EventMemberRepository;
 import com.solution.ntq.repository.entities.Event;
 import com.solution.ntq.repository.entities.User;
-import com.solution.ntq.controller.request.JoinEventRequest;
 import com.solution.ntq.repository.base.JoinEventRepository;
 import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.repository.entities.JoinEvent;
@@ -49,11 +48,12 @@ public class EventServiceImpl implements EventService {
     private static final long MIN_DURATION = 25 * Constant.ONE_MINUTE;
     private static final long MAX_DURATION = Constant.MILLISECONDS_OF_DAY * 2;
     private static final int EVENT_ID_DEFAULT = 0;
+    private EventMemberRepository eventMemberRepository;
 
-    private Event convertRequestToEvent(EventRequest eventRequest, String userId)throws IllegalAccessException {
+    private Event convertRequestToEvent(EventRequest eventRequest, String userId) {
         validateRequest(eventRequest, userId);
         User user = userRepository.findById(userId);
-        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClazzId());
+        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
 
         ObjectMapper mapper = ConvertObject.mapper();
         Event event = mapper.convertValue(eventRequest, Event.class);
@@ -63,9 +63,9 @@ public class EventServiceImpl implements EventService {
         return event;
     }
 
-    private void validateRequest(EventRequest eventRequest, String userId) throws IllegalAccessException {
+    private void validateRequest(EventRequest eventRequest, String userId)  {
 
-        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClazzId());
+        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
         if (clazz == null) {
             throw new InvalidRequestException("ClassId  illegal !");
         }
@@ -93,9 +93,9 @@ public class EventServiceImpl implements EventService {
     }
 
     private boolean checkEventRequestTimeInValid(EventRequest eventRequest, int eventId) {
-        java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * 2);
-        java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * 2);
-        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClazzId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
+        java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * Constant.DAY_NUMBER);
+        java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * Constant.DAY_NUMBER);
+        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
         if (duplicateEvents.isEmpty()) {
             return false;
         }
@@ -116,18 +116,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void addEvent(EventRequest eventRequest, String userId) throws IllegalAccessException {
+    public void addEvent(EventRequest eventRequest, String userId)  {
         Event event = convertRequestToEvent(eventRequest, userId);
         eventRepository.save(event);
     }
 
-    private boolean urlIsInvalid(String url) {
+    private static boolean urlIsInvalid(String url) {
         url = "http://" + url;
         UrlValidator validator = UrlValidator.getInstance();
         return !validator.isValid(url);
     }
-
-    private EventMemberRepository eventMemberRepository;
 
     public EventResponse findByEventId(int eventId, String userId) {
         Event event = eventRepository.findById(eventId);
@@ -141,7 +139,7 @@ public class EventServiceImpl implements EventService {
         return eventResponse;
     }
 
-    private String getStatus(JoinEvent joinEvent) {
+    private static String getStatus(JoinEvent joinEvent) {
         if (joinEvent == null) {
             return Status.UNKNOWN.value();
         }
@@ -160,13 +158,13 @@ public class EventServiceImpl implements EventService {
     }
 
 
-    private List<EventResponse> convertEventToEventResponse(List<Event> events) {
+    private List<EventResponse>  convertEventToEventResponse(List<Event> events) {
         List<EventResponse> eventResponses = new ArrayList<>();
         events.forEach(event -> eventResponses.add(eventMapper(event)));
         return eventResponses;
     }
 
-    private EventResponse eventMapper(Event event) {
+    private static EventResponse eventMapper(Event event) {
         return ConvertObject.mapper().convertValue(event, EventResponse.class);
     }
 
@@ -194,8 +192,7 @@ public class EventServiceImpl implements EventService {
             throw new InvalidRequestException(ex.getMessage());
         }
     }
-    private void setPropertyForJoinEvent(String userId,int eventId,JoinEvent joinEvent)
-    {
+    private void setPropertyForJoinEvent(String userId,int eventId,JoinEvent joinEvent) {
 
         joinEvent.setUser(userRepository.findById(userId));
         joinEvent.setEvent(eventRepository.findById(eventId));
@@ -204,10 +201,6 @@ public class EventServiceImpl implements EventService {
 
     private void save(JoinEvent joinEvent) {
         joinEventRepository.save(joinEvent);
-    }
-
-    private JoinEvent joinEventMapper(JoinEventRequest joinEventRequest) {
-        return ConvertObject.mapper().convertValue(joinEventRequest, JoinEvent.class);
     }
 
     @Override
@@ -221,16 +214,16 @@ public class EventServiceImpl implements EventService {
         eventRepository.deleteById(eventId);
     }
 
-    private void checkUserIsCaptain(String userId, int clazzId) throws IllegalAccessException {
+    private void checkUserIsCaptain(String userId, int clazzId)  {
         ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
         if (!userId.equals(clazzMember.getUser().getId())) {
-            throw new IllegalAccessException("User not is caption of class not enough permission");
+            throw new InvalidRequestException("User not is caption of class not enough permission");
         }
     }
 
     @Override
     public void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String
-            userId) throws IllegalAccessException {
+            userId) {
 
         int classId = clazzRepository.findClazzByEventId(eventId).getId();
         if (!clazzMemberRepository.findByClazzIdAndIsCaptainTrue(classId).getUser().getId().equals(userId)) {
@@ -241,15 +234,15 @@ public class EventServiceImpl implements EventService {
     }
 
     private void saveAttendance(List<EventGroupRequest> eventGroupRequests) {
-        eventGroupRequests.forEach(eventGroupRequest -> {
-       int idAttendanceNew = eventGroupRequest.getId();
+        eventGroupRequests.forEach( (EventGroupRequest e) -> {
+       int idAttendanceNew =  e.getId();
                     JoinEvent joinEvent = joinEventRepository.getJoinEventsById(idAttendanceNew);
                     if (joinEvent == null) {
                         throw new InvalidRequestException("user or content invalid ");
                     }
-                    joinEvent.setNote(eventGroupRequest.getNote());
+                    joinEvent.setNote( e.getNote());
                     joinEvent.setConfirm(true);
-                    joinEvent.setAttendance(eventGroupRequest.isAttendance());
+                    joinEvent.setAttendance( e.isAttendance());
                     joinEventRepository.save(joinEvent);
                 }
         );
@@ -259,13 +252,13 @@ public class EventServiceImpl implements EventService {
      */
     @Override
     public void updateEvent(String userId, EventRequest eventRequest, int eventId) {
-        Event eventOld = eventRepository.findById(eventId);
+
         User captain = userRepository.findById(userId);
 
         if (captain == null) {
             throw new InvalidRequestException("Account does not exist!");
         }
-
+        Event eventOld = eventRepository.findById(eventId);
         if (eventOld == null) {
             throw new InvalidRequestException("Invalid information!");
         }
@@ -286,7 +279,7 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(event);
     }
 
-    private Event getEventMapper(EventRequest eventRequest, Event eventOld) {
+    private static Event getEventMapper(EventRequest eventRequest, Event eventOld) {
         Event eventNew;
         eventNew = ConvertObject.mapper().convertValue(eventRequest, Event.class);
         eventNew.setId(eventOld.getId());
@@ -297,13 +290,13 @@ public class EventServiceImpl implements EventService {
         return eventNew;
     }
 
-    private boolean durationEventRequestInvalid(EventRequest eventRequest) {
+    private static boolean durationEventRequestInvalid(EventRequest eventRequest) {
         long durationToMillisecond = getTotalMillisecondOfEvent(0, eventRequest.getDuration());
         return ((MIN_DURATION > durationToMillisecond) || (durationToMillisecond > MAX_DURATION));
     }
 
 
-    private long getTotalMillisecondOfEvent(long startDate, float duration) {
+    private static long getTotalMillisecondOfEvent(long startDate, float duration) {
         long durationToMillisecond = 0;
         if (duration != 0) {
             durationToMillisecond = (long) (duration * Constant.ONE_HOUR);

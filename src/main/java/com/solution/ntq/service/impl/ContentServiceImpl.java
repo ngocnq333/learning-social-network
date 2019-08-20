@@ -77,11 +77,6 @@ public class ContentServiceImpl implements ContentService {
 
 
     @Override
-    public List<Content> getPendingItemByClazzId(int clazzId) {
-        return contentRepository.findAllByClazzIdAndIsApproveFalse(clazzId);
-    }
-
-    @Override
     public ContentResponse getContentById(int contentId) {
         Content content = contentRepository.findContentById(contentId);
         return getContentResponseMapContent(content);
@@ -115,12 +110,6 @@ public class ContentServiceImpl implements ContentService {
     public void deleteContentById(int idContent) {
         contentRepository.deleteById(idContent);
     }
-
-    @Override
-    public boolean exitContent(int idContent) {
-        return contentRepository.existsById(idContent);
-    }
-
     /**
      *
      * @param clazzId
@@ -141,7 +130,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private boolean isValidContentRequest(ContentRequest contentRequest) {
+    private static boolean isValidContentRequest(ContentRequest contentRequest) {
 
         if (contentRequest.getStartDate().before(new Date())) {
             throw new InvalidRequestException("Start date must after today !");

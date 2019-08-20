@@ -84,14 +84,14 @@ public class ClazzServiceImpl implements ClazzService {
         if (!captain.getUser().getId().equals(userIdCurrent)) {
             throw new InvalidRequestException("Current user not is captainId of clazz !");
         }
-        ClazzMember memberInclazz = clazzMemberRepository.findByClazzIdAndUserId(clazzId, userId);
+        ClazzMember memberInClazz = clazzMemberRepository.findByClazzIdAndUserId(clazzId, userId);
         String captainId = captain.getUser().getId();
-        if (memberInclazz == null || (userRepository.findById(userId).getId().equals(captainId))) {
+        if (memberInClazz == null || (userRepository.findById(userId).getId().equals(captainId))) {
             throw new InvalidRequestException("Not find user in clazz or invalid user !");
         }
-        memberInclazz.setCaptain(true);
+        memberInClazz.setCaptain(true);
         captain.setCaptain(false);
-        clazzMemberRepository.save(memberInclazz);
+        clazzMemberRepository.save(memberInClazz);
         clazzMemberRepository.save(captain);
 
     }
@@ -178,11 +178,11 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public void deleteMember(int clazzId, String userId, String memberId) throws IllegalAccessException{
+    public void deleteMember(int clazzId, String userId, String memberId) {
         validatorParamsAddMember(clazzId);
         ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndUserId(clazzId, memberId);
         if (clazzMember == null) {
-            throw new IllegalAccessException("user not joined in clazz !");
+            throw new InvalidRequestException("User not joined in class !");
         }
         clazzMemberRepository.deleteById(clazzMember.getId());
     }

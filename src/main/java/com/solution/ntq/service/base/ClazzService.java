@@ -5,9 +5,6 @@ import com.solution.ntq.controller.request.MemberRequest;
 import com.solution.ntq.controller.response.ClazzMemberResponse;
 import com.solution.ntq.controller.response.ClazzResponse;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.text.ParseException;
 import java.util.List;
 /**
  * @author Duc Anh
@@ -24,15 +21,15 @@ public interface ClazzService {
 
     List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId,String status);
 
-    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int clazzId, String userId) throws IllegalAccessException, GeneralSecurityException, IOException;
+    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId, String userId);
 
     void updateCaptainForClazz(int clazzId, String userId, String userIdUpdate);
 
     boolean isCaptainClazz(String userId, int clazzId);
 
-    void deleteMember(int clazzId, String userId, String memberId) throws IllegalAccessException, GeneralSecurityException, IOException, ParseException;
+    void deleteMember(int clazzId, String userId, String memberId) ;
 
-    void updateClazz(String userId, ClazzRequest clazzRequest, int clazzId) throws GeneralSecurityException, IOException;
+    void updateClazz(String userId, ClazzRequest clazzRequest, int clazzId) ;
 
-    ClazzMemberResponse updateStatusMember(String currentUser, int clazzId, String memberId) throws GeneralSecurityException, IOException;
+    ClazzMemberResponse updateStatusMember(String currentUser, int classId, String memberId);
 }

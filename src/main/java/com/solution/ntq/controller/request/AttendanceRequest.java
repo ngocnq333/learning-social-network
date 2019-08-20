@@ -1,8 +1,11 @@
 package com.solution.ntq.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -14,13 +17,15 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AttendanceRequest {
     @NotNull
-    private String userId;
+    String userId;
     @JsonProperty(value = "classId")
     @NotNull
-    private int clazzId;
+    int clazzId;
     @NotNull
-    private List<AttendanceGroupRequest> attendanceGroupRequests;
-    private String note;
+    List<AttendanceGroupRequest> attendanceGroupRequests;
+    String note;
 }

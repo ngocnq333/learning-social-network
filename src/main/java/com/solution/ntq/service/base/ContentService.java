@@ -1,7 +1,6 @@
 package com.solution.ntq.service.base;
 import com.solution.ntq.controller.request.ContentRequest;
 import com.solution.ntq.controller.response.ContentResponse;
-import com.solution.ntq.repository.entities.Content;
 
 import java.util.List;
 
@@ -16,13 +15,9 @@ public interface ContentService {
 
     void updateContent(ContentRequest content,String userId);
 
-    List<Content> getPendingItemByClazzId(int clazzId);
-
     void deleteContentById(int idContent);
 
-    boolean exitContent(int idContent);
-
-    List<ContentResponse> getContentsResponseSorted(int clazzId,String title);
+    List<ContentResponse> getContentsResponseSorted(int classId,String title);
 
     void approveContent(int contentId);
 }

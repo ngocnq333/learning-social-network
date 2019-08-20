@@ -18,9 +18,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-
-import com.solution.ntq.controller.request.JoinEventRequest;
-
 /**
  * @author Ngoc Ngo Quy
  * @version 1.01
@@ -32,6 +29,7 @@ import com.solution.ntq.controller.request.JoinEventRequest;
 @RequestMapping("/api/v1/events")
 public class EventController {
     private EventService eventService;
+    private JoinEventService joinEventService;
 
     @PutMapping
     public ResponseEntity<Response> createEvent(@Valid @RequestBody EventRequest eventRequest,@RequestAttribute("userId") String userId) {
@@ -49,8 +47,6 @@ public class EventController {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    private JoinEventService joinEventService;
 
     @GetMapping("/{eventId}")
     public ResponseEntity<Response> getEventDetail(@PathVariable("eventId") int eventId, @RequestAttribute("userId") String userId) {

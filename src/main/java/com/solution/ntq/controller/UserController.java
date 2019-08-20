@@ -6,7 +6,6 @@ import com.solution.ntq.common.exception.InvalidRequestException;
 import com.solution.ntq.controller.request.UserRequest;
 import com.solution.ntq.controller.response.Response;
 import com.solution.ntq.controller.response.UserResponse;
-import com.solution.ntq.repository.base.TokenRepository;
 import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.UserService;
 import lombok.AllArgsConstructor;
@@ -30,8 +29,6 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class UserController {
     private UserService userService;
-    private TokenRepository tokenRepository;
-
     /**
      * Get an user detail
      */
@@ -57,7 +54,7 @@ public class UserController {
             response.setMessage(e.getMessage());
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -93,8 +90,8 @@ public class UserController {
             response.setData(userService.findByEmailContains(userEmail));
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response,HttpStatus.OK);
-        }
-        catch (Exception e){
+
+        } catch (Exception ex){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
