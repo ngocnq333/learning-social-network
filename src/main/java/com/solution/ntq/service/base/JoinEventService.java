@@ -10,5 +10,5 @@ import java.util.List;
  * @since  update 24/7/2019
  */
 public interface JoinEventService {
-    List<AttendanceEventResponse> getListJointEvent(int eventId, int classId,String userId);
+    List<AttendanceEventResponse> getListJointEvent(int eventId, int clazzId,String userId);
 }

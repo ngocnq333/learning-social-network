@@ -130,12 +130,12 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceContentResponse;
     }
 
-    private List<AttendanceContentResponse> getListAttendanceContentByClassId(int classId, String title) {
+    private List<AttendanceContentResponse> getListAttendanceContentByClazzId(int clazzId, String title) {
         List<AttendanceContentResponse> attendanceContentResponses = new ArrayList<>();
-        List<Content> contents = contentRepository.findContentByClazzHaveAttendances(classId);
+        List<Content> contents = contentRepository.findContentByClazzHaveAttendances(clazzId);
 
         if (!StringUtils.isBlank(title)) {
-            contents = contentRepository.findByIdClazzAndTitleHaveAttendances(classId, title);
+            contents = contentRepository.findByIdClazzAndTitleHaveAttendances(clazzId, title);
 
         }
         for (Content content : contents) {
@@ -146,11 +146,11 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceContentResponses;
     }
 
-    private List getListAttendanceEventByClassId(int classId, String title) {
+    private List getListAttendanceEventByClazzId(int clazzId, String title) {
         List<AttendanceEventResponse> attendanceEventResponses = new ArrayList<>();
-        List<Event> events = eventRepository.findByClazzHaveAttendances(classId);
+        List<Event> events = eventRepository.findByClazzHaveAttendances(clazzId);
         if (!StringUtils.isBlank(title)) {
-            events = eventRepository.findByIdClazzAndTitleHaveAttendances(classId, title);
+            events = eventRepository.findByIdClazzAndTitleHaveAttendances(clazzId, title);
         }
         for (Event event : events) {
             List<JoinEvent> attendances = joinEventRepository.findByEventId(event.getId());
@@ -175,8 +175,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public List getListAttendanceByClassId(int classId, String title, String type) {
-        return ("CONTENT").equals(type) ? getListAttendanceContentByClassId(classId, title) : getListAttendanceEventByClassId(classId, title);
+    public List getListAttendanceByClazzId(int clazzId, String title, String type) {
+        return type.equals("CONTENT") ? getListAttendanceContentByClazzId(clazzId, title) : getListAttendanceEventByClazzId(clazzId, title);
     }
 
 

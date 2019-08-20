@@ -29,11 +29,7 @@ public interface UserRepository extends org.springframework.data.repository.Repo
      * Check exist user by id
      */
     boolean existsById(String id);
-
-    User findUserByTokenIdToken(String tokenId);
-
     @Query("FROM User WHERE UPPER(email) LIKE %?#{[0].toUpperCase()}%")
     List<User> findByEmailContains(String email);
 
-    List<User> findAll();
 }

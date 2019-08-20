@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +23,7 @@ public class Clazz {
     @JsonProperty(value = "classId")
     int id;
     String name;
+
     String description;
     String thumbnail;
     String avatar;

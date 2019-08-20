@@ -1,5 +1,6 @@
 package com.solution.ntq.controller.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.Length;
@@ -19,7 +20,8 @@ public class ContentRequest {
     @NotNull
     int id;
     @NotNull
-    int classId;
+    @JsonProperty("classId")
+    int clazzId;
     @NotNull(message = "Please pick a start date")
     Date startDate;
     @NotNull(message = "Please pick a end date")

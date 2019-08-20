@@ -57,7 +57,7 @@ public class UserController {
             response.setMessage(e.getMessage());
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception ex) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -90,12 +90,11 @@ public class UserController {
             return new ResponseEntity<>(response,HttpStatus.OK);
         }
         try{
-
             response.setData(userService.findByEmailContains(userEmail));
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response,HttpStatus.OK);
         }
-        catch (Exception ex){
+        catch (Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

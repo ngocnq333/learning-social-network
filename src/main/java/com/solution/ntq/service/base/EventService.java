@@ -23,7 +23,7 @@ import java.security.GeneralSecurityException;
 
 public interface EventService {
     void addEvent(EventRequest event, String userId) throws IllegalAccessException, ParseException;
-    List<EventResponse> getGroupEvent(int classId, long startDate, long endDate);
+    List<EventResponse> getGroupEvent(int clazzId, long startDate, long endDate);
     void joinEvent(String userId,int eventId);
     void notJoinEvent(String userId,int eventId);
 

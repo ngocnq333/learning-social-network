@@ -1,5 +1,6 @@
 package com.solution.ntq.controller.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +29,9 @@ public class EventRequest {
     @NotNull(message = "Duration is not blank !")
     @DecimalMin(value = "0.4")
     float duration;
+    @JsonProperty("classId")
     @NotNull
-    int classId;
+    int clazzId;
 
     int contentId;
 }

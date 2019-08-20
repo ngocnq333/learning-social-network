@@ -47,13 +47,11 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public List<ClazzResponse> getClassByUser(String userId) {
-        List<ClazzResponse> clazzResponses = new ArrayList<>();
+    public List<ClazzResponse> getClazzByUser(String userId) {
+        List<ClazzResponse> clazzResponses;
         if (StringUtils.isBlank(userId)) {
             List<Clazz> clazzList = clazzRepository.findAll();
-            for (Clazz clazz : clazzList) {
-                clazzResponses.add(getResponseMapByClazz(clazz));
-            }
+            clazzResponses=clazzList.stream().map(this::getResponseMapByClazz).collect(Collectors.toList());
             return clazzResponses;
         }
         List<ClazzMember> clazzMembers = clazzMemberRepository.findByUserId(userId);
@@ -62,37 +60,39 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public ClazzResponse getClassById(int clazzId) {
+    public ClazzResponse getclazzById(int clazzId) {
         Clazz clazz = clazzRepository.findClazzById(clazzId);
         return getResponseMapByClazz(clazz);
     }
 
     @Override
-    public ClazzResponse getClassById(int clazzId, String userId) {
-        ClazzResponse clazzResponse = getClassById(clazzId);
-        ClazzMember memberInClass = clazzMemberRepository.findByClazzIdAndUserId(clazzId, userId);
-        if (memberInClass == null) {
+    public ClazzResponse getClazzById(int clazzId, String userId) {
+        ClazzResponse clazzResponse = getclazzById(clazzId);
+        ClazzMember memberInclazz = clazzMemberRepository.findByClazzIdAndUserId(clazzId, userId);
+        if (memberInclazz == null) {
             clazzResponse.setStatus(Status.NOTJOIN.value());
+            return clazzResponse;
         }
+        clazzResponse.setStatus(memberInclazz.getStatus());
         return clazzResponse;
     }
 
     @Override
-    public void updateCaptainForClass(int clazzId, String userIdCurrent, String userId) {
+    public void updateCaptainForClazz(int clazzId, String userIdCurrent, String userId) {
         validatorParamsAddMember(clazzId);
-        ClazzMember captainMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
-        String captainMemberId = captainMember.getUser().getId();
-        if (!captainMember.getUser().getId().equals(userIdCurrent)) {
-            throw new InvalidRequestException("Current user not is captain of class !");
+        ClazzMember captain = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
+        if (!captain.getUser().getId().equals(userIdCurrent)) {
+            throw new InvalidRequestException("Current user not is captainId of clazz !");
         }
-        ClazzMember memberInClass = clazzMemberRepository.findByClazzIdAndUserId(clazzId, userId);
-        if (memberInClass == null || (userRepository.findById(userId).getId().equals(captainMemberId))) {
-            throw new InvalidRequestException("Not find user in class or invalid user !");
+        ClazzMember memberInclazz = clazzMemberRepository.findByClazzIdAndUserId(clazzId, userId);
+        String captainId = captain.getUser().getId();
+        if (memberInclazz == null || (userRepository.findById(userId).getId().equals(captainId))) {
+            throw new InvalidRequestException("Not find user in clazz or invalid user !");
         }
-        memberInClass.setCaptain(true);
-        captainMember.setCaptain(false);
-        clazzMemberRepository.save(memberInClass);
-        clazzMemberRepository.save(captainMember);
+        memberInclazz.setCaptain(true);
+        captain.setCaptain(false);
+        clazzMemberRepository.save(memberInclazz);
+        clazzMemberRepository.save(captain);
 
     }
 
@@ -132,7 +132,6 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     private ClazzMemberResponse convertToResponse(ClazzMember clazzMember) {
-
         ClazzMemberResponse response = ConvertObject.mapper().convertValue(clazzMember, ClazzMemberResponse.class);
         response.setUserId(clazzMember.getUser().getId());
         response.setName(clazzMember.getUser().getName());
@@ -143,11 +142,10 @@ public class ClazzServiceImpl implements ClazzService {
         return response;
     }
 
-
-    private void validatorParamsAddMember(int classId) {
-        Clazz clazz = clazzRepository.findClazzById(classId);
+    private void validatorParamsAddMember(int clazzId) {
+        Clazz clazz = clazzRepository.findClazzById(clazzId);
         if (clazz == null) {
-            throw new InvalidRequestException("Class Id illegal !");
+            throw new InvalidRequestException("clazz Id illegal !");
         }
     }
 
@@ -157,23 +155,23 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId, String userCaptainId){
-        validatorParamsAddMember(classId);
+    public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int clazzId, String userCaptainId){
+        validatorParamsAddMember(clazzId);
         User userAdd = userRepository.findById(memberRequest.getUserIdAdd());
         if (userAdd == null) {
             throw new InvalidRequestException("User ID illegal !");
         }
-        List<ClazzMember> duplicateMembers = clazzMemberRepository.findByUserIdAndClazzId(userAdd.getId(), classId);
+        List<ClazzMember> duplicateMembers = clazzMemberRepository.findByUserIdAndClazzId(userAdd.getId(), clazzId);
         if (!CollectionUtils.isEmpty(duplicateMembers)) {
             throw new InvalidRequestException(" Duplicate member !");
         }
         ClazzMember newClazzMember = new ClazzMember();
         User user = userRepository.findById(memberRequest.getUserIdAdd());
         newClazzMember.setUser(user);
-        String status = checkUserIsCaptain(userCaptainId, classId) ? Status.JOINED.value() : Status.APPROVE.value();
+        String status = checkUserIsCaptain(userCaptainId, clazzId) ? Status.JOINED.value() : Status.APPROVE.value();
         newClazzMember.setStatus(status);
         newClazzMember.setJoinDate(new Date());
-        newClazzMember.setClazz(clazzRepository.findClazzById(classId));
+        newClazzMember.setClazz(clazzRepository.findClazzById(clazzId));
         newClazzMember.setCaptain(false);
         return convertToResponse(clazzMemberRepository.save(newClazzMember));
 
@@ -182,12 +180,9 @@ public class ClazzServiceImpl implements ClazzService {
     @Override
     public void deleteMember(int clazzId, String userId, String memberId) throws IllegalAccessException{
         validatorParamsAddMember(clazzId);
-        if (!checkUserIsCaptain(userId, clazzId)) {
-            throw new IllegalAccessException("User not is caption of class not enough permission");
-        }
         ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndUserId(clazzId, memberId);
         if (clazzMember == null) {
-            throw new IllegalAccessException("user not joined in class !");
+            throw new IllegalAccessException("user not joined in clazz !");
         }
         clazzMemberRepository.deleteById(clazzMember.getId());
     }
@@ -196,11 +191,11 @@ public class ClazzServiceImpl implements ClazzService {
      * Update information of Clazz
      */
     @Override
-    public void updateClazz(String userId, ClazzRequest clazzRequest, int classId){
-        if (!isCaptainClazz(userId, classId)) {
+    public void updateClazz(String userId, ClazzRequest clazzRequest, int clazzId){
+        if (!isCaptainClazz(userId, clazzId)) {
             throw new InvalidRequestException("User is not captain !");
         }
-        Clazz clazzOld = clazzRepository.findClazzById(classId);
+        Clazz clazzOld = clazzRepository.findClazzById(clazzId);
         clazzRepository.save(getClazzMapToClazzRequest(clazzRequest, clazzOld));
     }
 
@@ -215,12 +210,12 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public ClazzMemberResponse updateStatusMember(String idCurrentUser, int classId, String memberId){
-        validatorParamsAddMember(classId);
-        if (!checkUserIsCaptain(idCurrentUser, classId)) {
+    public ClazzMemberResponse updateStatusMember(String idCurrentUser, int clazzId, String memberId){
+        validatorParamsAddMember(clazzId);
+        if (!checkUserIsCaptain(idCurrentUser, clazzId)) {
             throw new InvalidRequestException(" User not Captain !");
         }
-        ClazzMember currentMember = clazzMemberRepository.findByClazzIdAndUserId(classId, memberId);
+        ClazzMember currentMember = clazzMemberRepository.findByClazzIdAndUserId(clazzId, memberId);
         if (currentMember == null) {
             throw new InvalidRequestException(" Member not exist !");
         }

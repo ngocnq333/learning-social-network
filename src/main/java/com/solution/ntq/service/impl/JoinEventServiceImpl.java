@@ -28,8 +28,8 @@ public class JoinEventServiceImpl implements JoinEventService {
     private ClazzMemberRepository clazzMemberRepository;
 
     @Override
-    public List<AttendanceEventResponse> getListJointEvent(int eventId, int classId, String userId) {
-        if (!isCaptain(classId, userId)) {
+    public List<AttendanceEventResponse> getListJointEvent(int eventId, int clazzId, String userId) {
+        if (!isCaptain(clazzId, userId)) {
             throw new InvalidRequestException("Access deny");
         }
         List<JoinEvent> groupJoinEvent = joinEventRepository.getJoinEventsByEventIdAndJoinedTrue(eventId);
@@ -55,8 +55,8 @@ public class JoinEventServiceImpl implements JoinEventService {
         return attendanceEventResponse;
     }
 
-    private boolean isCaptain(int classId, String userId) {
-        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(classId);
+    private boolean isCaptain(int clazzId, String userId) {
+        ClazzMember clazzMember = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId);
         if (clazzMember == null || StringUtils.isEmpty(userId)) {
             throw new InvalidRequestException("userIdError");
         }

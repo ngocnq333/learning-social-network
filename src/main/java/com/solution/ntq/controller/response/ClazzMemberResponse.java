@@ -13,6 +13,7 @@ import java.util.Date;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClazzMemberResponse {
     @Id

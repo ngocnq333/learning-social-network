@@ -72,12 +72,12 @@ public class EventController {
     }
 
     @GetMapping()
-    public ResponseEntity<Response<List<EventResponse>>> getEventGroup(@NotNull @Min(0) @RequestParam(value = "classId", defaultValue = "0") int classId,
+    public ResponseEntity<Response<List<EventResponse>>> getEventGroup(@NotNull @Min(0) @RequestParam(value = "classId", defaultValue = "0") int clazzId,
                                                                        @RequestParam(value = "startDate", defaultValue = "0") long startDate,
                                                                        @RequestParam(value = "endDate", defaultValue = "0") long endDate) {
         Response<List<EventResponse>> response = new Response<>();
         try {
-            List<EventResponse> groupEvent = eventService.getGroupEvent(classId, startDate, endDate);
+            List<EventResponse> groupEvent = eventService.getGroupEvent(clazzId, startDate, endDate);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(groupEvent);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -160,11 +160,11 @@ public class EventController {
 
     @GetMapping("/{eventId}/attendances")
     public ResponseEntity<Response<List<AttendanceEventResponse>>> getListAttendanceEvent(@PathVariable("eventId") int eventId,
-                                                                                          @RequestParam(value = "classId", defaultValue = "2") int classId,
+                                                                                          @RequestParam(value = "classId", defaultValue = "2") int clazzId,
                                                                                           @RequestAttribute(value = "userId") String userId) {
         Response<List<AttendanceEventResponse>> response = new Response<>();
         try {
-            List<AttendanceEventResponse> attendanceResponseListEvent = joinEventService.getListJointEvent(eventId, classId, userId);
+            List<AttendanceEventResponse> attendanceResponseListEvent = joinEventService.getListJointEvent(eventId, clazzId, userId);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(attendanceResponseListEvent);
             return new ResponseEntity<>(response, HttpStatus.OK);
