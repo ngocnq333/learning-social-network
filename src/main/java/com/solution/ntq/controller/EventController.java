@@ -98,7 +98,7 @@ public class EventController {
         try {
             eventService.takeAttendanceEvents(eventGroupRequests, eventId, userId);
             response.setCodeStatus(ResponseCode.OK.value());
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(response,HttpStatus.OK);
         } catch (InvalidRequestException ex) {
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             response.setMessage(ex.getMessage());
@@ -110,10 +110,25 @@ public class EventController {
 
 
     @PutMapping(value = "/{eventId}/join")
-    public ResponseEntity<Response<String>> addUserJoinEvent(@RequestBody JoinEventRequest joinEventRequest,@PathVariable("eventId") int eventId) {
+    public ResponseEntity<Response<String>> joinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
         Response<String> response = new Response<>();
         try {
-            eventService.saveJoinForUser(joinEventRequest);
+            eventService.JoinEvent(userId,eventId);
+            response.setCodeStatus(ResponseCode.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InvalidRequestException ex) {
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            response.setMessage(ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping(value = "/{eventId}/notJoin")
+    public ResponseEntity<Response<String>> notJoinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
+        Response<String> response = new Response<>();
+        try {
+            eventService.NotJoinEvent(userId,eventId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {
@@ -145,7 +160,7 @@ public class EventController {
 
     @GetMapping("/{eventId}/attendances")
     public ResponseEntity<Response<List<AttendanceEventResponse>>> getListAttendanceEvent(@PathVariable("eventId") int eventId,
-                                                                                          @RequestParam(value = "classId", defaultValue = "") int classId,
+                                                                                          @RequestParam(value = "classId", defaultValue = "2") int classId,
                                                                                           @RequestAttribute(value = "userId") String userId) {
         Response<List<AttendanceEventResponse>> response = new Response<>();
         try {
@@ -161,11 +176,9 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     /**
      * Method use Update information of Event
      */
-
     @PostMapping("/{eventId}")
     public ResponseEntity<Response<EventRequest>> updateEvent(@RequestAttribute("userId") String userId, @Valid @RequestBody EventRequest eventRequest, @PathVariable("eventId") int eventId) {
         Response<EventRequest> response = new Response<>();
