@@ -175,7 +175,7 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public void memberJoinEvent(String userId,int eventId) {
+    public void joinEvent(String userId,int eventId) {
         try {
             JoinEvent joinEvent = new JoinEvent();
             joinEvent.setJoined(true);
@@ -187,7 +187,7 @@ public class EventServiceImpl implements EventService {
     }
     @Transactional
     @Override
-    public void memberNotJoinEvent(String userId,int eventId) {
+    public void notJoinEvent(String userId,int eventId) {
         try {
             JoinEvent joinEvent = new JoinEvent();
             joinEvent.setJoined(false);

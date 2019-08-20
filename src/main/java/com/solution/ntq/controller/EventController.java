@@ -110,10 +110,10 @@ public class EventController {
 
 
     @PutMapping(value = "/{eventId}/join")
-    public ResponseEntity<Response<String>> memberJoinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
+    public ResponseEntity<Response<String>> joinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
         Response<String> response = new Response<>();
         try {
-            eventService.memberJoinEvent(userId,eventId);
+            eventService.JoinEvent(userId,eventId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {
@@ -125,10 +125,10 @@ public class EventController {
         }
     }
     @PutMapping(value = "/{eventId}/notJoin")
-    public ResponseEntity<Response<String>> memberNotJoinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
+    public ResponseEntity<Response<String>> notJoinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
         Response<String> response = new Response<>();
         try {
-            eventService.memberNotJoinEvent(userId,eventId);
+            eventService.NotJoinEvent(userId,eventId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {
