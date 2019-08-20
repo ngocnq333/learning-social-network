@@ -159,9 +159,6 @@ public class ClazzServiceImpl implements ClazzService {
     @Override
     public ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId, String userCaptainId){
         validatorParamsAddMember(classId);
-        if (!checkUserIsCaptain(userCaptainId, classId)) {
-            throw new InvalidRequestException("User not is caption of class not enough permission");
-        }
         User userAdd = userRepository.findById(memberRequest.getUserIdAdd());
         if (userAdd == null) {
             throw new InvalidRequestException("User ID illegal !");
