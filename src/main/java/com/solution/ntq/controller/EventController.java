@@ -113,7 +113,7 @@ public class EventController {
     public ResponseEntity<Response<String>> joinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
         Response<String> response = new Response<>();
         try {
-            eventService.JoinEvent(userId,eventId);
+            eventService.joinEvent(userId,eventId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {
@@ -128,7 +128,7 @@ public class EventController {
     public ResponseEntity<Response<String>> notJoinEvent(@RequestAttribute("userId") String userId,@PathVariable("eventId") int eventId) {
         Response<String> response = new Response<>();
         try {
-            eventService.NotJoinEvent(userId,eventId);
+            eventService.notJoinEvent(userId,eventId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {
