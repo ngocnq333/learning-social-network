@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author Nam_Phuong
@@ -102,6 +103,7 @@ public class GoogleUtils {
         } catch (NullPointerException ex) {
             user.setHd("");
         }
+        user.setJoinDate(new Date());
         return user;
     }
 }

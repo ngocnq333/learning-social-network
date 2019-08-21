@@ -56,6 +56,9 @@ public class UserServiceImpl implements UserService {
         if (!idCurrentUser.equals(userIdUpdate) ) {
             throw new InvalidRequestException("Invalid information !");
         }
+        if (!userRequest.getPhone().matches("[0-9]+") ) {
+            throw new InvalidRequestException("Invalid phone!");
+        }
         User userOld = userRepository.findById(idCurrentUser);
         User user = convertUserRequestToUser(userRequest, userOld);
         userRepository.save(user);

@@ -14,6 +14,7 @@ import java.util.List;
 public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     ClazzMember save(ClazzMember clazzMember);
     List<ClazzMember> findByUserId(String userId);
+    @Query(value = "SELECT COUNT(*) FROM clazz_member WHERE clazz_id=?1 AND status like 'JOINED' ", nativeQuery = true)
     int countAllByClazzId(int clazzId);
     ClazzMember findByClazzIdAndIsCaptainTrue(int clazzId);
     ClazzMember findByClazzIdAndUserId(int clazzId, String userId);

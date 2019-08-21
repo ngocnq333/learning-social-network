@@ -23,7 +23,6 @@ public interface ContentRepository extends Repository<Content,Integer> {
     @Query(value = "SELECT * FROM Content c WHERE c.clazz_id = ?1 AND is_approve =0 ORDER BY c.is_done ASC ,c.end_date DESC , c.start_date DESC ", nativeQuery = true)
     List<Content> findContentNotApproveByIdClazz(int clazzId);
 
-
     @Transactional
     void deleteById(int idContent);
 
