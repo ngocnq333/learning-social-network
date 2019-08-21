@@ -62,7 +62,7 @@ public class ContentController {
     }
 
     @PutMapping
-    public ResponseEntity<Response<ContentRequest>> addContentForClass(@RequestAttribute("userId") String userId, @Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> addContentForClazz(@RequestAttribute("userId") String userId, @Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
@@ -85,7 +85,7 @@ public class ContentController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<ContentRequest>> updateContentForClass(@RequestAttribute("userId") String userId, @Valid @RequestBody ContentRequest contentRequest) {
+    public ResponseEntity<Response<ContentRequest>> updateContentForClazz(@RequestAttribute("userId") String userId, @Valid @RequestBody ContentRequest contentRequest) {
 
         Response<ContentRequest> response = new Response<>();
         try {
@@ -113,8 +113,6 @@ public class ContentController {
         response.setData(contentService.getContentById(contentId));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 
     @GetMapping
     public ResponseEntity<Response> getListContent(@RequestParam(value = "classId", defaultValue = Constant.CLASS_ID_DEFAULT) int clazzId,

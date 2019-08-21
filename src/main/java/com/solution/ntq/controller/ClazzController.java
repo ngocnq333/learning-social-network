@@ -33,18 +33,18 @@ public class ClazzController {
     private AttendanceService attendanceService;
 
     @GetMapping
-    public ResponseEntity<Response<List<ClazzResponse>>> getListClassByUserId(@RequestParam(value = "userId", defaultValue = "") String userId) {
+    public ResponseEntity<Response<List<ClazzResponse>>> getListClazzByUserId(@RequestParam(value = "userId", defaultValue = "") String userId) {
         Response<List<ClazzResponse>> response = new Response<>();
         response.setCodeStatus(ResponseCode.OK.value());
-        response.setData(clazzService.getClassByUser(userId));
+        response.setData(clazzService.getClazzByUser(userId));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{classId}")
-    public ResponseEntity<Response<ClazzResponse>> getClassById(@PathVariable("classId") int clazzId, @RequestAttribute("userId") String idCurrentUser) {
+    public ResponseEntity<Response<ClazzResponse>> getClazzById(@PathVariable("classId") int clazzId, @RequestAttribute("userId") String idCurrentUser) {
         Response<ClazzResponse> response = new Response<>();
         try {
-            ClazzResponse clazzResponse = clazzService.getClassById(clazzId, idCurrentUser);
+            ClazzResponse clazzResponse = clazzService.getClazzById(clazzId, idCurrentUser);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(clazzResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -61,11 +61,11 @@ public class ClazzController {
 
 
     @GetMapping("/{classId}/members")
-    public ResponseEntity<Response<List<ClazzMemberResponse>>> getListMemberOfClazz(@PathVariable(value = "classId") int classId,
+    public ResponseEntity<Response<List<ClazzMemberResponse>>> getListMemberOfClazz(@PathVariable(value = "classId") int clazzId,
                                                                                     @RequestParam(name = "status", defaultValue = "") String status) {
         Response<List<ClazzMemberResponse>> response = new Response<>();
         try {
-            List<ClazzMemberResponse> clazzMemberResponseList = clazzService.findAllMemberByClazzId(classId, status);
+            List<ClazzMemberResponse> clazzMemberResponseList = clazzService.findAllMemberByClazzId(clazzId, status);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(clazzMemberResponseList);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -81,13 +81,13 @@ public class ClazzController {
     }
 
     @PutMapping("/{classId}/users")
-    public ResponseEntity<Response<ClazzMemberResponse>> addClassMember(@RequestBody MemberRequest memberRequest,
-                                                                        @PathVariable(value = "classId") int classId,
+    public ResponseEntity<Response<ClazzMemberResponse>> addClazzMember(@RequestBody MemberRequest memberRequest,
+                                                                        @PathVariable(value = "classId") int clazzId,
                                                                         @RequestAttribute("userId") String idCurrentUser) {
         Response<ClazzMemberResponse> response = new Response<>();
         ClazzMemberResponse memberResponse;
         try {
-            memberResponse = clazzService.addClazzMember(memberRequest, classId, idCurrentUser);
+            memberResponse = clazzService.addClazzMember(memberRequest, clazzId, idCurrentUser);
             response.setCodeStatus(ResponseCode.OK.value());
             response.setData(memberResponse);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -101,11 +101,11 @@ public class ClazzController {
     }
 
     @PostMapping("/{classId}/users/{userId}")
-    public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClassMember(@RequestAttribute("userId") String idCurrentUser, @NotNull @PathVariable("classId") int classId
+    public ResponseEntity<Response<ClazzMemberRequest>> updateRoleForClazzMember(@RequestAttribute("userId") String idCurrentUser, @NotNull @PathVariable("classId") int clazzId
             , @PathVariable("userId") String userIdUpdate) {
         Response<ClazzMemberRequest> response = new Response<>();
         try {
-            clazzService.updateCaptainForClass(classId, idCurrentUser, userIdUpdate);
+            clazzService.updateCaptainForClazz(clazzId, idCurrentUser, userIdUpdate);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
@@ -123,10 +123,10 @@ public class ClazzController {
      * Update information of Clazz
      */
     @PostMapping("/{classId}")
-    public ResponseEntity<Response<ClazzRequest>> updateClazz(@PathVariable("classId") int classId, @RequestAttribute("userId") String idCurrentUser, @Valid @RequestBody ClazzRequest clazzRequest) {
+    public ResponseEntity<Response<ClazzRequest>> updateClazz(@PathVariable("classId") int clazzId, @RequestAttribute("userId") String idCurrentUser, @Valid @RequestBody ClazzRequest clazzRequest) {
         Response<ClazzRequest> response = new Response<>();
         try {
-            clazzService.updateClazz(idCurrentUser, clazzRequest, classId);
+            clazzService.updateClazz(idCurrentUser, clazzRequest, clazzId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException e) {
@@ -139,7 +139,7 @@ public class ClazzController {
     }
 
     @DeleteMapping("/{classId}/members/{memberId}")
-    public ResponseEntity<Response> deleteClassMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId") String memberId, @RequestAttribute("userId") String userId) {
+    public ResponseEntity<Response> deleteClazzMember(@PathVariable(name = "classId") int clazzId, @PathVariable(name = "memberId") String memberId, @RequestAttribute("userId") String userId) {
         Response response = new Response();
         try {
             clazzService.deleteMember(clazzId, userId, memberId);
@@ -156,14 +156,13 @@ public class ClazzController {
         }
     }
 
-
     @GetMapping("{classId}/attendances")
-    public ResponseEntity<Response<List>> getListContentAttendanceByClass(@PathVariable("classId") int classId
+    public ResponseEntity<Response<List>> getListContentAttendanceByClazz(@PathVariable("classId") int clazzId
             , @RequestParam(value = "title", defaultValue = "") String title
             , @RequestParam(value = "type", defaultValue = "content") String type) {
         Response<List> response = new Response<>();
         try {
-            List attendanceResponseList = attendanceService.getListAttendanceByClassId(classId, title, type);
+            List attendanceResponseList = attendanceService.getListAttendanceByClazzId(clazzId, title, type);
             response.setCodeStatus(HttpStatus.OK.value());
             response.setData(attendanceResponseList);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -179,11 +178,11 @@ public class ClazzController {
 
     @PostMapping("/{classId}/members/{memberId}/status/JOINED")
     public ResponseEntity<Response<ClazzMemberResponse>> updateStatusMember(@RequestAttribute("userId") String idCurrentUser,
-                                                                            @PathVariable("classId") int classId,
+                                                                            @PathVariable("classId") int clazzId,
                                                                             @PathVariable("memberId") String memberId) {
         Response<ClazzMemberResponse> response = new Response<>();
         try {
-            response.setData(clazzService.updateStatusMember(idCurrentUser, classId, memberId));
+            response.setData(clazzService.updateStatusMember(idCurrentUser, clazzId, memberId));
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InvalidRequestException ex) {

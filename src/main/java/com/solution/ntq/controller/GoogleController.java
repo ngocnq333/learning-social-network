@@ -35,6 +35,7 @@ public class GoogleController {
      */
     @DeleteMapping("/api/v1/logout")
     public Response<String> signOut(@RequestAttribute("userId") String userId) {
+
         return signService.signOut(userId);
     }
 }

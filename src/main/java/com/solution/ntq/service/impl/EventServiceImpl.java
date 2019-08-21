@@ -25,9 +25,6 @@ import com.solution.ntq.service.base.EventService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.*;
 import java.sql.Date;
 
@@ -56,7 +53,7 @@ public class EventServiceImpl implements EventService {
     private Event convertRequestToEvent(EventRequest eventRequest, String userId)throws IllegalAccessException {
         validateRequest(eventRequest, userId);
         User user = userRepository.findById(userId);
-        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
+        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClazzId());
 
         ObjectMapper mapper = ConvertObject.mapper();
         Event event = mapper.convertValue(eventRequest, Event.class);
@@ -68,7 +65,7 @@ public class EventServiceImpl implements EventService {
 
     private void validateRequest(EventRequest eventRequest, String userId) throws IllegalAccessException {
 
-        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
+        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClazzId());
         if (clazz == null) {
             throw new InvalidRequestException("ClassId  illegal !");
         }
@@ -98,7 +95,7 @@ public class EventServiceImpl implements EventService {
     private boolean checkEventRequestTimeInValid(EventRequest eventRequest, int eventId) {
         java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * 2);
         java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * 2);
-        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
+        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClazzId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
         if (duplicateEvents.isEmpty()) {
             return false;
         }

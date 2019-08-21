@@ -14,6 +14,7 @@ import com.solution.ntq.repository.base.UserRepository;
 import com.solution.ntq.repository.entities.Clazz;
 import com.solution.ntq.repository.entities.ClazzMember;
 import com.solution.ntq.repository.entities.Content;
+import com.solution.ntq.repository.entities.User;
 import com.solution.ntq.service.base.ContentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,9 @@ public class ContentServiceImpl implements ContentService {
         }
             Content content;
             content = ConvertObject.mapper().convertValue(contentRequest, Content.class);
-            Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
+            Clazz clazz = clazzRepository.findClazzById(contentRequest.getClazzId());
             content.setClazz(clazz);
-            String captainId = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(contentRequest.getClassId()).getUser().getId();
+            String captainId = clazzMemberRepository.findByClazzIdAndIsCaptainTrue(contentRequest.getClazzId()).getUser().getId();
             if (userRepository.findById(userId).getId().equals(captainId)) {
                 content.setApprove(true);
             }
@@ -56,14 +57,14 @@ public class ContentServiceImpl implements ContentService {
         if (!isValidContentRequest(contentRequest)) {
             throw new InvalidRequestException("Invalid Request !");
         }
-            ClazzMember captainOfClass=clazzMemberRepository.findByClazzIdAndIsCaptainTrue(contentRequest.getClassId());
+            ClazzMember captainOfClazz=clazzMemberRepository.findByClazzIdAndIsCaptainTrue(contentRequest.getClazzId());
             Content content = new Content();
             content.setId(contentRequest.getId());
             Content contentOrigin=contentRepository.findContentById(content.getId());
-        if(!captainOfClass.getUser().getId().equals(userId) || !contentOrigin.getAuthorId().equals(userId)) {
+        if(!captainOfClazz.getUser().getId().equals(userId) && !contentOrigin.getAuthorId().equals(userId)) {
             throw new InvalidRequestException("Don't have permission !");
         }
-            Clazz clazz = clazzRepository.findClazzById(contentRequest.getClassId());
+            Clazz clazz = clazzRepository.findClazzById(contentRequest.getClazzId());
             content = ConvertObject.mapper().convertValue(contentRequest, Content.class);
             content.setTimePost(new Date());
             content.setClazz(clazz);
@@ -76,8 +77,8 @@ public class ContentServiceImpl implements ContentService {
 
 
     @Override
-    public List<Content> getPendingItemByClassId(int classId) {
-        return contentRepository.findAllByClazzIdAndIsApproveFalse(classId);
+    public List<Content> getPendingItemByClazzId(int clazzId) {
+        return contentRepository.findAllByClazzIdAndIsApproveFalse(clazzId);
     }
 
     @Override
@@ -102,8 +103,11 @@ public class ContentServiceImpl implements ContentService {
     private ContentResponse getContentResponseMapContent(Content content) {
         ContentResponse contentResponse;
         contentResponse = ConvertObject.mapper().convertValue(content, ContentResponse.class);
+        User author = userRepository.findById(content.getAuthorId());
         contentResponse.setClazzId(content.getClazz().getId());
-        contentResponse.setAuthorName(userRepository.findById(content.getAuthorId()).getName());
+        contentResponse.setAuthorName(author.getName());
+        contentResponse.setAvatar(author.getPicture());
+        contentResponse.setThumbnail(content.getClazz().getThumbnail());
         return contentResponse;
     }
 
@@ -119,19 +123,19 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      *
-     * @param classId
+     * @param clazzId
      * @param status
-     * @return  all content have status of class
+     * @return  all content have status of Clazz
      */
     @Override
-    public List<ContentResponse> getContentsResponseSorted(int classId, String status) {
+    public List<ContentResponse> getContentsResponseSorted(int clazzId, String status) {
         List<Content> contentList;
         if (status.equals(Status.APPROVE.value())) {
-            contentList = contentRepository.findContentNotApproveByIdClazz(classId);
+            contentList = contentRepository.findContentNotApproveByIdClazz(clazzId);
             updateStatusContents(contentList);
             return getListContentResponse(contentList);
         }
-        contentList = contentRepository.findContentApproveByIdClazz(classId);
+        contentList = contentRepository.findContentApproveByIdClazz(clazzId);
         updateStatusContents(contentList);
         return getListContentResponse(contentList);
     }
@@ -152,7 +156,7 @@ public class ContentServiceImpl implements ContentService {
     /**
      * @
      * @param contentId
-     * approve content to class
+     * approve content to Clazz
      */
     @Override
     public void approveContent(int contentId) {

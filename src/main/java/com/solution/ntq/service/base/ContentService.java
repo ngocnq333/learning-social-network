@@ -16,13 +16,13 @@ public interface ContentService {
 
     void updateContent(ContentRequest content,String userId);
 
-    List<Content> getPendingItemByClassId(int classId);
+    List<Content> getPendingItemByClazzId(int clazzId);
 
     void deleteContentById(int idContent);
 
     boolean exitContent(int idContent);
 
-    List<ContentResponse> getContentsResponseSorted(int classId,String title);
+    List<ContentResponse> getContentsResponseSorted(int clazzId,String title);
 
     void approveContent(int contentId);
 }

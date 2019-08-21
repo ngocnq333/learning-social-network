@@ -16,17 +16,17 @@ import java.util.List;
  */
 public interface ClazzService {
 
-    List<ClazzResponse> getClassByUser(String userId);
+    List<ClazzResponse> getClazzByUser(String userId);
 
-    ClazzResponse getClassById(int clazzId);
+    ClazzResponse getclazzById(int clazzId);
 
-    ClazzResponse getClassById(int clazzId, String userId);
+    ClazzResponse getClazzById(int clazzId, String userId);
 
     List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId,String status);
 
-    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId, String userId) throws IllegalAccessException, GeneralSecurityException, IOException;
+    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int clazzId, String userId) throws IllegalAccessException, GeneralSecurityException, IOException;
 
-    void updateCaptainForClass(int clazzId, String userId, String userIdUpdate);
+    void updateCaptainForClazz(int clazzId, String userId, String userIdUpdate);
 
     boolean isCaptainClazz(String userId, int clazzId);
 
@@ -34,5 +34,5 @@ public interface ClazzService {
 
     void updateClazz(String userId, ClazzRequest clazzRequest, int clazzId) throws GeneralSecurityException, IOException;
 
-    ClazzMemberResponse updateStatusMember(String currentUser, int classId, String memberId) throws GeneralSecurityException, IOException;
+    ClazzMemberResponse updateStatusMember(String currentUser, int clazzId, String memberId) throws GeneralSecurityException, IOException;
 }
