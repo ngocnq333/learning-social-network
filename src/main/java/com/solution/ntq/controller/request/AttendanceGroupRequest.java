@@ -1,8 +1,11 @@
 package com.solution.ntq.controller.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Size;
 
@@ -13,13 +16,15 @@ import javax.validation.constraints.Size;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AttendanceGroupRequest {
-    @Size(max = 214748364)
-    private int id;
-    private int contentId;
+    @Size(max = 214_748_364)
+    int id;
+    int contentId;
     @JsonProperty(value = "memberId")
-    private String userId;
+    String userId;
     @JsonProperty(value = "isAttendance")
-    private boolean isAttendance;
-    private String note;
+    boolean isAttendance;
+    String note;
 }

@@ -145,7 +145,7 @@ public class ClazzController {
             clazzService.deleteMember(clazzId, userId, memberId);
             response.setCodeStatus(ResponseCode.OK.value());
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IllegalAccessException ex) {
+        } catch (InvalidRequestException ex) {
             response.setMessage(ex.getMessage());
             response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

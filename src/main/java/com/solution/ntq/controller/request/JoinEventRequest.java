@@ -20,13 +20,13 @@ import javax.validation.constraints.Size;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JoinEventRequest {
     @Id
-    @Size(min = 0,max = 10000)
+    @Size(max = 10000)
     int id;
     @JsonProperty(value = "isJoined")
     boolean isJoined;
     @JsonProperty(value = "isAttendance")
     boolean isAttendance;
-    @Size(min = 0,max = 10000)
+    @Size(max = 10000)
     int eventId;
     @NotNull
     String userId;

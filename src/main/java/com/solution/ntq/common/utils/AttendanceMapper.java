@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solution.ntq.controller.response.AttendanceContentResponse;
 import com.solution.ntq.repository.entities.User;
 
-public class AttendanceMapper {
+public final class AttendanceMapper {
     private AttendanceMapper() {}
     public static  <T> AttendanceContentResponse getAttendanceResponseMapObject(T element, User user) {
         AttendanceContentResponse attendanceContentResponse;

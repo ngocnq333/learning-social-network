@@ -17,12 +17,13 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClazzMemberResponse {
     @Id
-    int classId;
+    @JsonProperty("classId")
+    int clazzId;
     String userId;
     String name;
     String email;
     String avatar;
-    private String skype;
+    String skype;
     @JsonProperty(value = "isCaptain")
     boolean isCaptain;
     Date joinDate;

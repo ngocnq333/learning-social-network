@@ -52,17 +52,18 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
     }
 
+
     private void saveAttendance(List<AttendanceGroupRequest> attendanceGroup) {
-        attendanceGroup.forEach(attendance -> {
-                    Attendance attendanceMember = mappingAttendance(attendance);
-                    if (Validator.isTakeAttendance(attendance)) {
-                        int idAttendance = attendance.getId();
+        attendanceGroup.forEach( (AttendanceGroupRequest a) -> {
+                    Attendance attendanceMember = mappingAttendance(a);
+                    if (Validator.isTakeAttendance(a)) {
+                        int idAttendance = a.getId();
                         attendanceMember = attendanceRepository.findAllById(idAttendance);
                         if (attendanceMember == null) {
                             throw new InvalidRequestException("User or content invalid ");
                         }
-                        attendanceMember.setNote(attendance.getNote());
-                        attendanceMember.setAttendance(attendance.isAttendance());
+                        attendanceMember.setNote(a.getNote());
+                        attendanceMember.setAttendance(a.isAttendance());
                     }
                     attendanceRepository.save(attendanceMember);
                 }
@@ -115,7 +116,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceContentResponseList;
     }
 
-    private AttendanceContentResponse getAttendanceResponseMapClazzMember(ClazzMember clazzMember, int contentId) {
+    private static AttendanceContentResponse getAttendanceResponseMapClazzMember(ClazzMember clazzMember, int contentId) {
         AttendanceContentResponse attendanceContentResponse = AttendanceMapper.getAttendanceResponseMapObject(clazzMember, clazzMember.getUser());
         attendanceContentResponse.setContentId(contentId);
         attendanceContentResponse.setAttendance(Constant.ATTENDANCE_DEFAULT);
@@ -123,7 +124,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         return attendanceContentResponse;
     }
 
-    private AttendanceContentResponse getAttendanceResponseMapAttendance(Attendance attendance) {
+    private  AttendanceContentResponse getAttendanceResponseMapAttendance(Attendance attendance) {
         AttendanceContentResponse attendanceContentResponse = AttendanceMapper.getAttendanceResponseMapObject(attendance, attendance.getUser());
         attendanceContentResponse.setContentId(attendance.getContent().getId());
         attendanceContentResponse.setContentTitle(attendance.getContent().getTitle());
@@ -140,7 +141,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
         for (Content content : contents) {
             List<Attendance> attendances = attendanceRepository.findByContentId(content.getId());
-            List<AttendanceContentResponse> attendanceContentResponseMap = attendances.stream().map(i -> getAttendanceResponseMapAttendance(i)).collect(Collectors.toList());
+            List<AttendanceContentResponse> attendanceContentResponseMap = attendances.stream().map(this::getAttendanceResponseMapAttendance).collect(Collectors.toList());
             attendanceContentResponses.addAll(attendanceContentResponseMap);
         }
         return attendanceContentResponses;
@@ -154,7 +155,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
         for (Event event : events) {
             List<JoinEvent> attendances = joinEventRepository.findByEventId(event.getId());
-            List<AttendanceEventResponse> attendanceEventResponseMap = attendances.stream().map(i -> getAttendanceEventResponseMapper(i)).collect(Collectors.toList());
+            List<AttendanceEventResponse> attendanceEventResponseMap = attendances.stream().map(this::getAttendanceEventResponseMapper).collect(Collectors.toList());
             attendanceEventResponses.addAll(attendanceEventResponseMap);
         }
         return attendanceEventResponses;
@@ -164,19 +165,20 @@ public class AttendanceServiceImpl implements AttendanceService {
     private AttendanceEventResponse getAttendanceEventResponseMapper(JoinEvent joinEvent) {
         AttendanceEventResponse attendanceEventResponse = new AttendanceEventResponse();
         attendanceEventResponse.setId(joinEvent.getId());
+        User member= joinEvent.getUser();
         attendanceEventResponse.setEventId(joinEvent.getEvent().getId());
         attendanceEventResponse.setAttendance(joinEvent.isAttendance());
-        attendanceEventResponse.setUserId(joinEvent.getUser().getId());
-        attendanceEventResponse.setUserName(joinEvent.getUser().getName());
-        attendanceEventResponse.setEmail(joinEvent.getUser().getEmail());
-        attendanceEventResponse.setPicture(joinEvent.getUser().getPicture());
+        attendanceEventResponse.setUserId(member.getId());
+        attendanceEventResponse.setUserName(member.getName());
+        attendanceEventResponse.setEmail(member.getEmail());
+        attendanceEventResponse.setPicture(member.getPicture());
         attendanceEventResponse.setEventTitle(joinEvent.getEvent().getTitle());
         return attendanceEventResponse;
     }
 
     @Override
     public List getListAttendanceByClazzId(int clazzId, String title, String type) {
-        return type.equals("CONTENT") ? getListAttendanceContentByClazzId(clazzId, title) : getListAttendanceEventByClazzId(clazzId, title);
+        return ("CONTENT").equals(type) ? getListAttendanceContentByClazzId(clazzId, title) : getListAttendanceEventByClazzId(clazzId, title);
     }
 
 

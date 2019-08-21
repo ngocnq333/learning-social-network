@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    private User convertUserRequestToUser(UserRequest userRequest, User userOld) {
+    private static User convertUserRequestToUser(UserRequest userRequest, User userOld) {
         ObjectMapper mapper = ConvertObject.mapper();
         User newUser = mapper.convertValue(userRequest,User.class);
         newUser.setId(userOld.getId());
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         users.forEach(user -> userResponses.add(convertUserToUserResponse(user)));
         return userResponses;
     }
-    private UserResponse convertUserToUserResponse(User user){
+    private static UserResponse convertUserToUserResponse(User user){
         ObjectMapper mapper = ConvertObject.mapper();
         return mapper.convertValue(user,UserResponse.class);
     }

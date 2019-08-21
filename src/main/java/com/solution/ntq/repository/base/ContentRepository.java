@@ -14,25 +14,23 @@ import java.util.List;
 public interface ContentRepository extends Repository<Content,Integer> {
     void save(Content content);
 
-    List<Content> findAllByClazzIdAndIsApproveFalse(int classId);
+    List<Content> findAllByClazzIdAndIsApproveFalse(int clazzId);
 
     Content findContentById(int idContent);
 
     @Query(value = "SELECT * FROM Content c WHERE c.clazz_id = ?1 AND is_approve =1 ORDER BY c.is_done ASC ,c.end_date DESC , c.start_date DESC ", nativeQuery = true)
-    List<Content> findContentApproveByIdClazz(int classId);
+    List<Content> findContentApproveByIdClazz(int clazzId);
     @Query(value = "SELECT * FROM Content c WHERE c.clazz_id = ?1 AND is_approve =0 ORDER BY c.is_done ASC ,c.end_date DESC , c.start_date DESC ", nativeQuery = true)
-    List<Content> findContentNotApproveByIdClazz(int classId);
+    List<Content> findContentNotApproveByIdClazz(int clazzId);
 
 
     @Transactional
     void deleteById(int idContent);
 
     @Query(value = "SELECT * FROM content WHERE clazz_id = ?1  AND id IN (SELECT content_id FROM attendance) ORDER BY end_date DESC , start_date DESC ", nativeQuery = true)
-    List<Content> findContentByClazzHaveAttendances(int classId);
+    List<Content> findContentByClazzHaveAttendances(int clazzId);
 
     @Query(value = "SELECT * FROM content WHERE clazz_id = ?1  AND id IN (SELECT content_id FROM attendance) AND title LIKE %?2% ORDER BY end_date DESC , start_date DESC ", nativeQuery = true)
-    List<Content> findByIdClazzAndTitleHaveAttendances(int classId, String title);
-
-    boolean existsById(int idContent);
+    List<Content> findByIdClazzAndTitleHaveAttendances(int clazzId, String title);
 
 }

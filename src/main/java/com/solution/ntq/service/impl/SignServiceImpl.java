@@ -131,7 +131,7 @@ public class SignServiceImpl implements SignService {
     /**
      * Verify mail ntq with mail
      */
-    private boolean isNTQMail(String userEmail) {
+    private static boolean isNTQMail(String userEmail) {
         return (GoogleLink.NTQ_EMAIL_FORM.equalsIgnoreCase(userEmail));
     }
 

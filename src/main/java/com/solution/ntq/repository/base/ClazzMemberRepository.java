@@ -14,7 +14,7 @@ import java.util.List;
 public interface ClazzMemberRepository extends Repository<ClazzMember,Integer> {
     ClazzMember save(ClazzMember clazzMember);
     List<ClazzMember> findByUserId(String userId);
-    int countAllByClazzId(int classId);
+    int countAllByClazzId(int clazzId);
     ClazzMember findByClazzIdAndIsCaptainTrue(int clazzId);
     ClazzMember findByClazzIdAndUserId(int clazzId, String userId);
     void deleteById(int clazzMemberId);

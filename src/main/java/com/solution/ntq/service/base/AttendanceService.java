@@ -13,6 +13,6 @@ import java.util.List;
 public interface AttendanceService {
     List<AttendanceContentResponse> getListAttendance (int contentId);
     void saveAttendanceGroup(AttendanceRequest attendanceGroupRequest);
-    List getListAttendanceByClazzId(int classId, String title,String type);
+    List getListAttendanceByClazzId(int clazzId, String title,String type);
 
 }

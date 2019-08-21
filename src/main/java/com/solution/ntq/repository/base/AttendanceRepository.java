@@ -17,9 +17,6 @@ import java.util.List;
 public interface AttendanceRepository extends Repository<Attendance, Integer> {
   List<Attendance> findByContentId(int contentId);
     void save(Attendance content);
-
-    boolean existsById(int idAttendance);
-
     Attendance findAllById(int idAttendance);
 
 }

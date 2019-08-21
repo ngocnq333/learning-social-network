@@ -1,9 +1,7 @@
 package com.solution.ntq.repository.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -14,18 +12,18 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    private String accessToken;
-    private String refreshToken;
+    String accessToken;
+    String refreshToken;
     @Type(type = "text")
-    private String idToken;
-    private Date time;
+    String idToken;
+    Date time;
     @OneToOne (fetch = FetchType.EAGER )
     @JoinColumn (name ="user_id")
-    private User user;
-
+    User user;
 }
 

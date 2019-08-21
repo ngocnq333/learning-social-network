@@ -9,7 +9,7 @@ import com.solution.ntq.controller.request.AttendanceGroupRequest;
  * @version 1.01
  * @since 2019/08/5
  */
-public class Validator {
+public final class Validator {
     private static final int CREATE_NEW_ATTENDANCE = -1;
     private static final long DAY_OF_THE_MONTH = 31;
 

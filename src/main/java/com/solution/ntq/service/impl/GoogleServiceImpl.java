@@ -94,13 +94,13 @@ public class GoogleServiceImpl implements GoogleService {
     public User getUserFormGoogle(String accessToken) {
         try {
             return googleUtils.getUserInfo(accessToken);
-        } catch (IOException | NullPointerException ex) {
+        } catch (IOException e) {
             return null;
         }
     }
 
 
-    private boolean isCode(String code) {
+    private static boolean isCode(String code) {
         return (code == null || code.isEmpty());
     }
 }

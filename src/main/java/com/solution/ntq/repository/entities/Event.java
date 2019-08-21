@@ -24,7 +24,6 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-
     String title;
     String description;
     String document;

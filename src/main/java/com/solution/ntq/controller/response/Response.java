@@ -1,19 +1,20 @@
 package com.solution.ntq.controller.response;
 
-import lombok.AllArgsConstructor;
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
-
-@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Getter
 @Setter
 public class Response<T> {
-    private int codeStatus;
-    private T data;
-    private String message;
+    int codeStatus;
+    T data;
+    String message;
     public Response(int codeStatus){
         this.codeStatus = codeStatus;
     }
