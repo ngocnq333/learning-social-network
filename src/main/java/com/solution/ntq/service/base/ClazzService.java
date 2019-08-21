@@ -15,7 +15,7 @@ public interface ClazzService {
 
     List<ClazzResponse> getClazzByUser(String userId);
 
-    ClazzResponse getclazzById(int clazzId);
+    ClazzResponse getClazzById(int clazzId);
 
     ClazzResponse getClazzById(int clazzId, String userId);
 

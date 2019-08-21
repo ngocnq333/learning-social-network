@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 public class NtqApplication {
 
     public static void main(String[] args)  {
-        SpringApplication.run(NtqApplication.class, args);
+        SpringApplication.run(NtqApplication.class);
 
 
     }

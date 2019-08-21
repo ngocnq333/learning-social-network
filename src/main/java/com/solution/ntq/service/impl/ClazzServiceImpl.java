@@ -60,14 +60,14 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public ClazzResponse getclazzById(int clazzId) {
+    public ClazzResponse getClazzById(int clazzId) {
         Clazz clazz = clazzRepository.findClazzById(clazzId);
         return getResponseMapByClazz(clazz);
     }
 
     @Override
     public ClazzResponse getClazzById(int clazzId, String userId) {
-        ClazzResponse clazzResponse = getclazzById(clazzId);
+        ClazzResponse clazzResponse = getClazzById(clazzId);
         ClazzMember memberInclazz = clazzMemberRepository.findByClazzIdAndUserId(clazzId, userId);
         if (memberInclazz == null) {
             clazzResponse.setStatus(Status.NOTJOIN.value());
