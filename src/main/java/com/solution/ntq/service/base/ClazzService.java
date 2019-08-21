@@ -21,7 +21,7 @@ public interface ClazzService {
 
     List<ClazzMemberResponse> findAllMemberByClazzId(int clazzId,String status);
 
-    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int classId, String userId);
+    ClazzMemberResponse addClazzMember(MemberRequest memberRequest, int clazzId, String userId);
 
     void updateCaptainForClazz(int clazzId, String userId, String userIdUpdate);
 
@@ -31,5 +31,5 @@ public interface ClazzService {
 
     void updateClazz(String userId, ClazzRequest clazzRequest, int clazzId) ;
 
-    ClazzMemberResponse updateStatusMember(String currentUser, int classId, String memberId);
+    ClazzMemberResponse updateStatusMember(String currentUser, int clazzId, String memberId);
 }

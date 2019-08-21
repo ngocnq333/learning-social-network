@@ -10,14 +10,15 @@ import java.util.Date;
 /**
  * @author Manh
  */
-@NoArgsConstructor
+
 @Getter
 @Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClazzMemberResponse {
     @Id
-    int classId;
+    @JsonProperty("classId")
+    int clazzId;
     String userId;
     String name;
     String email;

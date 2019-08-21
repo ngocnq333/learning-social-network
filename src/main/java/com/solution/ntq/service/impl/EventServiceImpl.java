@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
     private Event convertRequestToEvent(EventRequest eventRequest, String userId) {
         validateRequest(eventRequest, userId);
         User user = userRepository.findById(userId);
-        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
+        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClazzId());
 
         ObjectMapper mapper = ConvertObject.mapper();
         Event event = mapper.convertValue(eventRequest, Event.class);
@@ -65,7 +65,7 @@ public class EventServiceImpl implements EventService {
 
     private void validateRequest(EventRequest eventRequest, String userId)  {
 
-        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClassId());
+        Clazz clazz = clazzRepository.findClazzById(eventRequest.getClazzId());
         if (clazz == null) {
             throw new InvalidRequestException("ClassId  illegal !");
         }
@@ -95,7 +95,7 @@ public class EventServiceImpl implements EventService {
     private boolean checkEventRequestTimeInValid(EventRequest eventRequest, int eventId) {
         java.sql.Date dateBeforeTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() - Constant.MILLISECONDS_OF_DAY * Constant.DAY_NUMBER);
         java.sql.Date dateAfterTwoDay = new java.sql.Date(eventRequest.getStartDate().getTime() + Constant.MILLISECONDS_OF_DAY * Constant.DAY_NUMBER);
-        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClassId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
+        List<Event> duplicateEvents = eventRepository.getEventByClazzIdAndStartDateNotExistIgnore(eventRequest.getClazzId(), dateBeforeTwoDay, dateAfterTwoDay, eventId);
         if (duplicateEvents.isEmpty()) {
             return false;
         }
@@ -147,13 +147,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventResponse> getGroupEvent(int classId, long startDate, long endDate) {
+    public List<EventResponse> getGroupEvent(int clazzId, long startDate, long endDate) {
         if (Validator.isScopeOutOfOneMonth(startDate, endDate)) {
             throw new InvalidRequestException("Invalid data request");
         }
         java.util.Date date = new java.util.Date();
         endDate = startDate == 0 ? date.getTime() : endDate;
-        List<Event> groupEvent = eventRepository.getEventByClazzIdAndStartDate(classId, new Date(startDate), new Date(endDate));
+        List<Event> groupEvent = eventRepository.getEventByClazzIdAndStartDate(clazzId, new Date(startDate), new Date(endDate));
         return convertEventToEventResponse(groupEvent);
     }
 
@@ -225,8 +225,8 @@ public class EventServiceImpl implements EventService {
     public void takeAttendanceEvents(List<EventGroupRequest> eventGroupRequests, int eventId, String
             userId) {
 
-        int classId = clazzRepository.findClazzByEventId(eventId).getId();
-        if (!clazzMemberRepository.findByClazzIdAndIsCaptainTrue(classId).getUser().getId().equals(userId)) {
+        int clazzId = clazzRepository.findClazzByEventId(eventId).getId();
+        if (!clazzMemberRepository.findByClazzIdAndIsCaptainTrue(clazzId).getUser().getId().equals(userId)) {
             throw new InvalidRequestException("dont have role");
         }
         saveAttendance(eventGroupRequests);

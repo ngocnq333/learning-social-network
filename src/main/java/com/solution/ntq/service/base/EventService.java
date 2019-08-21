@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface EventService {
     void addEvent(EventRequest event, String userId) ;
-    List<EventResponse> getGroupEvent(int classId, long startDate, long endDate);
+    List<EventResponse> getGroupEvent(int clazzId, long startDate, long endDate);
     void joinEvent(String userId,int eventId);
     void notJoinEvent(String userId,int eventId);
 

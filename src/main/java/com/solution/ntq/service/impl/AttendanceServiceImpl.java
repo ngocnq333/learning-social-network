@@ -52,6 +52,7 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
     }
 
+
     private void saveAttendance(List<AttendanceGroupRequest> attendanceGroup) {
         attendanceGroup.forEach( (AttendanceGroupRequest a) -> {
                     Attendance attendanceMember = mappingAttendance(a);
@@ -176,8 +177,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public List getListAttendanceByClassId(int classId, String title, String type) {
-        return ("CONTENT").equals(type) ? getListAttendanceContentByClassId(classId, title) : getListAttendanceEventByClassId(classId, title);
+    public List getListAttendanceByClazzId(int clazzId, String title, String type) {
+        return ("CONTENT").equals(type) ? getListAttendanceContentByClazzId(clazzId, title) : getListAttendanceEventByClazzId(clazzId, title);
     }
 
 
