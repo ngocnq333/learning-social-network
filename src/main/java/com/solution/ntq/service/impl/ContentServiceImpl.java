@@ -61,6 +61,10 @@ public class ContentServiceImpl implements ContentService {
             Content content = new Content();
             content.setId(contentRequest.getId());
             Content contentOrigin=contentRepository.findContentById(content.getId());
+            if(contentOrigin==null)
+            {
+                throw new InvalidRequestException("Don't find this content");
+            }
         if(!captainOfClazz.getUser().getId().equals(userId) && !contentOrigin.getAuthorId().equals(userId)) {
             throw new InvalidRequestException("Don't have permission !");
         }
@@ -130,13 +134,16 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private static boolean isValidContentRequest(ContentRequest contentRequest) {
+    private boolean isValidContentRequest(ContentRequest contentRequest) {
 
         if (contentRequest.getStartDate().before(new Date())) {
             throw new InvalidRequestException("Start date must after today !");
         }
         if (contentRequest.getEndDate().before(contentRequest.getStartDate())) {
             throw new InvalidRequestException("End date must after start date !");
+        }
+        if(clazzRepository.findClazzById(contentRequest.getClazzId())==null) {
+           throw new InvalidRequestException("Don't have class in system");
         }
         return !(!contentRequest.getLevel().equalsIgnoreCase(Level.BEGINNER.value()) && !contentRequest.getLevel().equalsIgnoreCase(Level.INTERMEDISE.value())
                 && !contentRequest.getLevel().equalsIgnoreCase(Level.EXPERT.value()));

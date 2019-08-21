@@ -54,7 +54,6 @@ public class EventServiceImpl implements EventService {
         validateRequest(eventRequest, userId);
         User user = userRepository.findById(userId);
         Clazz clazz = clazzRepository.findClazzById(eventRequest.getClazzId());
-
         ObjectMapper mapper = ConvertObject.mapper();
         Event event = mapper.convertValue(eventRequest, Event.class);
         event.setAuthor(user.getName());
