@@ -111,7 +111,18 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public void deleteContentById(int idContent) {
+    public void deleteContentById(int idContent, String userId) {
+         Content content = contentRepository.findContentById(idContent);
+         ClazzMember captain= clazzMemberRepository.findByClazzIdAndIsCaptainTrue(content.getClazz().getId());
+
+         if (captain == null) {
+             throw new InvalidRequestException("Don't have content in systems !");
+         }
+
+         if(!captain.getUser().getId().equals(userId)) {
+             throw new InvalidRequestException("Don't have permission !");
+         }
+
         contentRepository.deleteById(idContent);
     }
     /**

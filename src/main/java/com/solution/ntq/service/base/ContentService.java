@@ -15,7 +15,7 @@ public interface ContentService {
 
     void updateContent(ContentRequest content,String userId);
 
-    void deleteContentById(int idContent);
+    void deleteContentById(int idContent, String userId);
 
     List<ContentResponse> getContentsResponseSorted(int classId,String title);
 

@@ -130,12 +130,20 @@ public class ContentController {
 
 
     @DeleteMapping("/{contentId}")
-    public ResponseEntity<Response> deleteContentById(@PathVariable("contentId") int contentId) {
+    public ResponseEntity<Response> deleteContentById(@RequestAttribute("userId") String userId, @PathVariable("contentId") int contentId) {
         Response<Response> response = new Response<>();
-        contentService.deleteContentById(contentId);
-        response.setCodeStatus(HttpStatus.OK.value());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        try {
+            contentService.deleteContentById(contentId, userId);
+            response.setCodeStatus(HttpStatus.OK.value());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (InvalidRequestException e) {
+            response.setMessage(e.getMessage());
+            response.setCodeStatus(ResponseCode.BAD_REQUEST.value());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            response.setCodeStatus(ResponseCode.INTERNAL_SERVER_ERROR.value());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @PostMapping("/{contentId}/approve")
     public ResponseEntity<Response> approveContent(@PathVariable("contentId") int contentId) {
