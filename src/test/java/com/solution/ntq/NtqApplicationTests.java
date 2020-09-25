@@ -11,6 +11,7 @@ public class NtqApplicationTests {
 
     @Test
     public void contextLoads() {
+        throw new UnsupportedOperationException();
     }
 
 }

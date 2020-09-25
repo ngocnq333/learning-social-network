@@ -1,4 +1,4 @@
-*/target/*
+*/target/**
 */.project
 */.springBeans
 */.classpath
@@ -9,3 +9,6 @@
 */bin/*
 .idea/
 *.iml
+target/
+.scannerwork/
+sonar-project.properties
